@@ -1,8 +1,10 @@
 /* src/index.scss */
 .BGEnhanced-BackgoundDom {
   position: fixed;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  pointer-events: none;
   left: 0;
   right: 0;
   top: 0;
@@ -12,14 +14,45 @@
 #x-g-mn ~ .BGEnhanced-BackgoundDom {
   z-index: 0;
 }
+.BGEnhanced-BackgoundDom .BGE-viewport {
+  position: absolute;
+  inset: 0;
+}
+.BGEnhanced-BackgoundDom .background,
+.BGEnhanced-BackgoundDom .background img,
+.BGEnhanced-BackgoundDom .background video,
+.BGEnhanced-BackgoundDom .BGE-coverImageBG,
+.BGEnhanced-BackgoundDom .BGE-cssBackground {
+  transition: none !important;
+}
 .BGEnhanced-BackgoundDom .background {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
 }
-.BGEnhanced-BackgoundDom .background .container {
-  position: absolute;
+.BGEnhanced-BackgoundDom .background.mode-stretch > * {
   width: 100%;
   height: 100%;
+  object-fit: fill;
+}
+.BGEnhanced-BackgoundDom .background.mode-cover img,
+.BGEnhanced-BackgoundDom .background.mode-cover video {
+  object-position: left top;
+}
+.BGEnhanced-BackgoundDom .background.mode-stretch img,
+.BGEnhanced-BackgoundDom .background.mode-stretch video {
+  object-fit: fill;
+}
+.BGEnhanced-BackgoundDom .background.mode-cover > * {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.BGEnhanced-BackgoundDom .background.mode-cover-centered > * {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 @keyframes fadeIn {
   0% {
@@ -29,24 +62,65 @@
     opacity: 1;
   }
 }
+.BGEnhanced-BackgoundDom .background .container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
 .BGEnhanced-BackgoundDom .background .container.fadeIn {
   animation: fadeIn 0.5s forwards;
 }
-.BGEnhanced-BackgoundDom .background.mode-stretch .container * {
+.BGEnhanced-BackgoundDom .background.mode-stretch .container img,
+.BGEnhanced-BackgoundDom .background.mode-stretch .container video {
+  object-fit: fill;
+}
+.BGEnhanced-BackgoundDom .background.mode-cover .container img,
+.BGEnhanced-BackgoundDom .background.mode-cover .container video,
+.BGEnhanced-BackgoundDom .background.mode-cover-centered .container img,
+.BGEnhanced-BackgoundDom .background.mode-cover-centered .container video {
+  object-fit: cover;
+}
+.BGEnhanced-BackgoundDom .background .container {
+  inset: 0;
+  overflow: hidden;
+}
+.BGEnhanced-BackgoundDom .background .container img,
+.BGEnhanced-BackgoundDom .background .container video {
   position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
 }
-.BGEnhanced-BackgoundDom .background.mode-cover .container * {
+.BGEnhanced-BackgoundDom .BGE-cssBackground {
   position: absolute;
+  inset: 0;
+  width: 100%;
   height: 100%;
+}
+.BGEnhanced-BackgoundDom .BGE-coverImageBG {
+  width: 100%;
+  height: 100%;
+}
+@keyframes bge-cover-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.BGEnhanced-BackgoundDom .BGE-coverImageBG .BGE-coverImageBG-enter {
+  animation: bge-cover-enter 1s ease both;
+  z-index: 1;
 }
 .BGEnhanced-BackgoundDom .BGE-coverImageBG .BGE-coverImageBG-a,
 .BGEnhanced-BackgoundDom .BGE-coverImageBG .BGE-coverImageBG-b {
-  transition: opacity 1s;
   position: absolute;
   left: 0;
+  top: 0;
   width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 .BGEnhanced-Config {
   overflow: scroll;
@@ -149,7 +223,6 @@
   overflow: hidden;
   cursor: default;
   margin-right: 10px;
-  width: 100%;
 }
 .BGEnhanced-Config > .buttons .full .ico {
   transition: opacity 0.3s;
@@ -176,6 +249,9 @@
   padding: 0 0.8em;
   cursor: pointer;
   box-sizing: border-box;
+}
+.BGEnhanced-Config > .buttons .full {
+  width: 100%;
 }
 .BGEnhanced-Config > .buttons .expand-h {
   transition: max-height 0.3s;
@@ -244,11 +320,13 @@
   background: rgba(0, 0, 0, 0.253);
   box-shadow: 1px 3px 5px rgba(0, 0, 0, 0.048);
   transition: outline 0.1s;
-  position: relative;
 }
 .BGEnhanced-Config .bg-block.selected {
   box-shadow: 0 0 0 3px rgba(0, 89, 255, 0.829);
   transition: box-shadow 0.3s;
+}
+.BGEnhanced-Config .bg-block {
+  position: relative;
 }
 .BGEnhanced-Config .bg-block .info {
   transition: opacity 0.2s;
@@ -265,7 +343,11 @@
   opacity: 0;
   padding-right: 5px;
   padding-bottom: 5px;
-  background: linear-gradient(-45deg, rgba(0, 0, 0, 0.5137254902), rgba(0, 0, 0, 0));
+  background:
+    linear-gradient(
+      -45deg,
+      rgba(0, 0, 0, 0.5137254902),
+      rgba(0, 0, 0, 0));
 }
 .BGEnhanced-Config .bg-block .info .name {
   padding: 0.2em 0.5em;

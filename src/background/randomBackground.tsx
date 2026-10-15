@@ -5,6 +5,7 @@ import { BackgroundPreviewList, selfPlugin } from "..";
 import Swal from "sweetalert2";
 import { MdSelectAll } from "react-icons/md";
 import { RecursiveLockBackground } from "./RecursiveLockBackground";
+import { chooseBackground, ResolutionPath } from "./resolution";
 
 export class RandomBackground extends RecursiveLockBackground {
     async onConfig(): Promise<undefined> {
@@ -43,11 +44,12 @@ export class RandomBackground extends RecursiveLockBackground {
 
         const p = Swal.fire({ title: "随机背景设置", html: "<div id=RandBGConfigContainer class=BGEnhanced-Config style='font-size:.5em;' />" });
 
-        ReactDOM.render(<ConfigMenu />, document.getElementById("RandBGConfigContainer"));
+        const container = document.getElementById("RandBGConfigContainer")!;
+        ReactDOM.render(<ConfigMenu />, container);
 
-        await p;
-
-        this.resetRecursiveCount();
+        try { await p; }
+        finally { ReactDOM.unmountComponentAtNode(container); }
+        this.#selected = undefined;
 
         return;
     }
@@ -55,29 +57,21 @@ export class RandomBackground extends RecursiveLockBackground {
     static attributes = ["recursive"];
 
     excludeList: string[] = [];
-    #randBGElement: Promise<BaseBackground>
-    async #randomBackground() {
-        if (!this.#randBGElement) {
-            this.#randBGElement = Promise.race([
-                betterncm.utils.waitForFunction(() => selfPlugin.backgroundList.length),
-                betterncm.utils.delay(1000).then(_ => Promise.reject("Timeout"))
-            ]).then(() => selfPlugin.backgroundList.filter(bg => {
-                return bg !== this && !this.excludeList.includes(bg.id)
-
-            }).sort(_ => Math.random() - 0.5)[0]);
+    #selected?: BaseBackground;
+    private randomBackground(): BaseBackground {
+        const candidates = (selfPlugin.backgroundList as BaseBackground[])
+            .filter(bg => bg !== this && !this.excludeList.includes(bg.id));
+        if (!this.#selected || !candidates.includes(this.#selected)) {
+            this.#selected = chooseBackground(candidates);
         }
-        return this.#randBGElement;
+        return this.#selected;
     }
 
-    async previewBackground() {
-        if (this.checkRecursive()) return () => <div>Potential circular reference detected.</div>;
-
-        return (await this.#randomBackground()).previewBackground();
+    async previewBackground(path: ResolutionPath = []): Promise<React.FC> {
+        return this.randomBackground().previewBackground(this.enter(path));
     }
-    async backgroundElement(): Promise<ReactElement> {
-        if (this.checkRecursive()) return <div>Potential circular reference detected.</div>;
-
-        return (await this.#randomBackground()).backgroundElement();
+    async backgroundElement(path: ResolutionPath = []): Promise<ReactElement> {
+        return this.randomBackground().backgroundElement(this.enter(path));
     }
     static default(): BaseBackground {
         return new RandomBackground;

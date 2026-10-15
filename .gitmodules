@@ -1,3 +1,0 @@
-[submodule "native/3rd/libcef"]
-	path = native/3rd/libcef
-	url = https://github.com/BetterNCM/libcef

@@ -10,9 +10,7 @@ export class CSSBackground extends BaseBackground {
     }
     css: string;
     async backgroundElement() {
-        return <div style={{ width: "100px", height: "100px", background: this.css }}>
-            <div style={{ width: "100%", height: "100%", background: this.css }} />
-        </div>;
+        return <div className="BGE-cssBackground" style={{ background: this.css }} />;
     }
     async previewBackground() {
         return () => <div style={{ background: this.css }} />;

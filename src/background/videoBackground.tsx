@@ -1,6 +1,14 @@
-import { Component, ReactElement } from "react";
+import { ReactElement } from "react";
 import { BaseBackground } from "./background";
 import Swal from "sweetalert2";
+import { mountFileCached, useMountedUrl } from "../mediaLoad";
+
+/** Mounts first, then plays: no empty `<video>` element and one mount per file. */
+function BackgroundVideo({ videoUrl }: { videoUrl: string }) {
+    const url = useMountedUrl(videoUrl);
+    if (!url) return null;
+    return <video autoPlay={true} loop={true} muted={true} preload="auto" src={url} />;
+}
 
 export class VideoBackground extends BaseBackground {
     static backgroundTypeName = "视频";
@@ -12,19 +20,17 @@ export class VideoBackground extends BaseBackground {
 
     #mountedVideoUrl?: Promise<string>;
     private async getMountedVideoUrl() {
-        if (this.#mountedVideoUrl === undefined) this.#mountedVideoUrl = betterncm.fs.mountFile(this.videoUrl);
+        if (this.#mountedVideoUrl === undefined) this.#mountedVideoUrl = mountFileCached(this.videoUrl);
         return await this.#mountedVideoUrl;
     }
 
+    /** Lets the plugin preload this background before React renders it. */
+    async resolveImageUrl(): Promise<string> {
+        return await this.getMountedVideoUrl();
+    }
+
     async backgroundElement() {
-        return (
-            <video
-                autoPlay={true}
-                loop={true}
-                muted={true}
-                src={await this.getMountedVideoUrl()}
-            />
-        );
+        return <BackgroundVideo videoUrl={this.videoUrl} />;
     }
     async previewBackground(): Promise<React.FC> {
         const url = await this.getMountedVideoUrl();
@@ -47,4 +53,3 @@ export class VideoBackground extends BaseBackground {
         return null;
     }
 }
-

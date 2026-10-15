@@ -1,7 +1,9 @@
 .BGEnhanced-BackgoundDom {
     position: fixed;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    pointer-events: none;
     left: 0;
     right: 0;
     top: 0;
@@ -13,9 +15,51 @@
         z-index: 0;
     }
 
+    // Keep clipping on a stable viewport, separate from the scaled content.
+    .BGE-viewport {
+        position: absolute;
+        inset: 0;
+    }
+
+    .background, .background img, .background video,
+    .BGE-coverImageBG, .BGE-cssBackground {
+        // Host themes can otherwise animate geometry after a window resize.
+        transition: none !important;
+    }
+
     .background {
+        position: absolute;
+        inset: 0;
         width: 100%;
         height: 100%;
+        // Clipping is owned by the outer viewport. Avoid a retained texture
+        // that the host compositor may stretch before repainting on maximize.
+
+        &.mode-stretch > * {
+            width: 100%;
+            height: 100%;
+            object-fit: fill;
+        }
+
+        &.mode-cover img, &.mode-cover video {
+            object-position: left top;
+        }
+
+        &.mode-stretch img, &.mode-stretch video {
+            object-fit: fill;
+        }
+
+        &.mode-cover > * {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        &.mode-cover-centered > * {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
         .container {
             @keyframes fadeIn {
@@ -38,29 +82,56 @@
             }
         }
 
-        &.mode-stretch {
-            .container * {
-                position: absolute;
-                width: 100%;
-                height: 100%;
-            }
+        &.mode-stretch .container img,
+        &.mode-stretch .container video {
+            object-fit: fill;
         }
 
-        &.mode-cover {
-            .container * {
-                position: absolute;
-                // width: calc(--win-width / max(--win-width, --win-height));
-                height: 100%;
-            }
+        &.mode-cover .container img,
+        &.mode-cover .container video,
+        &.mode-cover-centered .container img,
+        &.mode-cover-centered .container video {
+            object-fit: cover;
+        }
+
+        .container {
+            inset: 0;
+            overflow: hidden;
+        }
+
+        .container img, .container video {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
         }
     }
 
+    .BGE-cssBackground {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+    }
+
     .BGE-coverImageBG {
+        width: 100%;
+        height: 100%;
+        @keyframes bge-cover-enter {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .BGE-coverImageBG-enter {
+            animation: bge-cover-enter 1s ease both;
+            z-index: 1;
+        }
         .BGE-coverImageBG-a, .BGE-coverImageBG-b {
-            transition: opacity 1s;
             position: absolute;
             left: 0;
+            top: 0;
             width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
     }
 }

@@ -5,7 +5,6 @@
   var __getOwnPropNames = Object.getOwnPropertyNames;
   var __getProtoOf = Object.getPrototypeOf;
   var __hasOwnProp = Object.prototype.hasOwnProperty;
-  var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
   var __commonJS = (cb, mod) => function __require() {
     return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
   };
@@ -25,32 +24,6 @@
     isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
     mod
   ));
-  var __publicField = (obj, key, value) => {
-    __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-    return value;
-  };
-  var __accessCheck = (obj, member, msg) => {
-    if (!member.has(obj))
-      throw TypeError("Cannot " + msg);
-  };
-  var __privateGet = (obj, member, getter) => {
-    __accessCheck(obj, member, "read from private field");
-    return getter ? getter.call(obj) : member.get(obj);
-  };
-  var __privateAdd = (obj, member, value) => {
-    if (member.has(obj))
-      throw TypeError("Cannot add the same private member more than once");
-    member instanceof WeakSet ? member.add(obj) : member.set(obj, value);
-  };
-  var __privateSet = (obj, member, value, setter) => {
-    __accessCheck(obj, member, "write to private field");
-    setter ? setter.call(obj, value) : member.set(obj, value);
-    return value;
-  };
-  var __privateMethod = (obj, member, method) => {
-    __accessCheck(obj, member, "access private method");
-    return method;
-  };
 
   // node_modules/react/cjs/react.development.js
   var require_react_development = __commonJS({
@@ -62,7 +35,7 @@
           if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
             __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
           }
-          var ReactVersion = "18.2.0";
+          var ReactVersion = "18.3.1";
           var REACT_ELEMENT_TYPE = Symbol.for("react.element");
           var REACT_PORTAL_TYPE = Symbol.for("react.portal");
           var REACT_FRAGMENT_TYPE = Symbol.for("react.fragment");
@@ -498,7 +471,7 @@
               }
             }
           }
-          var ReactElement2 = function(type, key, ref, self2, source, owner, props) {
+          var ReactElement = function(type, key, ref, self2, source, owner, props) {
             var element = {
               // This tag allows us to uniquely identify this as a React Element
               $$typeof: REACT_ELEMENT_TYPE,
@@ -537,7 +510,7 @@
             }
             return element;
           };
-          function createElement2(type, config, children) {
+          function createElement(type, config, children) {
             var propName;
             var props = {};
             var key = null;
@@ -599,10 +572,10 @@
                 }
               }
             }
-            return ReactElement2(type, key, ref, self2, source, ReactCurrentOwner.current, props);
+            return ReactElement(type, key, ref, self2, source, ReactCurrentOwner.current, props);
           }
           function cloneAndReplaceKey(oldElement, newKey) {
-            var newElement = ReactElement2(oldElement.type, newKey, oldElement.ref, oldElement._self, oldElement._source, oldElement._owner, oldElement.props);
+            var newElement = ReactElement(oldElement.type, newKey, oldElement.ref, oldElement._self, oldElement._source, oldElement._owner, oldElement.props);
             return newElement;
           }
           function cloneElement(element, config, children) {
@@ -651,7 +624,7 @@
               }
               props.children = childArray;
             }
-            return ReactElement2(element.type, key, ref, self2, source, owner, props);
+            return ReactElement(element.type, key, ref, self2, source, owner, props);
           }
           function isValidElement(object) {
             return typeof object === "object" && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
@@ -1430,7 +1403,7 @@
               }
             }
           }
-          function checkPropTypes(typeSpecs, values, location2, componentName, element) {
+          function checkPropTypes(typeSpecs, values, location, componentName, element) {
             {
               var has = Function.call.bind(hasOwnProperty);
               for (var typeSpecName in typeSpecs) {
@@ -1438,23 +1411,23 @@
                   var error$1 = void 0;
                   try {
                     if (typeof typeSpecs[typeSpecName] !== "function") {
-                      var err = Error((componentName || "React class") + ": " + location2 + " type `" + typeSpecName + "` is invalid; it must be a function, usually from the `prop-types` package, but received `" + typeof typeSpecs[typeSpecName] + "`.This often happens because of typos such as `PropTypes.function` instead of `PropTypes.func`.");
+                      var err = Error((componentName || "React class") + ": " + location + " type `" + typeSpecName + "` is invalid; it must be a function, usually from the `prop-types` package, but received `" + typeof typeSpecs[typeSpecName] + "`.This often happens because of typos such as `PropTypes.function` instead of `PropTypes.func`.");
                       err.name = "Invariant Violation";
                       throw err;
                     }
-                    error$1 = typeSpecs[typeSpecName](values, typeSpecName, componentName, location2, null, "SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED");
+                    error$1 = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, "SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED");
                   } catch (ex) {
                     error$1 = ex;
                   }
                   if (error$1 && !(error$1 instanceof Error)) {
                     setCurrentlyValidatingElement(element);
-                    error("%s: type specification of %s `%s` is invalid; the type checker function must return `null` or an `Error` but returned a %s. You may have forgotten to pass an argument to the type checker creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and shape all require an argument).", componentName || "React class", location2, typeSpecName, typeof error$1);
+                    error("%s: type specification of %s `%s` is invalid; the type checker function must return `null` or an `Error` but returned a %s. You may have forgotten to pass an argument to the type checker creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and shape all require an argument).", componentName || "React class", location, typeSpecName, typeof error$1);
                     setCurrentlyValidatingElement(null);
                   }
                   if (error$1 instanceof Error && !(error$1.message in loggedTypeFailures)) {
                     loggedTypeFailures[error$1.message] = true;
                     setCurrentlyValidatingElement(element);
-                    error("Failed %s type: %s", location2, error$1.message);
+                    error("Failed %s type: %s", location, error$1.message);
                     setCurrentlyValidatingElement(null);
                   }
                 }
@@ -1636,7 +1609,7 @@
                 error("React.createElement: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: %s.%s", typeString, info);
               }
             }
-            var element = createElement2.apply(this, arguments);
+            var element = createElement.apply(this, arguments);
             if (element == null) {
               return element;
             }
@@ -1890,6 +1863,7 @@
           exports.StrictMode = REACT_STRICT_MODE_TYPE;
           exports.Suspense = REACT_SUSPENSE_TYPE;
           exports.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED = ReactSharedInternals;
+          exports.act = act;
           exports.cloneElement = cloneElement$1;
           exports.createContext = createContext;
           exports.createElement = createElement$1;
@@ -1944,32 +1918,68 @@
         typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, global.Sweetalert2 = factory());
       })(exports, function() {
         "use strict";
-        var privateProps = {
-          awaitingPromise: /* @__PURE__ */ new WeakMap(),
-          promise: /* @__PURE__ */ new WeakMap(),
-          innerParams: /* @__PURE__ */ new WeakMap(),
-          domCache: /* @__PURE__ */ new WeakMap()
+        function _assertClassBrand(e, t, n) {
+          if ("function" == typeof e ? e === t : e.has(t))
+            return arguments.length < 3 ? t : n;
+          throw new TypeError("Private element is not present on this object");
+        }
+        function _checkPrivateRedeclaration(e, t) {
+          if (t.has(e))
+            throw new TypeError("Cannot initialize the same private elements twice on an object");
+        }
+        function _classPrivateFieldGet2(s, a) {
+          return s.get(_assertClassBrand(s, a));
+        }
+        function _classPrivateFieldInitSpec(e, t, a) {
+          _checkPrivateRedeclaration(e, t), t.set(e, a);
+        }
+        function _classPrivateFieldSet2(s, a, r) {
+          return s.set(_assertClassBrand(s, a), r), r;
+        }
+        const RESTORE_FOCUS_TIMEOUT = 100;
+        const globalState = {};
+        const focusPreviousActiveElement = () => {
+          if (globalState.previousActiveElement instanceof HTMLElement) {
+            globalState.previousActiveElement.focus();
+            globalState.previousActiveElement = null;
+          } else if (document.body) {
+            document.body.focus();
+          }
+        };
+        const restoreActiveElement = (returnFocus) => {
+          return new Promise((resolve) => {
+            if (!returnFocus) {
+              return resolve();
+            }
+            const x = window.scrollX;
+            const y = window.scrollY;
+            globalState.restoreFocusTimeout = setTimeout(() => {
+              focusPreviousActiveElement();
+              resolve();
+            }, RESTORE_FOCUS_TIMEOUT);
+            window.scrollTo(x, y);
+          });
         };
         const swalPrefix = "swal2-";
-        const prefix = (items) => {
-          const result = {};
-          for (const i in items) {
-            result[items[i]] = swalPrefix + items[i];
-          }
-          return result;
-        };
-        const swalClasses = prefix(["container", "shown", "height-auto", "iosfix", "popup", "modal", "no-backdrop", "no-transition", "toast", "toast-shown", "show", "hide", "close", "title", "html-container", "actions", "confirm", "deny", "cancel", "default-outline", "footer", "icon", "icon-content", "image", "input", "file", "range", "select", "radio", "checkbox", "label", "textarea", "inputerror", "input-label", "validation-message", "progress-steps", "active-progress-step", "progress-step", "progress-step-line", "loader", "loading", "styled", "top", "top-start", "top-end", "top-left", "top-right", "center", "center-start", "center-end", "center-left", "center-right", "bottom", "bottom-start", "bottom-end", "bottom-left", "bottom-right", "grow-row", "grow-column", "grow-fullscreen", "rtl", "timer-progress-bar", "timer-progress-bar-container", "scrollbar-measure", "icon-success", "icon-warning", "icon-info", "icon-question", "icon-error"]);
-        const iconTypes = prefix(["success", "warning", "info", "question", "error"]);
+        const classNames = ["container", "shown", "height-auto", "iosfix", "popup", "modal", "no-backdrop", "no-transition", "toast", "toast-shown", "show", "hide", "close", "title", "html-container", "actions", "confirm", "deny", "cancel", "footer", "icon", "icon-content", "image", "input", "file", "range", "select", "radio", "checkbox", "label", "textarea", "inputerror", "input-label", "validation-message", "progress-steps", "active-progress-step", "progress-step", "progress-step-line", "loader", "loading", "styled", "top", "top-start", "top-end", "top-left", "top-right", "center", "center-start", "center-end", "center-left", "center-right", "bottom", "bottom-start", "bottom-end", "bottom-left", "bottom-right", "grow-row", "grow-column", "grow-fullscreen", "rtl", "timer-progress-bar", "timer-progress-bar-container", "scrollbar-measure", "icon-success", "icon-warning", "icon-info", "icon-question", "icon-error", "draggable", "dragging"];
+        const swalClasses = classNames.reduce(
+          (acc, className) => {
+            acc[className] = swalPrefix + className;
+            return acc;
+          },
+          /** @type {SwalClasses} */
+          {}
+        );
+        const icons = ["success", "warning", "info", "question", "error"];
+        const iconTypes = icons.reduce(
+          (acc, icon) => {
+            acc[icon] = swalPrefix + icon;
+            return acc;
+          },
+          /** @type {SwalIcons} */
+          {}
+        );
         const consolePrefix = "SweetAlert2:";
-        const uniqueArray = (arr) => {
-          const result = [];
-          for (let i = 0; i < arr.length; i++) {
-            if (result.indexOf(arr[i]) === -1) {
-              result.push(arr[i]);
-            }
-          }
-          return result;
-        };
         const capitalizeFirstLetter = (str) => str.charAt(0).toUpperCase() + str.slice(1);
         const warn = (message) => {
           console.warn(`${consolePrefix} ${typeof message === "object" ? message.join(" ") : message}`);
@@ -1984,13 +1994,14 @@
             warn(message);
           }
         };
-        const warnAboutDeprecation = (deprecatedParam, useInstead) => {
-          warnOnce(`"${deprecatedParam}" is deprecated and will be removed in the next major release. Please use "${useInstead}" instead.`);
+        const warnAboutDeprecation = (deprecatedParam, useInstead = null) => {
+          warnOnce(`"${deprecatedParam}" is deprecated and will be removed in the next major release.${useInstead ? ` Use "${useInstead}" instead.` : ""}`);
         };
         const callIfFunction = (arg) => typeof arg === "function" ? arg() : arg;
         const hasToPromiseFn = (arg) => arg && typeof arg.toPromise === "function";
         const asPromise = (arg) => hasToPromiseFn(arg) ? arg.toPromise() : Promise.resolve(arg);
         const isPromise = (arg) => arg && Promise.resolve(arg) === arg;
+        const isFirefox = () => navigator.userAgent.includes("Firefox");
         const getContainer = () => document.body.querySelector(`.${swalClasses.container}`);
         const elementBySelector = (selectorString) => {
           const container = getContainer();
@@ -2007,11 +2018,20 @@
         const getImage = () => elementByClass(swalClasses.image);
         const getProgressSteps = () => elementByClass(swalClasses["progress-steps"]);
         const getValidationMessage = () => elementByClass(swalClasses["validation-message"]);
-        const getConfirmButton = () => elementBySelector(`.${swalClasses.actions} .${swalClasses.confirm}`);
-        const getDenyButton = () => elementBySelector(`.${swalClasses.actions} .${swalClasses.deny}`);
+        const getConfirmButton = () => (
+          /** @type {HTMLButtonElement} */
+          elementBySelector(`.${swalClasses.actions} .${swalClasses.confirm}`)
+        );
+        const getCancelButton = () => (
+          /** @type {HTMLButtonElement} */
+          elementBySelector(`.${swalClasses.actions} .${swalClasses.cancel}`)
+        );
+        const getDenyButton = () => (
+          /** @type {HTMLButtonElement} */
+          elementBySelector(`.${swalClasses.actions} .${swalClasses.deny}`)
+        );
         const getInputLabel = () => elementByClass(swalClasses["input-label"]);
         const getLoader = () => elementBySelector(`.${swalClasses.loader}`);
-        const getCancelButton = () => elementBySelector(`.${swalClasses.actions} .${swalClasses.cancel}`);
         const getActions = () => elementByClass(swalClasses.actions);
         const getFooter = () => elementByClass(swalClasses.footer);
         const getTimerProgressBar = () => elementByClass(swalClasses["timer-progress-bar"]);
@@ -2033,9 +2053,14 @@
   summary
 `;
         const getFocusableElements = () => {
-          const focusableElementsWithTabindex = Array.from(getPopup().querySelectorAll('[tabindex]:not([tabindex="-1"]):not([tabindex="0"])')).sort((a, b) => {
-            const tabindexA = parseInt(a.getAttribute("tabindex"));
-            const tabindexB = parseInt(b.getAttribute("tabindex"));
+          const popup = getPopup();
+          if (!popup) {
+            return [];
+          }
+          const focusableElementsWithTabindex = popup.querySelectorAll('[tabindex]:not([tabindex="-1"]):not([tabindex="0"])');
+          const focusableElementsWithTabindexSorted = Array.from(focusableElementsWithTabindex).sort((a, b) => {
+            const tabindexA = parseInt(a.getAttribute("tabindex") || "0");
+            const tabindexB = parseInt(b.getAttribute("tabindex") || "0");
             if (tabindexA > tabindexB) {
               return 1;
             } else if (tabindexA < tabindexB) {
@@ -2043,66 +2068,80 @@
             }
             return 0;
           });
-          const otherFocusableElements = Array.from(getPopup().querySelectorAll(focusable)).filter((el) => el.getAttribute("tabindex") !== "-1");
-          return uniqueArray(focusableElementsWithTabindex.concat(otherFocusableElements)).filter((el) => isVisible$1(el));
+          const otherFocusableElements = popup.querySelectorAll(focusable);
+          const otherFocusableElementsFiltered = Array.from(otherFocusableElements).filter((el) => el.getAttribute("tabindex") !== "-1");
+          return [...new Set(focusableElementsWithTabindexSorted.concat(otherFocusableElementsFiltered))].filter((el) => isVisible$1(el));
         };
         const isModal = () => {
           return hasClass(document.body, swalClasses.shown) && !hasClass(document.body, swalClasses["toast-shown"]) && !hasClass(document.body, swalClasses["no-backdrop"]);
         };
         const isToast = () => {
-          return getPopup() && hasClass(getPopup(), swalClasses.toast);
+          const popup = getPopup();
+          if (!popup) {
+            return false;
+          }
+          return hasClass(popup, swalClasses.toast);
         };
         const isLoading = () => {
-          return getPopup().hasAttribute("data-loading");
-        };
-        const states2 = {
-          previousBodyPadding: null
+          const popup = getPopup();
+          if (!popup) {
+            return false;
+          }
+          return popup.hasAttribute("data-loading");
         };
         const setInnerHtml = (elem, html) => {
           elem.textContent = "";
           if (html) {
             const parser = new DOMParser();
             const parsed = parser.parseFromString(html, `text/html`);
-            Array.from(parsed.querySelector("head").childNodes).forEach((child) => {
-              elem.appendChild(child);
-            });
-            Array.from(parsed.querySelector("body").childNodes).forEach((child) => {
-              if (child instanceof HTMLVideoElement || child instanceof HTMLAudioElement) {
-                elem.appendChild(child.cloneNode(true));
-              } else {
+            const head = parsed.querySelector("head");
+            if (head) {
+              Array.from(head.childNodes).forEach((child) => {
                 elem.appendChild(child);
-              }
-            });
+              });
+            }
+            const body = parsed.querySelector("body");
+            if (body) {
+              Array.from(body.childNodes).forEach((child) => {
+                if (child instanceof HTMLVideoElement || child instanceof HTMLAudioElement) {
+                  elem.appendChild(child.cloneNode(true));
+                } else {
+                  elem.appendChild(child);
+                }
+              });
+            }
           }
         };
         const hasClass = (elem, className) => {
           if (!className) {
             return false;
           }
-          const classList = className.split(/\s+/);
-          for (let i = 0; i < classList.length; i++) {
-            if (!elem.classList.contains(classList[i])) {
-              return false;
-            }
-          }
-          return true;
+          return className.split(/\s+/).every((cls) => elem.classList.contains(cls));
         };
         const removeCustomClasses = (elem, params) => {
           Array.from(elem.classList).forEach((className) => {
-            if (!Object.values(swalClasses).includes(className) && !Object.values(iconTypes).includes(className) && !Object.values(params.showClass).includes(className)) {
+            if (!Object.values(swalClasses).includes(className) && !Object.values(iconTypes).includes(className) && !Object.values(params.showClass || {}).includes(className)) {
               elem.classList.remove(className);
             }
           });
         };
         const applyCustomClass = (elem, params, className) => {
           removeCustomClasses(elem, params);
-          if (params.customClass && params.customClass[className]) {
-            if (typeof params.customClass[className] !== "string" && !params.customClass[className].forEach) {
-              warn(`Invalid type of customClass.${className}! Expected string or iterable object, got "${typeof params.customClass[className]}"`);
-              return;
-            }
-            addClass(elem, params.customClass[className]);
+          if (!params.customClass) {
+            return;
           }
+          const customClass = params.customClass[
+            /** @type {keyof SweetAlertCustomClass} */
+            className
+          ];
+          if (!customClass) {
+            return;
+          }
+          if (typeof customClass !== "string" && !customClass.forEach) {
+            warn(`Invalid type of customClass.${className}! Expected string or iterable object, got "${typeof customClass}"`);
+            return;
+          }
+          addClass(elem, customClass);
         };
         const getInput$1 = (popup, inputClass) => {
           if (!inputClass) {
@@ -2135,17 +2174,16 @@
           if (!target || !classList) {
             return;
           }
-          if (typeof classList === "string") {
-            classList = classList.split(/\s+/).filter(Boolean);
-          }
-          classList.forEach((className) => {
-            if (Array.isArray(target)) {
-              target.forEach((elem) => {
-                condition ? elem.classList.add(className) : elem.classList.remove(className);
-              });
-            } else {
-              condition ? target.classList.add(className) : target.classList.remove(className);
-            }
+          const classes = typeof classList === "string" ? classList.split(/\s+/).filter(Boolean) : classList;
+          const targets = Array.isArray(target) ? target : [target];
+          targets.forEach((elem) => {
+            classes.forEach((className) => {
+              if (condition) {
+                elem.classList.add(className);
+              } else {
+                elem.classList.remove(className);
+              }
+            });
           });
         };
         const addClass = (target, classList) => {
@@ -2154,54 +2192,86 @@
         const removeClass = (target, classList) => {
           toggleClass(target, classList, false);
         };
-        const getDirectChildByClass = (elem, className) => {
-          const children = Array.from(elem.children);
-          for (let i = 0; i < children.length; i++) {
-            const child = children[i];
-            if (child instanceof HTMLElement && hasClass(child, className)) {
-              return child;
-            }
-          }
-        };
+        const getDirectChildByClass = (elem, className) => (
+          /** @type {HTMLElement | undefined} */
+          Array.from(elem.children).find((child) => child instanceof HTMLElement && hasClass(child, className))
+        );
         const applyNumericalStyle = (elem, property, value) => {
-          if (value === `${parseInt(value)}`) {
+          if (value === `${parseInt(`${value}`)}`) {
             value = parseInt(value);
           }
-          if (value || parseInt(value) === 0) {
-            elem.style[property] = typeof value === "number" ? `${value}px` : value;
+          if (value || value === 0) {
+            elem.style.setProperty(property, typeof value === "number" ? `${value}px` : (
+              /** @type {string} */
+              value
+            ));
           } else {
             elem.style.removeProperty(property);
           }
         };
-        const show = function(elem) {
-          let display = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : "flex";
+        const show = (elem, display = "flex") => {
+          if (!elem) {
+            return;
+          }
           elem.style.display = display;
         };
         const hide = (elem) => {
+          if (!elem) {
+            return;
+          }
           elem.style.display = "none";
+        };
+        const showWhenInnerHtmlPresent = (elem, display = "block") => {
+          if (!elem) {
+            return;
+          }
+          new MutationObserver(() => {
+            toggle(elem, elem.innerHTML, display);
+          }).observe(elem, {
+            childList: true,
+            subtree: true
+          });
         };
         const setStyle = (parent, selector, property, value) => {
           const el = parent.querySelector(selector);
           if (el) {
-            el.style[property] = value;
+            el.style.setProperty(property, value);
           }
         };
-        const toggle = function(elem, condition) {
-          let display = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : "flex";
-          condition ? show(elem, display) : hide(elem);
+        const toggle = (elem, condition, display = "flex") => {
+          if (condition) {
+            show(elem, display);
+          } else {
+            hide(elem);
+          }
         };
-        const isVisible$1 = (elem) => !!(elem && (elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length));
+        const isVisible$1 = (elem) => Boolean(elem && (elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length));
         const allButtonsAreHidden = () => !isVisible$1(getConfirmButton()) && !isVisible$1(getDenyButton()) && !isVisible$1(getCancelButton());
-        const isScrollable = (elem) => !!(elem.scrollHeight > elem.clientHeight);
+        const isScrollable = (elem) => Boolean(elem.scrollHeight > elem.clientHeight);
+        const selfOrParentIsScrollable = (element, stopElement) => {
+          let parent = (
+            /** @type {HTMLElement | null} */
+            element
+          );
+          while (parent && parent !== stopElement) {
+            if (isScrollable(parent)) {
+              return true;
+            }
+            parent = parent.parentElement;
+          }
+          return false;
+        };
         const hasCssAnimation = (elem) => {
           const style = window.getComputedStyle(elem);
           const animDuration = parseFloat(style.getPropertyValue("animation-duration") || "0");
           const transDuration = parseFloat(style.getPropertyValue("transition-duration") || "0");
           return animDuration > 0 || transDuration > 0;
         };
-        const animateTimerProgressBar = function(timer) {
-          let reset = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : false;
+        const animateTimerProgressBar = (timer, reset = false) => {
           const timerProgressBar = getTimerProgressBar();
+          if (!timerProgressBar) {
+            return;
+          }
           if (isVisible$1(timerProgressBar)) {
             if (reset) {
               timerProgressBar.style.transition = "none";
@@ -2215,37 +2285,15 @@
         };
         const stopTimerProgressBar = () => {
           const timerProgressBar = getTimerProgressBar();
+          if (!timerProgressBar) {
+            return;
+          }
           const timerProgressBarWidth = parseInt(window.getComputedStyle(timerProgressBar).width);
           timerProgressBar.style.removeProperty("transition");
           timerProgressBar.style.width = "100%";
           const timerProgressBarFullWidth = parseInt(window.getComputedStyle(timerProgressBar).width);
           const timerProgressBarPercent = timerProgressBarWidth / timerProgressBarFullWidth * 100;
-          timerProgressBar.style.removeProperty("transition");
           timerProgressBar.style.width = `${timerProgressBarPercent}%`;
-        };
-        const RESTORE_FOCUS_TIMEOUT = 100;
-        const globalState = {};
-        const focusPreviousActiveElement = () => {
-          if (globalState.previousActiveElement instanceof HTMLElement) {
-            globalState.previousActiveElement.focus();
-            globalState.previousActiveElement = null;
-          } else if (document.body) {
-            document.body.focus();
-          }
-        };
-        const restoreActiveElement = (returnFocus) => {
-          return new Promise((resolve) => {
-            if (!returnFocus) {
-              return resolve();
-            }
-            const x = window.scrollX;
-            const y = window.scrollY;
-            globalState.restoreFocusTimeout = setTimeout(() => {
-              focusPreviousActiveElement();
-              resolve();
-            }, RESTORE_FOCUS_TIMEOUT);
-            window.scrollTo(x, y);
-          });
         };
         const isNodeEnv = () => typeof window === "undefined" || typeof document === "undefined";
         const sweetHTML = `
@@ -2256,19 +2304,19 @@
    <img class="${swalClasses.image}" />
    <h2 class="${swalClasses.title}" id="${swalClasses.title}"></h2>
    <div class="${swalClasses["html-container"]}" id="${swalClasses["html-container"]}"></div>
-   <input class="${swalClasses.input}" />
+   <input class="${swalClasses.input}" id="${swalClasses.input}" />
    <input type="file" class="${swalClasses.file}" />
    <div class="${swalClasses.range}">
      <input type="range" />
      <output></output>
    </div>
-   <select class="${swalClasses.select}"></select>
+   <select class="${swalClasses.select}" id="${swalClasses.select}"></select>
    <div class="${swalClasses.radio}"></div>
-   <label for="${swalClasses.checkbox}" class="${swalClasses.checkbox}">
-     <input type="checkbox" />
+   <label class="${swalClasses.checkbox}">
+     <input type="checkbox" id="${swalClasses.checkbox}" />
      <span class="${swalClasses.label}"></span>
    </label>
-   <textarea class="${swalClasses.textarea}"></textarea>
+   <textarea class="${swalClasses.textarea}" id="${swalClasses.textarea}"></textarea>
    <div class="${swalClasses["validation-message"]}" id="${swalClasses["validation-message"]}"></div>
    <div class="${swalClasses.actions}">
      <div class="${swalClasses.loader}"></div>
@@ -2288,14 +2336,24 @@
             return false;
           }
           oldContainer.remove();
-          removeClass([document.documentElement, document.body], [swalClasses["no-backdrop"], swalClasses["toast-shown"], swalClasses["has-column"]]);
+          removeClass([document.documentElement, document.body], [
+            swalClasses["no-backdrop"],
+            swalClasses["toast-shown"],
+            // @ts-ignore: 'has-column' is not defined in swalClasses but may be set dynamically
+            swalClasses["has-column"]
+          ]);
           return true;
         };
         const resetValidationMessage$1 = () => {
-          globalState.currentInstance.resetValidationMessage();
+          if (globalState.currentInstance) {
+            globalState.currentInstance.resetValidationMessage();
+          }
         };
         const addInputChangeListeners = () => {
           const popup = getPopup();
+          if (!popup) {
+            return;
+          }
           const input = getDirectChildByClass(popup, swalClasses.input);
           const file = getDirectChildByClass(popup, swalClasses.file);
           const range = popup.querySelector(`.${swalClasses.range} input`);
@@ -2303,23 +2361,50 @@
           const select = getDirectChildByClass(popup, swalClasses.select);
           const checkbox = popup.querySelector(`.${swalClasses.checkbox} input`);
           const textarea = getDirectChildByClass(popup, swalClasses.textarea);
-          input.oninput = resetValidationMessage$1;
-          file.onchange = resetValidationMessage$1;
-          select.onchange = resetValidationMessage$1;
-          checkbox.onchange = resetValidationMessage$1;
-          textarea.oninput = resetValidationMessage$1;
-          range.oninput = () => {
-            resetValidationMessage$1();
-            rangeOutput.value = range.value;
-          };
-          range.onchange = () => {
-            resetValidationMessage$1();
-            rangeOutput.value = range.value;
-          };
+          if (input) {
+            input.oninput = resetValidationMessage$1;
+          }
+          if (file) {
+            file.onchange = resetValidationMessage$1;
+          }
+          if (select) {
+            select.onchange = resetValidationMessage$1;
+          }
+          if (checkbox) {
+            checkbox.onchange = resetValidationMessage$1;
+          }
+          if (textarea) {
+            textarea.oninput = resetValidationMessage$1;
+          }
+          if (range && rangeOutput) {
+            range.oninput = () => {
+              resetValidationMessage$1();
+              rangeOutput.value = range.value;
+            };
+            range.onchange = () => {
+              resetValidationMessage$1();
+              rangeOutput.value = range.value;
+            };
+          }
         };
-        const getTarget = (target) => typeof target === "string" ? document.querySelector(target) : target;
+        const getTarget = (target) => {
+          if (typeof target === "string") {
+            const element = document.querySelector(target);
+            if (!element) {
+              throw new Error(`Target element "${target}" not found`);
+            }
+            return (
+              /** @type {HTMLElement} */
+              element
+            );
+          }
+          return target;
+        };
         const setupAccessibility = (params) => {
           const popup = getPopup();
+          if (!popup) {
+            return;
+          }
           popup.setAttribute("role", params.toast ? "alert" : "dialog");
           popup.setAttribute("aria-live", params.toast ? "polite" : "assertive");
           if (!params.toast) {
@@ -2329,6 +2414,7 @@
         const setupRTL = (targetElement) => {
           if (window.getComputedStyle(targetElement).direction === "rtl") {
             addClass(getContainer(), swalClasses.rtl);
+            globalState.isRTL = true;
           }
         };
         const init = (params) => {
@@ -2343,8 +2429,13 @@
             addClass(container, swalClasses["no-transition"]);
           }
           setInnerHtml(container, sweetHTML);
-          const targetElement = getTarget(params.target);
+          container.dataset["swal2Theme"] = params.theme;
+          const targetElement = getTarget(params.target || "body");
           targetElement.appendChild(container);
+          if (params.topLayer) {
+            container.setAttribute("popover", "");
+            container.showPopover();
+          }
           setupAccessibility(params);
           setupRTL(targetElement);
           addInputChangeListeners();
@@ -2359,7 +2450,7 @@
           }
         };
         const handleObject = (param, target) => {
-          if (param.jquery) {
+          if ("jquery" in param) {
             handleJqueryElem(target, param);
           } else {
             setInnerHtml(target, param.toString());
@@ -2375,35 +2466,12 @@
             target.appendChild(elem.cloneNode(true));
           }
         };
-        const animationEndEvent = (() => {
-          if (isNodeEnv()) {
-            return false;
-          }
-          const testEl = document.createElement("div");
-          const transEndEventNames = {
-            WebkitAnimation: "webkitAnimationEnd",
-            // Chrome, Safari and Opera
-            animation: "animationend"
-            // Standard syntax
-          };
-          for (const i in transEndEventNames) {
-            if (Object.prototype.hasOwnProperty.call(transEndEventNames, i) && typeof testEl.style[i] !== "undefined") {
-              return transEndEventNames[i];
-            }
-          }
-          return false;
-        })();
-        const measureScrollbar = () => {
-          const scrollDiv = document.createElement("div");
-          scrollDiv.className = swalClasses["scrollbar-measure"];
-          document.body.appendChild(scrollDiv);
-          const scrollbarWidth = scrollDiv.getBoundingClientRect().width - scrollDiv.clientWidth;
-          document.body.removeChild(scrollDiv);
-          return scrollbarWidth;
-        };
         const renderActions = (instance, params) => {
           const actions = getActions();
           const loader = getLoader();
+          if (!actions || !loader) {
+            return;
+          }
           if (!params.showConfirmButton && !params.showDenyButton && !params.showCancelButton) {
             hide(actions);
           } else {
@@ -2411,13 +2479,16 @@
           }
           applyCustomClass(actions, params, "actions");
           renderButtons(actions, loader, params);
-          setInnerHtml(loader, params.loaderHtml);
+          setInnerHtml(loader, params.loaderHtml || "");
           applyCustomClass(loader, params, "loader");
         };
         function renderButtons(actions, loader, params) {
           const confirmButton = getConfirmButton();
           const denyButton = getDenyButton();
           const cancelButton = getCancelButton();
+          if (!confirmButton || !denyButton || !cancelButton) {
+            return;
+          }
           renderButton(confirmButton, "confirm", params);
           renderButton(denyButton, "deny", params);
           renderButton(cancelButton, "cancel", params);
@@ -2439,33 +2510,42 @@
             return;
           }
           addClass([confirmButton, denyButton, cancelButton], swalClasses.styled);
-          if (params.confirmButtonColor) {
-            confirmButton.style.backgroundColor = params.confirmButtonColor;
-            addClass(confirmButton, swalClasses["default-outline"]);
+          const buttons = [[confirmButton, "confirm", params.confirmButtonColor], [denyButton, "deny", params.denyButtonColor], [cancelButton, "cancel", params.cancelButtonColor]];
+          buttons.forEach(([button, type, color]) => {
+            if (color) {
+              button.style.setProperty(`--swal2-${type}-button-background-color`, color);
+            }
+            applyOutlineColor(button);
+          });
+        }
+        function applyOutlineColor(button) {
+          const buttonStyle = window.getComputedStyle(button);
+          if (buttonStyle.getPropertyValue("--swal2-action-button-focus-box-shadow")) {
+            return;
           }
-          if (params.denyButtonColor) {
-            denyButton.style.backgroundColor = params.denyButtonColor;
-            addClass(denyButton, swalClasses["default-outline"]);
-          }
-          if (params.cancelButtonColor) {
-            cancelButton.style.backgroundColor = params.cancelButtonColor;
-            addClass(cancelButton, swalClasses["default-outline"]);
-          }
+          const outlineColor = buttonStyle.backgroundColor.replace(/rgba?\((\d+), (\d+), (\d+).*/, "rgba($1, $2, $3, 0.5)");
+          button.style.setProperty("--swal2-action-button-focus-box-shadow", buttonStyle.getPropertyValue("--swal2-outline").replace(/ rgba\(.*/, ` ${outlineColor}`));
         }
         function renderButton(button, buttonType, params) {
-          toggle(button, params[`show${capitalizeFirstLetter(buttonType)}Button`], "inline-block");
-          setInnerHtml(button, params[`${buttonType}ButtonText`]);
-          button.setAttribute("aria-label", params[`${buttonType}ButtonAriaLabel`]);
+          const buttonName = (
+            /** @type {'Confirm' | 'Deny' | 'Cancel'} */
+            capitalizeFirstLetter(buttonType)
+          );
+          toggle(button, params[`show${buttonName}Button`], "inline-block");
+          setInnerHtml(button, params[`${buttonType}ButtonText`] || "");
+          button.setAttribute("aria-label", params[`${buttonType}ButtonAriaLabel`] || "");
           button.className = swalClasses[buttonType];
           applyCustomClass(button, params, `${buttonType}Button`);
-          addClass(button, params[`${buttonType}ButtonClass`]);
         }
         const renderCloseButton = (instance, params) => {
           const closeButton = getCloseButton();
-          setInnerHtml(closeButton, params.closeButtonHtml);
+          if (!closeButton) {
+            return;
+          }
+          setInnerHtml(closeButton, params.closeButtonHtml || "");
           applyCustomClass(closeButton, params, "closeButton");
           toggle(closeButton, params.showCloseButton);
-          closeButton.setAttribute("aria-label", params.closeButtonAriaLabel);
+          closeButton.setAttribute("aria-label", params.closeButtonAriaLabel || "");
         };
         const renderContainer = (instance, params) => {
           const container = getContainer();
@@ -2485,6 +2565,9 @@
           }
         }
         function handlePositionParam(container, position) {
+          if (!position) {
+            return;
+          }
           if (position in swalClasses) {
             addClass(container, swalClasses[position]);
           } else {
@@ -2493,20 +2576,29 @@
           }
         }
         function handleGrowParam(container, grow) {
-          if (grow && typeof grow === "string") {
-            const growClass = `grow-${grow}`;
-            if (growClass in swalClasses) {
-              addClass(container, swalClasses[growClass]);
-            }
+          if (!grow) {
+            return;
           }
+          addClass(container, swalClasses[`grow-${grow}`]);
         }
+        var privateProps = {
+          innerParams: /* @__PURE__ */ new WeakMap(),
+          domCache: /* @__PURE__ */ new WeakMap(),
+          focusedElement: /* @__PURE__ */ new WeakMap()
+        };
         const inputClasses = ["input", "file", "range", "select", "radio", "checkbox", "textarea"];
         const renderInput = (instance, params) => {
           const popup = getPopup();
+          if (!popup) {
+            return;
+          }
           const innerParams = privateProps.innerParams.get(instance);
           const rerender = !innerParams || params.input !== innerParams.input;
           inputClasses.forEach((inputClass) => {
             const inputContainer = getDirectChildByClass(popup, swalClasses[inputClass]);
+            if (!inputContainer) {
+              return;
+            }
             setAttributes(inputClass, params.inputAttributes);
             inputContainer.className = swalClasses[inputClass];
             if (rerender) {
@@ -2521,27 +2613,40 @@
           }
         };
         const showInput = (params) => {
+          if (!params.input) {
+            return;
+          }
           if (!renderInputType[params.input]) {
-            error(`Unexpected type of input! Expected "text", "email", "password", "number", "tel", "select", "radio", "checkbox", "textarea", "file" or "url", got "${params.input}"`);
+            error(`Unexpected type of input! Expected ${Object.keys(renderInputType).join(" | ")}, got "${params.input}"`);
             return;
           }
           const inputContainer = getInputContainer(params.input);
+          if (!inputContainer) {
+            return;
+          }
           const input = renderInputType[params.input](inputContainer, params);
           show(inputContainer);
-          setTimeout(() => {
-            focusInput(input);
-          });
+          if (params.inputAutoFocus) {
+            setTimeout(() => {
+              focusInput(input);
+            });
+          }
         };
         const removeAttributes = (input) => {
-          for (let i = 0; i < input.attributes.length; i++) {
-            const attrName = input.attributes[i].name;
-            if (!["type", "value", "style"].includes(attrName)) {
-              input.removeAttribute(attrName);
+          for (const {
+            name
+          } of Array.from(input.attributes)) {
+            if (!["id", "type", "value", "style"].includes(name)) {
+              input.removeAttribute(name);
             }
           }
         };
         const setAttributes = (inputClass, inputAttributes) => {
-          const input = getInput$1(getPopup(), inputClass);
+          const popup = getPopup();
+          if (!popup) {
+            return;
+          }
+          const input = getInput$1(popup, inputClass);
           if (!input) {
             return;
           }
@@ -2551,19 +2656,21 @@
           }
         };
         const setCustomClass = (params) => {
+          if (!params.input) {
+            return;
+          }
           const inputContainer = getInputContainer(params.input);
-          if (typeof params.customClass === "object") {
-            addClass(inputContainer, params.customClass.input);
+          if (inputContainer) {
+            applyCustomClass(inputContainer, params, "input");
           }
         };
         const setInputPlaceholder = (input, params) => {
-          if (!input.placeholder || params.inputPlaceholder) {
+          if (!input.placeholder && params.inputPlaceholder) {
             input.placeholder = params.inputPlaceholder;
           }
         };
         const setInputLabel = (input, prependTo, params) => {
           if (params.inputLabel) {
-            input.id = swalClasses.input;
             const label = document.createElement("label");
             const labelClass = swalClasses["input-label"];
             label.setAttribute("for", input.id);
@@ -2576,7 +2683,14 @@
           }
         };
         const getInputContainer = (inputType) => {
-          return getDirectChildByClass(getPopup(), swalClasses[inputType] || swalClasses.input);
+          const popup = getPopup();
+          if (!popup) {
+            return;
+          }
+          return getDirectChildByClass(popup, swalClasses[
+            /** @type {SwalClass} */
+            inputType
+          ] || swalClasses.input);
         };
         const checkAndSetInputValue = (input, inputValue) => {
           if (["string", "number"].includes(typeof inputValue)) {
@@ -2586,79 +2700,150 @@
           }
         };
         const renderInputType = {};
-        renderInputType.text = renderInputType.email = renderInputType.password = renderInputType.number = renderInputType.tel = renderInputType.url = (input, params) => {
-          checkAndSetInputValue(input, params.inputValue);
-          setInputLabel(input, input, params);
-          setInputPlaceholder(input, params);
-          input.type = params.input;
-          return input;
+        renderInputType.text = renderInputType.email = renderInputType.password = renderInputType.number = renderInputType.tel = renderInputType.url = renderInputType.search = renderInputType.date = renderInputType["datetime-local"] = renderInputType.time = renderInputType.week = renderInputType.month = /** @type {(input: Input | HTMLElement, params: SweetAlertOptions) => Input} */
+        (input, params) => {
+          const inputElement = (
+            /** @type {HTMLInputElement} */
+            input
+          );
+          checkAndSetInputValue(inputElement, params.inputValue);
+          setInputLabel(inputElement, inputElement, params);
+          setInputPlaceholder(inputElement, params);
+          inputElement.type = /** @type {string} */
+          params.input;
+          return inputElement;
         };
         renderInputType.file = (input, params) => {
-          setInputLabel(input, input, params);
-          setInputPlaceholder(input, params);
-          return input;
+          const inputElement = (
+            /** @type {HTMLInputElement} */
+            input
+          );
+          setInputLabel(inputElement, inputElement, params);
+          setInputPlaceholder(inputElement, params);
+          return inputElement;
         };
         renderInputType.range = (range, params) => {
-          const rangeInput = range.querySelector("input");
-          const rangeOutput = range.querySelector("output");
-          checkAndSetInputValue(rangeInput, params.inputValue);
-          rangeInput.type = params.input;
-          checkAndSetInputValue(rangeOutput, params.inputValue);
-          setInputLabel(rangeInput, range, params);
-          return range;
+          const rangeContainer = (
+            /** @type {HTMLElement} */
+            range
+          );
+          const rangeInput = rangeContainer.querySelector("input");
+          const rangeOutput = rangeContainer.querySelector("output");
+          if (rangeInput) {
+            checkAndSetInputValue(rangeInput, params.inputValue);
+            rangeInput.type = /** @type {string} */
+            params.input;
+            setInputLabel(
+              rangeInput,
+              /** @type {Input} */
+              range,
+              params
+            );
+          }
+          if (rangeOutput) {
+            checkAndSetInputValue(rangeOutput, params.inputValue);
+          }
+          return (
+            /** @type {Input} */
+            range
+          );
         };
         renderInputType.select = (select, params) => {
-          select.textContent = "";
+          const selectElement = (
+            /** @type {HTMLSelectElement} */
+            select
+          );
+          selectElement.textContent = "";
           if (params.inputPlaceholder) {
             const placeholder = document.createElement("option");
             setInnerHtml(placeholder, params.inputPlaceholder);
             placeholder.value = "";
             placeholder.disabled = true;
             placeholder.selected = true;
-            select.appendChild(placeholder);
+            selectElement.appendChild(placeholder);
           }
-          setInputLabel(select, select, params);
-          return select;
+          setInputLabel(selectElement, selectElement, params);
+          return selectElement;
         };
         renderInputType.radio = (radio) => {
-          radio.textContent = "";
-          return radio;
+          const radioElement = (
+            /** @type {HTMLElement} */
+            radio
+          );
+          radioElement.textContent = "";
+          return (
+            /** @type {Input} */
+            radio
+          );
         };
         renderInputType.checkbox = (checkboxContainer, params) => {
-          const checkbox = getInput$1(getPopup(), "checkbox");
+          const popup = getPopup();
+          if (!popup) {
+            throw new Error("Popup not found");
+          }
+          const checkbox = getInput$1(popup, "checkbox");
+          if (!checkbox) {
+            throw new Error("Checkbox input not found");
+          }
           checkbox.value = "1";
-          checkbox.id = swalClasses.checkbox;
           checkbox.checked = Boolean(params.inputValue);
-          const label = checkboxContainer.querySelector("span");
-          setInnerHtml(label, params.inputPlaceholder);
+          const containerElement = (
+            /** @type {HTMLElement} */
+            checkboxContainer
+          );
+          const label = containerElement.querySelector("span");
+          if (label) {
+            const placeholderOrLabel = params.inputPlaceholder || params.inputLabel;
+            if (placeholderOrLabel) {
+              setInnerHtml(label, placeholderOrLabel);
+            }
+          }
           return checkbox;
         };
         renderInputType.textarea = (textarea, params) => {
-          checkAndSetInputValue(textarea, params.inputValue);
-          setInputPlaceholder(textarea, params);
-          setInputLabel(textarea, textarea, params);
+          const textareaElement = (
+            /** @type {HTMLTextAreaElement} */
+            textarea
+          );
+          checkAndSetInputValue(textareaElement, params.inputValue);
+          setInputPlaceholder(textareaElement, params);
+          setInputLabel(textareaElement, textareaElement, params);
           const getMargin = (el) => parseInt(window.getComputedStyle(el).marginLeft) + parseInt(window.getComputedStyle(el).marginRight);
           setTimeout(() => {
             if ("MutationObserver" in window) {
-              const initialPopupWidth = parseInt(window.getComputedStyle(getPopup()).width);
+              const popup = getPopup();
+              if (!popup) {
+                return;
+              }
+              const initialPopupWidth = parseInt(window.getComputedStyle(popup).width);
               const textareaResizeHandler = () => {
-                const textareaWidth = textarea.offsetWidth + getMargin(textarea);
-                if (textareaWidth > initialPopupWidth) {
-                  getPopup().style.width = `${textareaWidth}px`;
-                } else {
-                  getPopup().style.width = null;
+                if (!document.body.contains(textareaElement)) {
+                  return;
+                }
+                const textareaWidth = textareaElement.offsetWidth + getMargin(textareaElement);
+                const popupElement = getPopup();
+                if (popupElement) {
+                  if (textareaWidth > initialPopupWidth) {
+                    popupElement.style.width = `${textareaWidth}px`;
+                  } else {
+                    applyNumericalStyle(popupElement, "width", params.width);
+                  }
                 }
               };
-              new MutationObserver(textareaResizeHandler).observe(textarea, {
+              new MutationObserver(textareaResizeHandler).observe(textareaElement, {
                 attributes: true,
                 attributeFilter: ["style"]
               });
             }
           });
-          return textarea;
+          return textareaElement;
         };
         const renderContent = (instance, params) => {
           const htmlContainer = getHtmlContainer();
+          if (!htmlContainer) {
+            return;
+          }
+          showWhenInnerHtmlPresent(htmlContainer);
           applyCustomClass(htmlContainer, params, "htmlContainer");
           if (params.html) {
             parseHtmlToContainer(params.html, htmlContainer);
@@ -2673,7 +2858,11 @@
         };
         const renderFooter = (instance, params) => {
           const footer = getFooter();
-          toggle(footer, params.footer);
+          if (!footer) {
+            return;
+          }
+          showWhenInnerHtmlPresent(footer);
+          toggle(footer, Boolean(params.footer), "block");
           if (params.footer) {
             parseHtmlToContainer(params.footer, footer);
           }
@@ -2682,6 +2871,9 @@
         const renderIcon = (instance, params) => {
           const innerParams = privateProps.innerParams.get(instance);
           const icon = getIcon();
+          if (!icon) {
+            return;
+          }
           if (innerParams && params.icon === innerParams.icon) {
             setContent(icon, params);
             applyStyles(icon, params);
@@ -2699,32 +2891,38 @@
           show(icon);
           setContent(icon, params);
           applyStyles(icon, params);
-          addClass(icon, params.showClass.icon);
+          addClass(icon, params.showClass && params.showClass.icon);
+          const colorSchemeQueryList = window.matchMedia("(prefers-color-scheme: dark)");
+          colorSchemeQueryList.addEventListener("change", adjustSuccessIconBackgroundColor);
         };
         const applyStyles = (icon, params) => {
-          for (const iconType in iconTypes) {
+          for (const [iconType, iconClassName] of Object.entries(iconTypes)) {
             if (params.icon !== iconType) {
-              removeClass(icon, iconTypes[iconType]);
+              removeClass(icon, iconClassName);
             }
           }
-          addClass(icon, iconTypes[params.icon]);
+          addClass(icon, params.icon && iconTypes[params.icon]);
           setColor(icon, params);
           adjustSuccessIconBackgroundColor();
           applyCustomClass(icon, params, "icon");
         };
         const adjustSuccessIconBackgroundColor = () => {
           const popup = getPopup();
+          if (!popup) {
+            return;
+          }
           const popupBackgroundColor = window.getComputedStyle(popup).getPropertyValue("background-color");
           const successIconParts = popup.querySelectorAll("[class^=swal2-success-circular-line], .swal2-success-fix");
-          for (let i = 0; i < successIconParts.length; i++) {
-            successIconParts[i].style.backgroundColor = popupBackgroundColor;
-          }
+          successIconParts.forEach((part) => {
+            part.style.backgroundColor = popupBackgroundColor;
+          });
         };
-        const successIconHtml = `
-  <div class="swal2-success-circular-line-left"></div>
+        const successIconHtml = (params) => `
+  ${params.animation ? '<div class="swal2-success-circular-line-left"></div>' : ""}
   <span class="swal2-success-line-tip"></span> <span class="swal2-success-line-long"></span>
-  <div class="swal2-success-ring"></div> <div class="swal2-success-fix"></div>
-  <div class="swal2-success-circular-line-right"></div>
+  <div class="swal2-success-ring"></div>
+  ${params.animation ? '<div class="swal2-success-fix"></div>' : ""}
+  ${params.animation ? '<div class="swal2-success-circular-line-right"></div>' : ""}
 `;
         const errorIconHtml = `
   <span class="swal2-x-mark">
@@ -2733,16 +2931,19 @@
   </span>
 `;
         const setContent = (icon, params) => {
+          if (!params.icon && !params.iconHtml) {
+            return;
+          }
           let oldContent = icon.innerHTML;
-          let newContent;
+          let newContent = "";
           if (params.iconHtml) {
             newContent = iconContent(params.iconHtml);
           } else if (params.icon === "success") {
-            newContent = successIconHtml;
+            newContent = successIconHtml(params);
             oldContent = oldContent.replace(/ style=".*?"/g, "");
           } else if (params.icon === "error") {
             newContent = errorIconHtml;
-          } else {
+          } else if (params.icon) {
             const defaultIconHtml = {
               question: "?",
               warning: "!",
@@ -2761,32 +2962,114 @@
           icon.style.color = params.iconColor;
           icon.style.borderColor = params.iconColor;
           for (const sel of [".swal2-success-line-tip", ".swal2-success-line-long", ".swal2-x-mark-line-left", ".swal2-x-mark-line-right"]) {
-            setStyle(icon, sel, "backgroundColor", params.iconColor);
+            setStyle(icon, sel, "background-color", params.iconColor);
           }
-          setStyle(icon, ".swal2-success-ring", "borderColor", params.iconColor);
+          setStyle(icon, ".swal2-success-ring", "border-color", params.iconColor);
         };
         const iconContent = (content) => `<div class="${swalClasses["icon-content"]}">${content}</div>`;
         const renderImage = (instance, params) => {
           const image = getImage();
+          if (!image) {
+            return;
+          }
           if (!params.imageUrl) {
             hide(image);
             return;
           }
           show(image, "");
           image.setAttribute("src", params.imageUrl);
-          image.setAttribute("alt", params.imageAlt);
+          image.setAttribute("alt", params.imageAlt || "");
           applyNumericalStyle(image, "width", params.imageWidth);
           applyNumericalStyle(image, "height", params.imageHeight);
           image.className = swalClasses.image;
           applyCustomClass(image, params, "image");
         };
+        let dragging = false;
+        let mousedownX = 0;
+        let mousedownY = 0;
+        let initialX = 0;
+        let initialY = 0;
+        const addDraggableListeners = (popup) => {
+          popup.addEventListener("mousedown", down);
+          document.body.addEventListener("mousemove", move);
+          popup.addEventListener("mouseup", up);
+          popup.addEventListener("touchstart", down);
+          document.body.addEventListener("touchmove", move);
+          popup.addEventListener("touchend", up);
+        };
+        const removeDraggableListeners = (popup) => {
+          popup.removeEventListener("mousedown", down);
+          document.body.removeEventListener("mousemove", move);
+          popup.removeEventListener("mouseup", up);
+          popup.removeEventListener("touchstart", down);
+          document.body.removeEventListener("touchmove", move);
+          popup.removeEventListener("touchend", up);
+        };
+        const down = (event) => {
+          const popup = getPopup();
+          if (!popup) {
+            return;
+          }
+          const icon = getIcon();
+          if (event.target === popup || icon && icon.contains(
+            /** @type {HTMLElement} */
+            event.target
+          )) {
+            dragging = true;
+            const clientXY = getClientXY(event);
+            mousedownX = clientXY.clientX;
+            mousedownY = clientXY.clientY;
+            initialX = parseInt(popup.style.insetInlineStart) || 0;
+            initialY = parseInt(popup.style.insetBlockStart) || 0;
+            addClass(popup, "swal2-dragging");
+          }
+        };
+        const move = (event) => {
+          const popup = getPopup();
+          if (!popup) {
+            return;
+          }
+          if (dragging) {
+            let {
+              clientX,
+              clientY
+            } = getClientXY(event);
+            const deltaX = clientX - mousedownX;
+            popup.style.insetInlineStart = `${initialX + (globalState.isRTL ? -deltaX : deltaX)}px`;
+            popup.style.insetBlockStart = `${initialY + (clientY - mousedownY)}px`;
+          }
+        };
+        const up = () => {
+          const popup = getPopup();
+          dragging = false;
+          removeClass(popup, "swal2-dragging");
+        };
+        const getClientXY = (event) => {
+          const source = event.type.startsWith("touch") ? (
+            /** @type {TouchEvent} */
+            event.touches[0]
+          ) : (
+            /** @type {MouseEvent} */
+            event
+          );
+          return {
+            clientX: source.clientX,
+            clientY: source.clientY
+          };
+        };
         const renderPopup = (instance, params) => {
           const container = getContainer();
           const popup = getPopup();
+          if (!container || !popup) {
+            return;
+          }
           if (params.toast) {
             applyNumericalStyle(container, "width", params.width);
             popup.style.width = "100%";
-            popup.insertBefore(getLoader(), getIcon());
+            const loader = getLoader();
+            if (loader) {
+              popup.insertBefore(loader, getIcon());
+            }
           } else {
             applyNumericalStyle(popup, "width", params.width);
           }
@@ -2799,9 +3082,17 @@
           }
           hide(getValidationMessage());
           addClasses$1(popup, params);
+          if (params.draggable && !params.toast) {
+            addClass(popup, swalClasses.draggable);
+            addDraggableListeners(popup);
+          } else {
+            removeClass(popup, swalClasses.draggable);
+            removeDraggableListeners(popup);
+          }
         };
         const addClasses$1 = (popup, params) => {
-          popup.className = `${swalClasses.popup} ${isVisible$1(popup) ? params.showClass.popup : ""}`;
+          const showClass = params.showClass || {};
+          popup.className = `${swalClasses.popup} ${isVisible$1(popup) ? showClass.popup : ""}`;
           if (params.toast) {
             addClass([document.documentElement, document.body], swalClasses["toast-shown"]);
             addClass(popup, swalClasses.toast);
@@ -2818,22 +3109,29 @@
         };
         const renderProgressSteps = (instance, params) => {
           const progressStepsContainer = getProgressSteps();
-          if (!params.progressSteps || params.progressSteps.length === 0) {
+          if (!progressStepsContainer) {
+            return;
+          }
+          const {
+            progressSteps,
+            currentProgressStep
+          } = params;
+          if (!progressSteps || progressSteps.length === 0 || currentProgressStep === void 0) {
             hide(progressStepsContainer);
             return;
           }
           show(progressStepsContainer);
           progressStepsContainer.textContent = "";
-          if (params.currentProgressStep >= params.progressSteps.length) {
+          if (currentProgressStep >= progressSteps.length) {
             warn("Invalid currentProgressStep parameter, it should be less than progressSteps.length (currentProgressStep like JS arrays starts from 0)");
           }
-          params.progressSteps.forEach((step, index) => {
+          progressSteps.forEach((step, index) => {
             const stepEl = createStepElement(step);
             progressStepsContainer.appendChild(stepEl);
-            if (index === params.currentProgressStep) {
+            if (index === currentProgressStep) {
               addClass(stepEl, swalClasses["active-progress-step"]);
             }
-            if (index !== params.progressSteps.length - 1) {
+            if (index !== progressSteps.length - 1) {
               const lineEl = createLineElement(params);
               progressStepsContainer.appendChild(lineEl);
             }
@@ -2855,7 +3153,11 @@
         };
         const renderTitle = (instance, params) => {
           const title = getTitle();
-          toggle(title, params.title || params.titleText, "block");
+          if (!title) {
+            return;
+          }
+          showWhenInnerHtmlPresent(title);
+          toggle(title, Boolean(params.title || params.titleText), "block");
           if (params.title) {
             parseHtmlToContainer(params.title, title);
           }
@@ -2865,6 +3167,7 @@
           applyCustomClass(title, params, "title");
         };
         const render = (instance, params) => {
+          var _globalState$eventEmi;
           renderPopup(instance, params);
           renderContainer(instance, params);
           renderProgressSteps(instance, params);
@@ -2875,53 +3178,27 @@
           renderContent(instance, params);
           renderActions(instance, params);
           renderFooter(instance, params);
-          if (typeof params.didRender === "function") {
-            params.didRender(getPopup());
+          const popup = getPopup();
+          if (typeof params.didRender === "function" && popup) {
+            params.didRender(popup);
           }
+          (_globalState$eventEmi = globalState.eventEmitter) === null || _globalState$eventEmi === void 0 || _globalState$eventEmi.emit("didRender", popup);
         };
-        function hideLoading() {
-          const innerParams = privateProps.innerParams.get(this);
-          if (!innerParams) {
-            return;
-          }
-          const domCache = privateProps.domCache.get(this);
-          hide(domCache.loader);
-          if (isToast()) {
-            if (innerParams.icon) {
-              show(getIcon());
-            }
-          } else {
-            showRelatedButton(domCache);
-          }
-          removeClass([domCache.popup, domCache.actions], swalClasses.loading);
-          domCache.popup.removeAttribute("aria-busy");
-          domCache.popup.removeAttribute("data-loading");
-          domCache.confirmButton.disabled = false;
-          domCache.denyButton.disabled = false;
-          domCache.cancelButton.disabled = false;
-        }
-        const showRelatedButton = (domCache) => {
-          const buttonToReplace = domCache.popup.getElementsByClassName(domCache.loader.getAttribute("data-button-to-replace"));
-          if (buttonToReplace.length) {
-            show(buttonToReplace[0], "inline-block");
-          } else if (allButtonsAreHidden()) {
-            hide(domCache.actions);
-          }
-        };
-        function getInput(instance) {
-          const innerParams = privateProps.innerParams.get(instance || this);
-          const domCache = privateProps.domCache.get(instance || this);
-          if (!domCache) {
-            return null;
-          }
-          return getInput$1(domCache.popup, innerParams.input);
-        }
         const isVisible = () => {
           return isVisible$1(getPopup());
         };
-        const clickConfirm = () => getConfirmButton() && getConfirmButton().click();
-        const clickDeny = () => getDenyButton() && getDenyButton().click();
-        const clickCancel = () => getCancelButton() && getCancelButton().click();
+        const clickConfirm = () => {
+          var _dom$getConfirmButton;
+          return (_dom$getConfirmButton = getConfirmButton()) === null || _dom$getConfirmButton === void 0 ? void 0 : _dom$getConfirmButton.click();
+        };
+        const clickDeny = () => {
+          var _dom$getDenyButton;
+          return (_dom$getDenyButton = getDenyButton()) === null || _dom$getDenyButton === void 0 ? void 0 : _dom$getDenyButton.click();
+        };
+        const clickCancel = () => {
+          var _dom$getCancelButton;
+          return (_dom$getCancelButton = getCancelButton()) === null || _dom$getCancelButton === void 0 ? void 0 : _dom$getCancelButton.click();
+        };
         const DismissReason = Object.freeze({
           cancel: "cancel",
           backdrop: "backdrop",
@@ -2930,43 +3207,64 @@
           timer: "timer"
         });
         const removeKeydownHandler = (globalState2) => {
-          if (globalState2.keydownTarget && globalState2.keydownHandlerAdded) {
-            globalState2.keydownTarget.removeEventListener("keydown", globalState2.keydownHandler, {
+          if (globalState2.keydownTarget && globalState2.keydownHandlerAdded && globalState2.keydownHandler) {
+            const handler = (
+              /** @type {EventListenerOrEventListenerObject} */
+              /** @type {unknown} */
+              globalState2.keydownHandler
+            );
+            globalState2.keydownTarget.removeEventListener("keydown", handler, {
               capture: globalState2.keydownListenerCapture
             });
             globalState2.keydownHandlerAdded = false;
           }
         };
-        const addKeydownHandler = (instance, globalState2, innerParams, dismissWith) => {
+        const addKeydownHandler = (globalState2, innerParams, dismissWith) => {
           removeKeydownHandler(globalState2);
           if (!innerParams.toast) {
-            globalState2.keydownHandler = (e) => keydownHandler(instance, e, dismissWith);
-            globalState2.keydownTarget = innerParams.keydownListenerCapture ? window : getPopup();
-            globalState2.keydownListenerCapture = innerParams.keydownListenerCapture;
-            globalState2.keydownTarget.addEventListener("keydown", globalState2.keydownHandler, {
-              capture: globalState2.keydownListenerCapture
-            });
-            globalState2.keydownHandlerAdded = true;
+            const handler = (e) => keydownHandler(innerParams, e, dismissWith);
+            globalState2.keydownHandler = handler;
+            const target = innerParams.keydownListenerCapture ? window : getPopup();
+            if (target) {
+              globalState2.keydownTarget = target;
+              globalState2.keydownListenerCapture = innerParams.keydownListenerCapture;
+              const eventHandler = (
+                /** @type {EventListenerOrEventListenerObject} */
+                /** @type {unknown} */
+                handler
+              );
+              globalState2.keydownTarget.addEventListener("keydown", eventHandler, {
+                capture: globalState2.keydownListenerCapture
+              });
+              globalState2.keydownHandlerAdded = true;
+            }
           }
         };
         const setFocus = (index, increment) => {
+          var _dom$getPopup;
           const focusableElements = getFocusableElements();
           if (focusableElements.length) {
             index = index + increment;
+            if (index === -2) {
+              index = focusableElements.length - 1;
+            }
             if (index === focusableElements.length) {
               index = 0;
             } else if (index === -1) {
               index = focusableElements.length - 1;
             }
             focusableElements[index].focus();
-            return;
+            if (isFirefox() && focusableElements[index] instanceof HTMLIFrameElement) {
+              return false;
+            }
+            return true;
           }
-          getPopup().focus();
+          (_dom$getPopup = getPopup()) === null || _dom$getPopup === void 0 || _dom$getPopup.focus();
+          return true;
         };
         const arrowKeysNextButton = ["ArrowRight", "ArrowDown"];
         const arrowKeysPreviousButton = ["ArrowLeft", "ArrowUp"];
-        const keydownHandler = (instance, event, dismissWith) => {
-          const innerParams = privateProps.innerParams.get(instance);
+        const keydownHandler = (innerParams, event, dismissWith) => {
           if (!innerParams) {
             return;
           }
@@ -2977,7 +3275,7 @@
             event.stopPropagation();
           }
           if (event.key === "Enter") {
-            handleEnter(instance, event, innerParams);
+            handleEnter(event, innerParams);
           } else if (event.key === "Tab") {
             handleTab(event);
           } else if ([...arrowKeysNextButton, ...arrowKeysPreviousButton].includes(event.key)) {
@@ -2986,11 +3284,16 @@
             handleEsc(event, innerParams, dismissWith);
           }
         };
-        const handleEnter = (instance, event, innerParams) => {
+        const handleEnter = (event, innerParams) => {
           if (!callIfFunction(innerParams.allowEnterKey)) {
             return;
           }
-          if (event.target && instance.getInput() && event.target instanceof HTMLElement && event.target.outerHTML === instance.getInput().outerHTML) {
+          const popup = getPopup();
+          if (!popup || !innerParams.input) {
+            return;
+          }
+          const input = getInput$1(popup, innerParams.input);
+          if (event.target && input && event.target instanceof HTMLElement && event.target.outerHTML === input.outerHTML) {
             if (["textarea", "file"].includes(innerParams.input)) {
               return;
             }
@@ -3001,31 +3304,36 @@
         const handleTab = (event) => {
           const targetElement = event.target;
           const focusableElements = getFocusableElements();
-          let btnIndex = -1;
-          for (let i = 0; i < focusableElements.length; i++) {
-            if (targetElement === focusableElements[i]) {
-              btnIndex = i;
-              break;
-            }
-          }
+          const btnIndex = focusableElements.findIndex((el) => el === targetElement);
+          let shouldPreventDefault = true;
           if (!event.shiftKey) {
-            setFocus(btnIndex, 1);
+            shouldPreventDefault = setFocus(btnIndex, 1);
           } else {
-            setFocus(btnIndex, -1);
+            shouldPreventDefault = setFocus(btnIndex, -1);
           }
           event.stopPropagation();
-          event.preventDefault();
+          if (shouldPreventDefault) {
+            event.preventDefault();
+          }
         };
         const handleArrows = (key) => {
+          const actions = getActions();
           const confirmButton = getConfirmButton();
           const denyButton = getDenyButton();
           const cancelButton = getCancelButton();
-          if (document.activeElement instanceof HTMLElement && ![confirmButton, denyButton, cancelButton].includes(document.activeElement)) {
+          if (!actions || !confirmButton || !denyButton || !cancelButton) {
+            return;
+          }
+          const buttons = [confirmButton, denyButton, cancelButton];
+          if (document.activeElement instanceof HTMLElement && !buttons.includes(document.activeElement)) {
             return;
           }
           const sibling = arrowKeysNextButton.includes(key) ? "nextElementSibling" : "previousElementSibling";
           let buttonToFocus = document.activeElement;
-          for (let i = 0; i < getActions().children.length; i++) {
+          if (!buttonToFocus) {
+            return;
+          }
+          for (let i = 0; i < actions.children.length; i++) {
             buttonToFocus = buttonToFocus[sibling];
             if (!buttonToFocus) {
               return;
@@ -3039,8 +3347,8 @@
           }
         };
         const handleEsc = (event, innerParams, dismissWith) => {
+          event.preventDefault();
           if (callIfFunction(innerParams.allowEscapeKey)) {
-            event.preventDefault();
             dismissWith(DismissReason.esc);
           }
         };
@@ -3049,13 +3357,14 @@
           swalPromiseReject: /* @__PURE__ */ new WeakMap()
         };
         const setAriaHidden = () => {
+          const container = getContainer();
           const bodyChildren = Array.from(document.body.children);
           bodyChildren.forEach((el) => {
-            if (el === getContainer() || el.contains(getContainer())) {
+            if (el.contains(container)) {
               return;
             }
             if (el.hasAttribute("aria-hidden")) {
-              el.setAttribute("data-previous-aria-hidden", el.getAttribute("aria-hidden"));
+              el.setAttribute("data-previous-aria-hidden", el.getAttribute("aria-hidden") || "");
             }
             el.setAttribute("aria-hidden", "true");
           });
@@ -3064,40 +3373,28 @@
           const bodyChildren = Array.from(document.body.children);
           bodyChildren.forEach((el) => {
             if (el.hasAttribute("data-previous-aria-hidden")) {
-              el.setAttribute("aria-hidden", el.getAttribute("data-previous-aria-hidden"));
+              el.setAttribute("aria-hidden", el.getAttribute("data-previous-aria-hidden") || "");
               el.removeAttribute("data-previous-aria-hidden");
             } else {
               el.removeAttribute("aria-hidden");
             }
           });
         };
+        const isSafariOrIOS = typeof window !== "undefined" && Boolean(window.GestureEvent);
+        const isIOS = isSafariOrIOS && /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         const iOSfix = () => {
-          const iOS = (
-            // @ts-ignore
-            /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream || navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1
-          );
-          if (iOS && !hasClass(document.body, swalClasses.iosfix)) {
+          if (isSafariOrIOS && !hasClass(document.body, swalClasses.iosfix)) {
             const offset = document.body.scrollTop;
             document.body.style.top = `${offset * -1}px`;
             addClass(document.body, swalClasses.iosfix);
             lockBodyScroll();
-            addBottomPaddingForTallPopups();
-          }
-        };
-        const addBottomPaddingForTallPopups = () => {
-          const ua = navigator.userAgent;
-          const iOS = !!ua.match(/iPad/i) || !!ua.match(/iPhone/i);
-          const webkit = !!ua.match(/WebKit/i);
-          const iOSSafari = iOS && webkit && !ua.match(/CriOS/i);
-          if (iOSSafari) {
-            const bottomPanelHeight = 44;
-            if (getPopup().scrollHeight > window.innerHeight - bottomPanelHeight) {
-              getContainer().style.paddingBottom = `${bottomPanelHeight}px`;
-            }
           }
         };
         const lockBodyScroll = () => {
           const container = getContainer();
+          if (!container) {
+            return;
+          }
           let preventTouchMove;
           container.ontouchstart = (event) => {
             preventTouchMove = shouldPreventTouchMove(event);
@@ -3112,22 +3409,28 @@
         const shouldPreventTouchMove = (event) => {
           const target = event.target;
           const container = getContainer();
+          const htmlContainer = getHtmlContainer();
+          if (!container || !htmlContainer) {
+            return false;
+          }
           if (isStylus(event) || isZoom(event)) {
             return false;
           }
           if (target === container) {
             return true;
           }
-          if (!isScrollable(container) && target instanceof HTMLElement && target.tagName !== "INPUT" && // #1603
+          if (!isScrollable(container) && target instanceof HTMLElement && !selfOrParentIsScrollable(target, htmlContainer) && // #2823
+          target.tagName !== "INPUT" && // #1603
           target.tagName !== "TEXTAREA" && // #2266
-          !(isScrollable(getHtmlContainer()) && // #1944
-          getHtmlContainer().contains(target))) {
+          !(isScrollable(htmlContainer) && // #1944
+          htmlContainer.contains(target))) {
             return true;
           }
           return false;
         };
         const isStylus = (event) => {
-          return event.touches && event.touches.length && event.touches[0].touchType === "stylus";
+          return Boolean(event.touches && event.touches.length && // @ts-ignore - touchType is not a standard property
+          event.touches[0].touchType === "stylus");
         };
         const isZoom = (event) => {
           return event.touches && event.touches.length > 1;
@@ -3140,19 +3443,28 @@
             document.body.scrollTop = offset * -1;
           }
         };
-        const fixScrollbar = () => {
-          if (states2.previousBodyPadding !== null) {
+        const measureScrollbar = () => {
+          const scrollDiv = document.createElement("div");
+          scrollDiv.className = swalClasses["scrollbar-measure"];
+          document.body.appendChild(scrollDiv);
+          const scrollbarWidth = scrollDiv.getBoundingClientRect().width - scrollDiv.clientWidth;
+          document.body.removeChild(scrollDiv);
+          return scrollbarWidth;
+        };
+        let previousBodyPadding = null;
+        const replaceScrollbarWithPadding = (initialBodyOverflow) => {
+          if (previousBodyPadding !== null) {
             return;
           }
-          if (document.body.scrollHeight > window.innerHeight) {
-            states2.previousBodyPadding = parseInt(window.getComputedStyle(document.body).getPropertyValue("padding-right"));
-            document.body.style.paddingRight = `${states2.previousBodyPadding + measureScrollbar()}px`;
+          if (document.body.scrollHeight > window.innerHeight || initialBodyOverflow === "scroll") {
+            previousBodyPadding = parseInt(window.getComputedStyle(document.body).getPropertyValue("padding-right"));
+            document.body.style.paddingRight = `${previousBodyPadding + measureScrollbar()}px`;
           }
         };
-        const undoScrollbar = () => {
-          if (states2.previousBodyPadding !== null) {
-            document.body.style.paddingRight = `${states2.previousBodyPadding}px`;
-            states2.previousBodyPadding = null;
+        const undoReplaceScrollbarWithPadding = () => {
+          if (previousBodyPadding !== null) {
+            document.body.style.paddingRight = `${previousBodyPadding}px`;
+            previousBodyPadding = null;
           }
         };
         function removePopupAndResetState(instance, container, returnFocus, didClose) {
@@ -3162,8 +3474,7 @@
             restoreActiveElement(returnFocus).then(() => triggerDidCloseAndDispose(instance, didClose));
             removeKeydownHandler(globalState);
           }
-          const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-          if (isSafari) {
+          if (isSafariOrIOS) {
             container.setAttribute("style", "display:none !important");
             container.removeAttribute("class");
             container.innerHTML = "";
@@ -3171,7 +3482,7 @@
             container.remove();
           }
           if (isModal()) {
-            undoScrollbar();
+            undoReplaceScrollbarWithPadding();
             undoIOSfix();
             unsetAriaHidden();
           }
@@ -3184,7 +3495,7 @@
           resolveValue = prepareResolveValue(resolveValue);
           const swalPromiseResolve = privateMethods.swalPromiseResolve.get(this);
           const didClose = triggerClosePopup(this);
-          if (this.isAwaitingPromise()) {
+          if (this.isAwaitingPromise) {
             if (!resolveValue.isDismissed) {
               handleAwaitingPromise(this);
               swalPromiseResolve(resolveValue);
@@ -3192,9 +3503,6 @@
           } else if (didClose) {
             swalPromiseResolve(resolveValue);
           }
-        }
-        function isAwaitingPromise() {
-          return !!privateProps.awaitingPromise.get(this);
         }
         const triggerClosePopup = (instance) => {
           const popup = getPopup();
@@ -3221,8 +3529,8 @@
           }
         }
         const handleAwaitingPromise = (instance) => {
-          if (instance.isAwaitingPromise()) {
-            privateProps.awaitingPromise.delete(instance);
+          if (instance.isAwaitingPromise) {
+            delete instance.isAwaitingPromise;
             if (!privateProps.innerParams.get(instance)) {
               instance._destroy();
             }
@@ -3243,34 +3551,374 @@
           }, resolveValue);
         };
         const handlePopupAnimation = (instance, popup, innerParams) => {
+          var _globalState$eventEmi;
           const container = getContainer();
-          const animationIsSupported = animationEndEvent && hasCssAnimation(popup);
+          const animationIsSupported = hasCssAnimation(popup);
           if (typeof innerParams.willClose === "function") {
             innerParams.willClose(popup);
           }
-          if (animationIsSupported) {
-            animatePopup(instance, popup, container, innerParams.returnFocus, innerParams.didClose);
-          } else {
-            removePopupAndResetState(instance, container, innerParams.returnFocus, innerParams.didClose);
+          (_globalState$eventEmi = globalState.eventEmitter) === null || _globalState$eventEmi === void 0 || _globalState$eventEmi.emit("willClose", popup);
+          if (animationIsSupported && container) {
+            animatePopup(instance, popup, container, Boolean(innerParams.returnFocus), innerParams.didClose);
+          } else if (container) {
+            removePopupAndResetState(instance, container, Boolean(innerParams.returnFocus), innerParams.didClose);
           }
         };
         const animatePopup = (instance, popup, container, returnFocus, didClose) => {
           globalState.swalCloseEventFinishedCallback = removePopupAndResetState.bind(null, instance, container, returnFocus, didClose);
-          popup.addEventListener(animationEndEvent, function(e) {
+          const swalCloseAnimationFinished = function(e) {
             if (e.target === popup) {
-              globalState.swalCloseEventFinishedCallback();
+              var _globalState$swalClos;
+              (_globalState$swalClos = globalState.swalCloseEventFinishedCallback) === null || _globalState$swalClos === void 0 || _globalState$swalClos.call(globalState);
               delete globalState.swalCloseEventFinishedCallback;
+              popup.removeEventListener("animationend", swalCloseAnimationFinished);
+              popup.removeEventListener("transitionend", swalCloseAnimationFinished);
             }
-          });
+          };
+          popup.addEventListener("animationend", swalCloseAnimationFinished);
+          popup.addEventListener("transitionend", swalCloseAnimationFinished);
         };
         const triggerDidCloseAndDispose = (instance, didClose) => {
           setTimeout(() => {
+            var _globalState$eventEmi2;
             if (typeof didClose === "function") {
               didClose.bind(instance.params)();
             }
-            instance._destroy();
+            (_globalState$eventEmi2 = globalState.eventEmitter) === null || _globalState$eventEmi2 === void 0 || _globalState$eventEmi2.emit("didClose");
+            if (instance._destroy) {
+              instance._destroy();
+            }
           });
         };
+        const showLoading = (buttonToReplace) => {
+          let popup = getPopup();
+          if (!popup) {
+            new Swal9();
+          }
+          popup = getPopup();
+          if (!popup) {
+            return;
+          }
+          const loader = getLoader();
+          if (isToast()) {
+            hide(getIcon());
+          } else {
+            replaceButton(popup, buttonToReplace);
+          }
+          show(loader);
+          popup.setAttribute("data-loading", "true");
+          popup.setAttribute("aria-busy", "true");
+          popup.focus();
+        };
+        const replaceButton = (popup, buttonToReplace) => {
+          const actions = getActions();
+          const loader = getLoader();
+          if (!actions || !loader) {
+            return;
+          }
+          if (!buttonToReplace && isVisible$1(getConfirmButton())) {
+            buttonToReplace = getConfirmButton();
+          }
+          show(actions);
+          if (buttonToReplace) {
+            hide(buttonToReplace);
+            loader.setAttribute("data-button-to-replace", buttonToReplace.className);
+            actions.insertBefore(loader, buttonToReplace);
+          }
+          addClass([popup, actions], swalClasses.loading);
+        };
+        const handleInputOptionsAndValue = (instance, params) => {
+          if (params.input === "select" || params.input === "radio") {
+            handleInputOptions(instance, params);
+          } else if (["text", "email", "number", "tel", "textarea"].some((i) => i === params.input) && (hasToPromiseFn(params.inputValue) || isPromise(params.inputValue))) {
+            showLoading(getConfirmButton());
+            handleInputValue(instance, params);
+          }
+        };
+        const getInputValue = (instance, innerParams) => {
+          const input = instance.getInput();
+          if (!input) {
+            return null;
+          }
+          switch (innerParams.input) {
+            case "checkbox":
+              return getCheckboxValue(input);
+            case "radio":
+              return getRadioValue(input);
+            case "file":
+              return getFileValue(input);
+            default:
+              return innerParams.inputAutoTrim ? input.value.trim() : input.value;
+          }
+        };
+        const getCheckboxValue = (input) => input.checked ? 1 : 0;
+        const getRadioValue = (input) => input.checked ? input.value : null;
+        const getFileValue = (input) => input.files && input.files.length ? input.getAttribute("multiple") !== null ? input.files : input.files[0] : null;
+        const handleInputOptions = (instance, params) => {
+          const popup = getPopup();
+          if (!popup) {
+            return;
+          }
+          const processInputOptions = (inputOptions) => {
+            if (params.input === "select") {
+              populateSelectOptions(popup, formatInputOptions(inputOptions), params);
+            } else if (params.input === "radio") {
+              populateRadioOptions(popup, formatInputOptions(inputOptions), params);
+            }
+          };
+          if (hasToPromiseFn(params.inputOptions) || isPromise(params.inputOptions)) {
+            showLoading(getConfirmButton());
+            asPromise(params.inputOptions).then((inputOptions) => {
+              instance.hideLoading();
+              processInputOptions(inputOptions);
+            });
+          } else if (typeof params.inputOptions === "object") {
+            processInputOptions(params.inputOptions);
+          } else {
+            error(`Unexpected type of inputOptions! Expected object, Map or Promise, got ${typeof params.inputOptions}`);
+          }
+        };
+        const handleInputValue = (instance, params) => {
+          const input = instance.getInput();
+          if (!input) {
+            return;
+          }
+          hide(input);
+          asPromise(params.inputValue).then((inputValue) => {
+            input.value = params.input === "number" ? `${parseFloat(inputValue) || 0}` : `${inputValue}`;
+            show(input);
+            input.focus();
+            instance.hideLoading();
+          }).catch((err) => {
+            error(`Error in inputValue promise: ${err}`);
+            input.value = "";
+            show(input);
+            input.focus();
+            instance.hideLoading();
+          });
+        };
+        function populateSelectOptions(popup, inputOptions, params) {
+          const select = getDirectChildByClass(popup, swalClasses.select);
+          if (!select) {
+            return;
+          }
+          const renderOption = (parent, optionLabel, optionValue) => {
+            const option = document.createElement("option");
+            option.value = optionValue;
+            setInnerHtml(option, optionLabel);
+            option.selected = isSelected(optionValue, params.inputValue);
+            parent.appendChild(option);
+          };
+          inputOptions.forEach((inputOption) => {
+            const optionValue = inputOption[0];
+            const optionLabel = inputOption[1];
+            if (Array.isArray(optionLabel)) {
+              const optgroup = document.createElement("optgroup");
+              optgroup.label = optionValue;
+              optgroup.disabled = false;
+              select.appendChild(optgroup);
+              optionLabel.forEach((o) => renderOption(optgroup, o[1], o[0]));
+            } else {
+              renderOption(select, optionLabel, optionValue);
+            }
+          });
+          select.focus();
+        }
+        function populateRadioOptions(popup, inputOptions, params) {
+          const radio = getDirectChildByClass(popup, swalClasses.radio);
+          if (!radio) {
+            return;
+          }
+          inputOptions.forEach((inputOption) => {
+            const radioValue = inputOption[0];
+            const radioLabel = inputOption[1];
+            const radioInput = document.createElement("input");
+            const radioLabelElement = document.createElement("label");
+            radioInput.type = "radio";
+            radioInput.name = swalClasses.radio;
+            radioInput.value = radioValue;
+            if (isSelected(radioValue, params.inputValue)) {
+              radioInput.checked = true;
+            }
+            const label = document.createElement("span");
+            setInnerHtml(label, radioLabel);
+            label.className = swalClasses.label;
+            radioLabelElement.appendChild(radioInput);
+            radioLabelElement.appendChild(label);
+            radio.appendChild(radioLabelElement);
+          });
+          const radios = radio.querySelectorAll("input");
+          if (radios.length) {
+            radios[0].focus();
+          }
+        }
+        const formatInputOptions = (inputOptions) => {
+          const entries = inputOptions instanceof Map ? Array.from(inputOptions) : Object.entries(inputOptions);
+          return entries.map(([key, value]) => [key, typeof value === "object" ? formatInputOptions(value) : value]);
+        };
+        const isSelected = (optionValue, inputValue) => Boolean(inputValue) && inputValue != null && inputValue.toString() === optionValue.toString();
+        const handleConfirmButtonClick = (instance) => {
+          const innerParams = privateProps.innerParams.get(instance);
+          instance.disableButtons();
+          if (innerParams.input) {
+            handleConfirmOrDenyWithInput(instance, "confirm");
+          } else {
+            confirm(instance, true);
+          }
+        };
+        const handleDenyButtonClick = (instance) => {
+          const innerParams = privateProps.innerParams.get(instance);
+          instance.disableButtons();
+          if (innerParams.returnInputValueOnDeny) {
+            handleConfirmOrDenyWithInput(instance, "deny");
+          } else {
+            deny(instance, false);
+          }
+        };
+        const handleCancelButtonClick = (instance, dismissWith) => {
+          instance.disableButtons();
+          dismissWith(DismissReason.cancel);
+        };
+        const handleConfirmOrDenyWithInput = (instance, type) => {
+          const innerParams = privateProps.innerParams.get(instance);
+          if (!innerParams.input) {
+            error(`The "input" parameter is needed to be set when using returnInputValueOn${capitalizeFirstLetter(type)}`);
+            return;
+          }
+          const input = instance.getInput();
+          const inputValue = getInputValue(instance, innerParams);
+          if (innerParams.inputValidator) {
+            handleInputValidator(instance, inputValue, type);
+          } else if (input && !input.checkValidity()) {
+            instance.enableButtons();
+            instance.showValidationMessage(innerParams.validationMessage || input.validationMessage);
+          } else if (type === "deny") {
+            deny(instance, inputValue);
+          } else {
+            confirm(instance, inputValue);
+          }
+        };
+        const handleInputValidator = (instance, inputValue, type) => {
+          const innerParams = privateProps.innerParams.get(instance);
+          instance.disableInput();
+          const validationPromise = Promise.resolve().then(() => asPromise(innerParams.inputValidator(inputValue, innerParams.validationMessage)));
+          validationPromise.then((validationMessage) => {
+            instance.enableButtons();
+            instance.enableInput();
+            if (validationMessage) {
+              instance.showValidationMessage(validationMessage);
+            } else if (type === "deny") {
+              deny(instance, inputValue);
+            } else {
+              confirm(instance, inputValue);
+            }
+          });
+        };
+        const deny = (instance, value) => {
+          const innerParams = privateProps.innerParams.get(instance);
+          if (innerParams.showLoaderOnDeny) {
+            showLoading(getDenyButton());
+          }
+          if (innerParams.preDeny) {
+            instance.isAwaitingPromise = true;
+            const preDenyPromise = Promise.resolve().then(() => asPromise(innerParams.preDeny(value, innerParams.validationMessage)));
+            preDenyPromise.then((preDenyValue) => {
+              if (preDenyValue === false) {
+                instance.hideLoading();
+                handleAwaitingPromise(instance);
+              } else {
+                instance.close(
+                  /** @type SweetAlertResult */
+                  {
+                    isDenied: true,
+                    value: typeof preDenyValue === "undefined" ? value : preDenyValue
+                  }
+                );
+              }
+            }).catch((error2) => rejectWith(instance, error2));
+          } else {
+            instance.close(
+              /** @type SweetAlertResult */
+              {
+                isDenied: true,
+                value
+              }
+            );
+          }
+        };
+        const succeedWith = (instance, value) => {
+          instance.close(
+            /** @type SweetAlertResult */
+            {
+              isConfirmed: true,
+              value
+            }
+          );
+        };
+        const rejectWith = (instance, error2) => {
+          instance.rejectPromise(error2);
+        };
+        const confirm = (instance, value) => {
+          const innerParams = privateProps.innerParams.get(instance);
+          if (innerParams.showLoaderOnConfirm) {
+            showLoading();
+          }
+          if (innerParams.preConfirm) {
+            instance.resetValidationMessage();
+            instance.isAwaitingPromise = true;
+            const preConfirmPromise = Promise.resolve().then(() => asPromise(innerParams.preConfirm(value, innerParams.validationMessage)));
+            preConfirmPromise.then((preConfirmValue) => {
+              if (isVisible$1(getValidationMessage()) || preConfirmValue === false) {
+                instance.hideLoading();
+                handleAwaitingPromise(instance);
+              } else {
+                succeedWith(instance, typeof preConfirmValue === "undefined" ? value : preConfirmValue);
+              }
+            }).catch((error2) => rejectWith(instance, error2));
+          } else {
+            succeedWith(instance, value);
+          }
+        };
+        function hideLoading() {
+          const innerParams = privateProps.innerParams.get(this);
+          if (!innerParams) {
+            return;
+          }
+          const domCache = privateProps.domCache.get(this);
+          hide(domCache.loader);
+          if (isToast()) {
+            if (innerParams.icon) {
+              show(getIcon());
+            }
+          } else {
+            showRelatedButton(domCache);
+          }
+          removeClass([domCache.popup, domCache.actions], swalClasses.loading);
+          domCache.popup.removeAttribute("aria-busy");
+          domCache.popup.removeAttribute("data-loading");
+          this.enableButtons();
+        }
+        const showRelatedButton = (domCache) => {
+          const dataButtonToReplace = domCache.loader.getAttribute("data-button-to-replace");
+          const buttonToReplace = dataButtonToReplace ? domCache.popup.getElementsByClassName(dataButtonToReplace) : [];
+          if (buttonToReplace.length) {
+            show(
+              /** @type {HTMLElement} */
+              buttonToReplace[0],
+              "inline-block"
+            );
+          } else if (allButtonsAreHidden()) {
+            hide(domCache.actions);
+          }
+        };
+        function getInput() {
+          const innerParams = privateProps.innerParams.get(this);
+          const domCache = privateProps.domCache.get(this);
+          if (!domCache) {
+            return null;
+          }
+          return getInput$1(domCache.popup, innerParams.input);
+        }
         function setButtonsDisabled(instance, buttons, disabled) {
           const domCache = privateProps.domCache.get(instance);
           buttons.forEach((button) => {
@@ -3278,23 +3926,29 @@
           });
         }
         function setInputDisabled(input, disabled) {
-          if (!input) {
+          const popup = getPopup();
+          if (!popup || !input) {
             return;
           }
           if (input.type === "radio") {
-            const radiosContainer = input.parentNode.parentNode;
-            const radios = radiosContainer.querySelectorAll("input");
-            for (let i = 0; i < radios.length; i++) {
-              radios[i].disabled = disabled;
-            }
+            const radios = popup.querySelectorAll(`[name="${swalClasses.radio}"]`);
+            radios.forEach((radio) => {
+              radio.disabled = disabled;
+            });
           } else {
             input.disabled = disabled;
           }
         }
         function enableButtons() {
           setButtonsDisabled(this, ["confirmButton", "denyButton", "cancelButton"], false);
+          const focusedElement = privateProps.focusedElement.get(this);
+          if (focusedElement instanceof HTMLElement && document.activeElement === document.body) {
+            focusedElement.focus();
+          }
+          privateProps.focusedElement.delete(this);
         }
         function disableButtons() {
+          privateProps.focusedElement.set(this, document.activeElement);
           setButtonsDisabled(this, ["confirmButton", "denyButton", "cancelButton"], true);
         }
         function enableInput() {
@@ -3314,7 +3968,7 @@
           show(domCache.validationMessage);
           const input = this.getInput();
           if (input) {
-            input.setAttribute("aria-invalid", true);
+            input.setAttribute("aria-invalid", "true");
             input.setAttribute("aria-describedby", swalClasses["validation-message"]);
             focusInput(input);
             addClass(input, swalClasses.inputerror);
@@ -3343,6 +3997,9 @@
           iconHtml: void 0,
           template: void 0,
           toast: false,
+          draggable: false,
+          animation: true,
+          theme: "light",
           showClass: {
             popup: "swal2-show",
             backdrop: "swal2-backdrop-show",
@@ -3403,6 +4060,7 @@
           inputLabel: "",
           inputValue: "",
           inputOptions: {},
+          inputAutoFocus: true,
           inputAutoTrim: true,
           inputAttributes: {},
           inputValidator: void 0,
@@ -3419,11 +4077,14 @@
           willClose: void 0,
           didClose: void 0,
           didDestroy: void 0,
-          scrollbarPadding: true
+          scrollbarPadding: true,
+          topLayer: false
         };
-        const updatableParams = ["allowEscapeKey", "allowOutsideClick", "background", "buttonsStyling", "cancelButtonAriaLabel", "cancelButtonColor", "cancelButtonText", "closeButtonAriaLabel", "closeButtonHtml", "color", "confirmButtonAriaLabel", "confirmButtonColor", "confirmButtonText", "currentProgressStep", "customClass", "denyButtonAriaLabel", "denyButtonColor", "denyButtonText", "didClose", "didDestroy", "footer", "hideClass", "html", "icon", "iconColor", "iconHtml", "imageAlt", "imageHeight", "imageUrl", "imageWidth", "preConfirm", "preDeny", "progressSteps", "returnFocus", "reverseButtons", "showCancelButton", "showCloseButton", "showConfirmButton", "showDenyButton", "text", "title", "titleText", "willClose"];
-        const deprecatedParams = {};
-        const toastIncompatibleParams = ["allowOutsideClick", "allowEnterKey", "backdrop", "focusConfirm", "focusDeny", "focusCancel", "returnFocus", "heightAuto", "keydownListenerCapture"];
+        const updatableParams = ["allowEscapeKey", "allowOutsideClick", "background", "buttonsStyling", "cancelButtonAriaLabel", "cancelButtonColor", "cancelButtonText", "closeButtonAriaLabel", "closeButtonHtml", "color", "confirmButtonAriaLabel", "confirmButtonColor", "confirmButtonText", "currentProgressStep", "customClass", "denyButtonAriaLabel", "denyButtonColor", "denyButtonText", "didClose", "didDestroy", "draggable", "footer", "hideClass", "html", "icon", "iconColor", "iconHtml", "imageAlt", "imageHeight", "imageUrl", "imageWidth", "preConfirm", "preDeny", "progressSteps", "returnFocus", "reverseButtons", "showCancelButton", "showCloseButton", "showConfirmButton", "showDenyButton", "text", "title", "titleText", "theme", "willClose"];
+        const deprecatedParams = {
+          allowEnterKey: void 0
+        };
+        const toastIncompatibleParams = ["allowOutsideClick", "allowEnterKey", "backdrop", "draggable", "focusConfirm", "focusDeny", "focusCancel", "returnFocus", "heightAuto", "keydownListenerCapture"];
         const isValidParameter = (paramName) => {
           return Object.prototype.hasOwnProperty.call(defaultParams, paramName);
         };
@@ -3444,13 +4105,17 @@
           }
         };
         const checkIfParamIsDeprecated = (param) => {
-          if (isDeprecatedParameter(param)) {
-            warnAboutDeprecation(param, isDeprecatedParameter(param));
+          const isDeprecated = isDeprecatedParameter(param);
+          if (isDeprecated) {
+            warnAboutDeprecation(param, isDeprecated);
           }
         };
         const showWarningsForParams = (params) => {
           if (params.backdrop === false && params.allowOutsideClick) {
             warn('"allowOutsideClick" parameter requires `backdrop` parameter to be set to `true`');
+          }
+          if (params.theme && !["light", "dark", "auto", "minimal", "borderless", "bootstrap-4", "bootstrap-4-light", "bootstrap-4-dark", "bootstrap-5", "bootstrap-5-light", "bootstrap-5-dark", "material-ui", "material-ui-light", "material-ui-dark", "embed-iframe", "bulma", "bulma-light", "bulma-dark"].includes(params.theme)) {
+            warn(`Invalid theme "${params.theme}"`);
           }
           for (const param in params) {
             checkIfParamIsValid(param);
@@ -3461,6 +4126,7 @@
           }
         };
         function update(params) {
+          const container = getContainer();
           const popup = getPopup();
           const innerParams = privateProps.innerParams.get(this);
           if (!popup || hasClass(popup, innerParams.hideClass.popup)) {
@@ -3469,6 +4135,10 @@
           }
           const validUpdatableParams = filterValidParams(params);
           const updatedParams = Object.assign({}, innerParams, validUpdatableParams);
+          showWarningsForParams(updatedParams);
+          if (container) {
+            container.dataset["swal2Theme"] = updatedParams.theme;
+          }
           render(this, updatedParams);
           privateProps.innerParams.set(this, updatedParams);
           Object.defineProperties(this, {
@@ -3483,7 +4153,11 @@
           const validUpdatableParams = {};
           Object.keys(params).forEach((param) => {
             if (isUpdatableParameter(param)) {
-              validUpdatableParams[param] = params[param];
+              const typedParams = (
+                /** @type {Record<string, any>} */
+                params
+              );
+              validUpdatableParams[param] = typedParams[param];
             } else {
               warn(`Invalid parameter to update: ${param}`);
             }
@@ -3491,6 +4165,7 @@
           return validUpdatableParams;
         };
         function _destroy() {
+          var _globalState$eventEmi;
           const domCache = privateProps.domCache.get(this);
           const innerParams = privateProps.innerParams.get(this);
           if (!innerParams) {
@@ -3504,6 +4179,7 @@
           if (typeof innerParams.didDestroy === "function") {
             innerParams.didDestroy();
           }
+          (_globalState$eventEmi = globalState.eventEmitter) === null || _globalState$eventEmi === void 0 || _globalState$eventEmi.emit("didDestroy");
           disposeSwal(this);
         }
         const disposeSwal = (instance) => {
@@ -3514,12 +4190,29 @@
           delete globalState.currentInstance;
         };
         const disposeWeakMaps = (instance) => {
-          if (instance.isAwaitingPromise()) {
+          if (instance.isAwaitingPromise) {
             unsetWeakMaps(privateProps, instance);
-            privateProps.awaitingPromise.set(instance, true);
+            instance.isAwaitingPromise = true;
           } else {
             unsetWeakMaps(privateMethods, instance);
             unsetWeakMaps(privateProps, instance);
+            delete instance.isAwaitingPromise;
+            delete instance.disableButtons;
+            delete instance.enableButtons;
+            delete instance.getInput;
+            delete instance.disableInput;
+            delete instance.enableInput;
+            delete instance.hideLoading;
+            delete instance.disableLoading;
+            delete instance.showValidationMessage;
+            delete instance.resetValidationMessage;
+            delete instance.close;
+            delete instance.closePopup;
+            delete instance.closeModal;
+            delete instance.closeToast;
+            delete instance.rejectPromise;
+            delete instance.update;
+            delete instance._destroy;
           }
         };
         const unsetWeakMaps = (obj, instance) => {
@@ -3529,326 +4222,35 @@
         };
         var instanceMethods = /* @__PURE__ */ Object.freeze({
           __proto__: null,
-          hideLoading,
-          disableLoading: hideLoading,
-          getInput,
+          _destroy,
           close,
-          isAwaitingPromise,
-          rejectPromise,
-          handleAwaitingPromise,
-          closePopup: close,
           closeModal: close,
+          closePopup: close,
           closeToast: close,
-          enableButtons,
           disableButtons,
-          enableInput,
           disableInput,
-          showValidationMessage,
+          disableLoading: hideLoading,
+          enableButtons,
+          enableInput,
+          getInput,
+          handleAwaitingPromise,
+          hideLoading,
+          rejectPromise,
           resetValidationMessage,
-          update,
-          _destroy
+          showValidationMessage,
+          update
         });
-        const showLoading = (buttonToReplace) => {
-          let popup = getPopup();
-          if (!popup) {
-            new Swal8();
-          }
-          popup = getPopup();
-          const loader = getLoader();
-          if (isToast()) {
-            hide(getIcon());
-          } else {
-            replaceButton(popup, buttonToReplace);
-          }
-          show(loader);
-          popup.setAttribute("data-loading", "true");
-          popup.setAttribute("aria-busy", "true");
-          popup.focus();
-        };
-        const replaceButton = (popup, buttonToReplace) => {
-          const actions = getActions();
-          const loader = getLoader();
-          if (!buttonToReplace && isVisible$1(getConfirmButton())) {
-            buttonToReplace = getConfirmButton();
-          }
-          show(actions);
-          if (buttonToReplace) {
-            hide(buttonToReplace);
-            loader.setAttribute("data-button-to-replace", buttonToReplace.className);
-          }
-          loader.parentNode.insertBefore(loader, buttonToReplace);
-          addClass([popup, actions], swalClasses.loading);
-        };
-        const handleInputOptionsAndValue = (instance, params) => {
-          if (params.input === "select" || params.input === "radio") {
-            handleInputOptions(instance, params);
-          } else if (["text", "email", "number", "tel", "textarea"].includes(params.input) && (hasToPromiseFn(params.inputValue) || isPromise(params.inputValue))) {
-            showLoading(getConfirmButton());
-            handleInputValue(instance, params);
-          }
-        };
-        const getInputValue = (instance, innerParams) => {
-          const input = instance.getInput();
-          if (!input) {
-            return null;
-          }
-          switch (innerParams.input) {
-            case "checkbox":
-              return getCheckboxValue(input);
-            case "radio":
-              return getRadioValue(input);
-            case "file":
-              return getFileValue(input);
-            default:
-              return innerParams.inputAutoTrim ? input.value.trim() : input.value;
-          }
-        };
-        const getCheckboxValue = (input) => input.checked ? 1 : 0;
-        const getRadioValue = (input) => input.checked ? input.value : null;
-        const getFileValue = (input) => input.files.length ? input.getAttribute("multiple") !== null ? input.files : input.files[0] : null;
-        const handleInputOptions = (instance, params) => {
-          const popup = getPopup();
-          const processInputOptions = (inputOptions) => {
-            populateInputOptions[params.input](popup, formatInputOptions(inputOptions), params);
-          };
-          if (hasToPromiseFn(params.inputOptions) || isPromise(params.inputOptions)) {
-            showLoading(getConfirmButton());
-            asPromise(params.inputOptions).then((inputOptions) => {
-              instance.hideLoading();
-              processInputOptions(inputOptions);
-            });
-          } else if (typeof params.inputOptions === "object") {
-            processInputOptions(params.inputOptions);
-          } else {
-            error(`Unexpected type of inputOptions! Expected object, Map or Promise, got ${typeof params.inputOptions}`);
-          }
-        };
-        const handleInputValue = (instance, params) => {
-          const input = instance.getInput();
-          hide(input);
-          asPromise(params.inputValue).then((inputValue) => {
-            input.value = params.input === "number" ? `${parseFloat(inputValue) || 0}` : `${inputValue}`;
-            show(input);
-            input.focus();
-            instance.hideLoading();
-          }).catch((err) => {
-            error(`Error in inputValue promise: ${err}`);
-            input.value = "";
-            show(input);
-            input.focus();
-            instance.hideLoading();
-          });
-        };
-        const populateInputOptions = {
-          /**
-           * @param {HTMLElement} popup
-           * @param {Record<string, any>} inputOptions
-           * @param {SweetAlertOptions} params
-           */
-          select: (popup, inputOptions, params) => {
-            const select = getDirectChildByClass(popup, swalClasses.select);
-            const renderOption = (parent, optionLabel, optionValue) => {
-              const option = document.createElement("option");
-              option.value = optionValue;
-              setInnerHtml(option, optionLabel);
-              option.selected = isSelected(optionValue, params.inputValue);
-              parent.appendChild(option);
-            };
-            inputOptions.forEach((inputOption) => {
-              const optionValue = inputOption[0];
-              const optionLabel = inputOption[1];
-              if (Array.isArray(optionLabel)) {
-                const optgroup = document.createElement("optgroup");
-                optgroup.label = optionValue;
-                optgroup.disabled = false;
-                select.appendChild(optgroup);
-                optionLabel.forEach((o) => renderOption(optgroup, o[1], o[0]));
-              } else {
-                renderOption(select, optionLabel, optionValue);
-              }
-            });
-            select.focus();
-          },
-          /**
-           * @param {HTMLElement} popup
-           * @param {Record<string, any>} inputOptions
-           * @param {SweetAlertOptions} params
-           */
-          radio: (popup, inputOptions, params) => {
-            const radio = getDirectChildByClass(popup, swalClasses.radio);
-            inputOptions.forEach((inputOption) => {
-              const radioValue = inputOption[0];
-              const radioLabel = inputOption[1];
-              const radioInput = document.createElement("input");
-              const radioLabelElement = document.createElement("label");
-              radioInput.type = "radio";
-              radioInput.name = swalClasses.radio;
-              radioInput.value = radioValue;
-              if (isSelected(radioValue, params.inputValue)) {
-                radioInput.checked = true;
-              }
-              const label = document.createElement("span");
-              setInnerHtml(label, radioLabel);
-              label.className = swalClasses.label;
-              radioLabelElement.appendChild(radioInput);
-              radioLabelElement.appendChild(label);
-              radio.appendChild(radioLabelElement);
-            });
-            const radios = radio.querySelectorAll("input");
-            if (radios.length) {
-              radios[0].focus();
-            }
-          }
-        };
-        const formatInputOptions = (inputOptions) => {
-          const result = [];
-          if (typeof Map !== "undefined" && inputOptions instanceof Map) {
-            inputOptions.forEach((value, key) => {
-              let valueFormatted = value;
-              if (typeof valueFormatted === "object") {
-                valueFormatted = formatInputOptions(valueFormatted);
-              }
-              result.push([key, valueFormatted]);
-            });
-          } else {
-            Object.keys(inputOptions).forEach((key) => {
-              let valueFormatted = inputOptions[key];
-              if (typeof valueFormatted === "object") {
-                valueFormatted = formatInputOptions(valueFormatted);
-              }
-              result.push([key, valueFormatted]);
-            });
-          }
-          return result;
-        };
-        const isSelected = (optionValue, inputValue) => {
-          return inputValue && inputValue.toString() === optionValue.toString();
-        };
-        const handleConfirmButtonClick = (instance) => {
-          const innerParams = privateProps.innerParams.get(instance);
-          instance.disableButtons();
-          if (innerParams.input) {
-            handleConfirmOrDenyWithInput(instance, "confirm");
-          } else {
-            confirm(instance, true);
-          }
-        };
-        const handleDenyButtonClick = (instance) => {
-          const innerParams = privateProps.innerParams.get(instance);
-          instance.disableButtons();
-          if (innerParams.returnInputValueOnDeny) {
-            handleConfirmOrDenyWithInput(instance, "deny");
-          } else {
-            deny(instance, false);
-          }
-        };
-        const handleCancelButtonClick = (instance, dismissWith) => {
-          instance.disableButtons();
-          dismissWith(DismissReason.cancel);
-        };
-        const handleConfirmOrDenyWithInput = (instance, type) => {
-          const innerParams = privateProps.innerParams.get(instance);
-          if (!innerParams.input) {
-            error(`The "input" parameter is needed to be set when using returnInputValueOn${capitalizeFirstLetter(type)}`);
-            return;
-          }
-          const inputValue = getInputValue(instance, innerParams);
-          if (innerParams.inputValidator) {
-            handleInputValidator(instance, inputValue, type);
-          } else if (!instance.getInput().checkValidity()) {
-            instance.enableButtons();
-            instance.showValidationMessage(innerParams.validationMessage);
-          } else if (type === "deny") {
-            deny(instance, inputValue);
-          } else {
-            confirm(instance, inputValue);
-          }
-        };
-        const handleInputValidator = (instance, inputValue, type) => {
-          const innerParams = privateProps.innerParams.get(instance);
-          instance.disableInput();
-          const validationPromise = Promise.resolve().then(() => asPromise(innerParams.inputValidator(inputValue, innerParams.validationMessage)));
-          validationPromise.then((validationMessage) => {
-            instance.enableButtons();
-            instance.enableInput();
-            if (validationMessage) {
-              instance.showValidationMessage(validationMessage);
-            } else if (type === "deny") {
-              deny(instance, inputValue);
-            } else {
-              confirm(instance, inputValue);
-            }
-          });
-        };
-        const deny = (instance, value) => {
-          const innerParams = privateProps.innerParams.get(instance || void 0);
-          if (innerParams.showLoaderOnDeny) {
-            showLoading(getDenyButton());
-          }
-          if (innerParams.preDeny) {
-            privateProps.awaitingPromise.set(instance || void 0, true);
-            const preDenyPromise = Promise.resolve().then(() => asPromise(innerParams.preDeny(value, innerParams.validationMessage)));
-            preDenyPromise.then((preDenyValue) => {
-              if (preDenyValue === false) {
-                instance.hideLoading();
-                handleAwaitingPromise(instance);
-              } else {
-                instance.close({
-                  isDenied: true,
-                  value: typeof preDenyValue === "undefined" ? value : preDenyValue
-                });
-              }
-            }).catch((error2) => rejectWith(instance || void 0, error2));
-          } else {
-            instance.close({
-              isDenied: true,
-              value
-            });
-          }
-        };
-        const succeedWith = (instance, value) => {
-          instance.close({
-            isConfirmed: true,
-            value
-          });
-        };
-        const rejectWith = (instance, error2) => {
-          instance.rejectPromise(error2);
-        };
-        const confirm = (instance, value) => {
-          const innerParams = privateProps.innerParams.get(instance || void 0);
-          if (innerParams.showLoaderOnConfirm) {
-            showLoading();
-          }
-          if (innerParams.preConfirm) {
-            instance.resetValidationMessage();
-            privateProps.awaitingPromise.set(instance || void 0, true);
-            const preConfirmPromise = Promise.resolve().then(() => asPromise(innerParams.preConfirm(value, innerParams.validationMessage)));
-            preConfirmPromise.then((preConfirmValue) => {
-              if (isVisible$1(getValidationMessage()) || preConfirmValue === false) {
-                instance.hideLoading();
-                handleAwaitingPromise(instance);
-              } else {
-                succeedWith(instance, typeof preConfirmValue === "undefined" ? value : preConfirmValue);
-              }
-            }).catch((error2) => rejectWith(instance || void 0, error2));
-          } else {
-            succeedWith(instance, value);
-          }
-        };
-        const handlePopupClick = (instance, domCache, dismissWith) => {
-          const innerParams = privateProps.innerParams.get(instance);
+        const handlePopupClick = (innerParams, domCache, dismissWith) => {
           if (innerParams.toast) {
-            handleToastClick(instance, domCache, dismissWith);
+            handleToastClick(innerParams, domCache, dismissWith);
           } else {
             handleModalMousedown(domCache);
             handleContainerMousedown(domCache);
-            handleModalClick(instance, domCache, dismissWith);
+            handleModalClick(innerParams, domCache, dismissWith);
           }
         };
-        const handleToastClick = (instance, domCache, dismissWith) => {
+        const handleToastClick = (innerParams, domCache, dismissWith) => {
           domCache.popup.onclick = () => {
-            const innerParams = privateProps.innerParams.get(instance);
             if (innerParams && (isAnyButtonShown(innerParams) || innerParams.timer || innerParams.input)) {
               return;
             }
@@ -3856,13 +4258,14 @@
           };
         };
         const isAnyButtonShown = (innerParams) => {
-          return innerParams.showConfirmButton || innerParams.showDenyButton || innerParams.showCancelButton || innerParams.showCloseButton;
+          return Boolean(innerParams.showConfirmButton || innerParams.showDenyButton || innerParams.showCancelButton || innerParams.showCloseButton);
         };
         let ignoreOutsideClick = false;
         const handleModalMousedown = (domCache) => {
           domCache.popup.onmousedown = () => {
             domCache.container.onmouseup = function(e) {
-              domCache.container.onmouseup = void 0;
+              domCache.container.onmouseup = () => {
+              };
               if (e.target === domCache.container) {
                 ignoreOutsideClick = true;
               }
@@ -3870,18 +4273,21 @@
           };
         };
         const handleContainerMousedown = (domCache) => {
-          domCache.container.onmousedown = () => {
-            domCache.popup.onmouseup = function(e) {
-              domCache.popup.onmouseup = void 0;
-              if (e.target === domCache.popup || domCache.popup.contains(e.target)) {
+          domCache.container.onmousedown = (e) => {
+            if (e.target === domCache.container) {
+              e.preventDefault();
+            }
+            domCache.popup.onmouseup = function(e2) {
+              domCache.popup.onmouseup = () => {
+              };
+              if (e2.target === domCache.popup || e2.target instanceof HTMLElement && domCache.popup.contains(e2.target)) {
                 ignoreOutsideClick = true;
               }
             };
           };
         };
-        const handleModalClick = (instance, domCache, dismissWith) => {
+        const handleModalClick = (innerParams, domCache, dismissWith) => {
           domCache.container.onclick = (e) => {
-            const innerParams = privateProps.innerParams.get(instance);
             if (ignoreOutsideClick) {
               ignoreOutsideClick = false;
               return;
@@ -3891,7 +4297,7 @@
             }
           };
         };
-        const isJqueryElement = (elem) => typeof elem === "object" && elem.jquery;
+        const isJqueryElement = (elem) => typeof elem === "object" && elem !== null && "jquery" in elem;
         const isElement = (elem) => elem instanceof Element || isJqueryElement(elem);
         const argsToParams = (args) => {
           const params = {};
@@ -3907,17 +4313,20 @@
               }
             });
           }
-          return params;
+          return (
+            /** @type {SweetAlertOptions} */
+            params
+          );
         };
-        function fire() {
-          const Swal9 = this;
-          for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-            args[_key] = arguments[_key];
-          }
-          return new Swal9(...args);
+        function fire(...args) {
+          return new this(...args);
         }
         function mixin(mixinParams) {
           class MixinSwal extends this {
+            /**
+             * @param {any} params
+             * @param {any} priorityMixinParams
+             */
             _main(params, priorityMixinParams) {
               return super._main(params, Object.assign({}, mixinParams, priorityMixinParams));
             }
@@ -3944,20 +4353,19 @@
           const timer = globalState.timeout;
           return timer && (timer.running ? stopTimer() : resumeTimer());
         };
-        const increaseTimer = (n) => {
+        const increaseTimer = (ms) => {
           if (globalState.timeout) {
-            const remaining = globalState.timeout.increase(n);
+            const remaining = globalState.timeout.increase(ms);
             animateTimerProgressBar(remaining, true);
             return remaining;
           }
         };
         const isTimerRunning = () => {
-          return globalState.timeout && globalState.timeout.isRunning();
+          return Boolean(globalState.timeout && globalState.timeout.isRunning());
         };
         let bodyClickListenerAdded = false;
         const clickHandlers = {};
-        function bindClickHandler() {
-          let attr = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : "data-swal-template";
+        function bindClickHandler(attr = "data-swal-template") {
           clickHandlers[attr] = this;
           if (!bodyClickListenerAdded) {
             document.body.addEventListener("click", bodyClickListener);
@@ -3965,9 +4373,12 @@
           }
         }
         const bodyClickListener = (event) => {
-          for (let el = event.target; el && el !== document; el = el.parentNode) {
+          for (let el = (
+            /** @type {any} */
+            event.target
+          ); el && el !== document; el = el.parentNode) {
             for (const attr in clickHandlers) {
-              const template = el.getAttribute(attr);
+              const template = el.getAttribute && el.getAttribute(attr);
               if (template) {
                 clickHandlers[attr].fire({
                   template
@@ -3977,51 +4388,155 @@
             }
           }
         };
+        class EventEmitter {
+          constructor() {
+            this.events = {};
+          }
+          /**
+           * @param {string} eventName
+           * @returns {EventHandlers}
+           */
+          _getHandlersByEventName(eventName) {
+            if (typeof this.events[eventName] === "undefined") {
+              this.events[eventName] = [];
+            }
+            return this.events[eventName];
+          }
+          /**
+           * @param {string} eventName
+           * @param {EventHandler} eventHandler
+           */
+          on(eventName, eventHandler) {
+            const currentHandlers = this._getHandlersByEventName(eventName);
+            if (!currentHandlers.includes(eventHandler)) {
+              currentHandlers.push(eventHandler);
+            }
+          }
+          /**
+           * @param {string} eventName
+           * @param {EventHandler} eventHandler
+           */
+          once(eventName, eventHandler) {
+            const onceFn = (...args) => {
+              this.removeListener(eventName, onceFn);
+              eventHandler.apply(this, args);
+            };
+            this.on(eventName, onceFn);
+          }
+          /**
+           * @param {string} eventName
+           * @param {...any} args
+           */
+          emit(eventName, ...args) {
+            this._getHandlersByEventName(eventName).forEach(
+              /**
+               * @param {EventHandler} eventHandler
+               */
+              (eventHandler) => {
+                try {
+                  eventHandler.apply(this, args);
+                } catch (error2) {
+                  console.error(error2);
+                }
+              }
+            );
+          }
+          /**
+           * @param {string} eventName
+           * @param {EventHandler} eventHandler
+           */
+          removeListener(eventName, eventHandler) {
+            const currentHandlers = this._getHandlersByEventName(eventName);
+            const index = currentHandlers.indexOf(eventHandler);
+            if (index > -1) {
+              currentHandlers.splice(index, 1);
+            }
+          }
+          /**
+           * @param {string} eventName
+           */
+          removeAllListeners(eventName) {
+            if (this.events[eventName] !== void 0) {
+              this.events[eventName].length = 0;
+            }
+          }
+          reset() {
+            this.events = {};
+          }
+        }
+        globalState.eventEmitter = new EventEmitter();
+        const on = (eventName, eventHandler) => {
+          if (globalState.eventEmitter) {
+            globalState.eventEmitter.on(eventName, eventHandler);
+          }
+        };
+        const once = (eventName, eventHandler) => {
+          if (globalState.eventEmitter) {
+            globalState.eventEmitter.once(eventName, eventHandler);
+          }
+        };
+        const off = (eventName, eventHandler) => {
+          if (!globalState.eventEmitter) {
+            return;
+          }
+          if (!eventName) {
+            globalState.eventEmitter.reset();
+            return;
+          }
+          if (eventHandler) {
+            globalState.eventEmitter.removeListener(eventName, eventHandler);
+          } else {
+            globalState.eventEmitter.removeAllListeners(eventName);
+          }
+        };
         var staticMethods = /* @__PURE__ */ Object.freeze({
           __proto__: null,
-          isValidParameter,
-          isUpdatableParameter,
-          isDeprecatedParameter,
           argsToParams,
-          getContainer,
-          getPopup,
-          getTitle,
-          getHtmlContainer,
-          getImage,
-          getIcon,
-          getIconContent,
-          getInputLabel,
-          getCloseButton,
-          getActions,
-          getConfirmButton,
-          getDenyButton,
-          getCancelButton,
-          getLoader,
-          getFooter,
-          getTimerProgressBar,
-          getFocusableElements,
-          getValidationMessage,
-          getProgressSteps,
-          isLoading,
-          isVisible,
+          bindClickHandler,
+          clickCancel,
           clickConfirm,
           clickDeny,
-          clickCancel,
-          fire,
-          mixin,
-          showLoading,
           enableLoading: showLoading,
+          fire,
+          getActions,
+          getCancelButton,
+          getCloseButton,
+          getConfirmButton,
+          getContainer,
+          getDenyButton,
+          getFocusableElements,
+          getFooter,
+          getHtmlContainer,
+          getIcon,
+          getIconContent,
+          getImage,
+          getInputLabel,
+          getLoader,
+          getPopup,
+          getProgressSteps,
           getTimerLeft,
-          stopTimer,
-          resumeTimer,
-          toggleTimer,
+          getTimerProgressBar,
+          getTitle,
+          getValidationMessage,
           increaseTimer,
+          isDeprecatedParameter,
+          isLoading,
           isTimerRunning,
-          bindClickHandler
+          isUpdatableParameter,
+          isValidParameter,
+          isVisible,
+          mixin,
+          off,
+          on,
+          once,
+          resumeTimer,
+          showLoading,
+          stopTimer,
+          toggleTimer
         });
         class Timer {
           /**
-           * @param {Function} callback
+           * @param {() => void} callback
            * @param {number} delay
            */
           constructor(callback, delay) {
@@ -4030,22 +4545,32 @@
             this.running = false;
             this.start();
           }
+          /**
+           * @returns {number}
+           */
           start() {
             if (!this.running) {
               this.running = true;
-              this.started = new Date();
+              this.started = /* @__PURE__ */ new Date();
               this.id = setTimeout(this.callback, this.remaining);
             }
             return this.remaining;
           }
+          /**
+           * @returns {number}
+           */
           stop() {
-            if (this.running) {
+            if (this.started && this.running) {
               this.running = false;
               clearTimeout(this.id);
-              this.remaining -= new Date().getTime() - this.started.getTime();
+              this.remaining -= (/* @__PURE__ */ new Date()).getTime() - this.started.getTime();
             }
             return this.remaining;
           }
+          /**
+           * @param {number} n
+           * @returns {number}
+           */
           increase(n) {
             const running = this.running;
             if (running) {
@@ -4057,6 +4582,9 @@
             }
             return this.remaining;
           }
+          /**
+           * @returns {number}
+           */
           getTimerLeft() {
             if (this.running) {
               this.stop();
@@ -4064,13 +4592,19 @@
             }
             return this.remaining;
           }
+          /**
+           * @returns {boolean}
+           */
           isRunning() {
             return this.running;
           }
         }
         const swalStringParams = ["swal-title", "swal-html", "swal-footer"];
         const getTemplateParams = (params) => {
-          const template = typeof params.template === "string" ? document.querySelector(params.template) : params.template;
+          const template = typeof params.template === "string" ? (
+            /** @type {HTMLTemplateElement} */
+            document.querySelector(params.template)
+          ) : params.template;
           if (!template) {
             return {};
           }
@@ -4084,11 +4618,23 @@
           const swalParams = Array.from(templateContent.querySelectorAll("swal-param"));
           swalParams.forEach((param) => {
             showWarningsForAttributes(param, ["name", "value"]);
-            const paramName = param.getAttribute("name");
+            const paramName = (
+              /** @type {keyof SweetAlertOptions} */
+              param.getAttribute("name")
+            );
             const value = param.getAttribute("value");
-            if (typeof defaultParams[paramName] === "boolean") {
+            if (!paramName || !value) {
+              return;
+            }
+            if (paramName in defaultParams && typeof defaultParams[
+              /** @type {keyof typeof defaultParams} */
+              paramName
+            ] === "boolean") {
               result[paramName] = value !== "false";
-            } else if (typeof defaultParams[paramName] === "object") {
+            } else if (paramName in defaultParams && typeof defaultParams[
+              /** @type {keyof typeof defaultParams} */
+              paramName
+            ] === "object") {
               result[paramName] = JSON.parse(value);
             } else {
               result[paramName] = value;
@@ -4100,8 +4646,14 @@
           const result = {};
           const swalFunctions = Array.from(templateContent.querySelectorAll("swal-function-param"));
           swalFunctions.forEach((param) => {
-            const paramName = param.getAttribute("name");
+            const paramName = (
+              /** @type {keyof SweetAlertOptions} */
+              param.getAttribute("name")
+            );
             const value = param.getAttribute("value");
+            if (!paramName || !value) {
+              return;
+            }
             result[paramName] = new Function(`return ${value}`)();
           });
           return result;
@@ -4112,13 +4664,18 @@
           swalButtons.forEach((button) => {
             showWarningsForAttributes(button, ["type", "color", "aria-label"]);
             const type = button.getAttribute("type");
+            if (!type || !["confirm", "cancel", "deny"].includes(type)) {
+              return;
+            }
             result[`${type}ButtonText`] = button.innerHTML;
             result[`show${capitalizeFirstLetter(type)}Button`] = true;
-            if (button.hasAttribute("color")) {
-              result[`${type}ButtonColor`] = button.getAttribute("color");
+            const color = button.getAttribute("color");
+            if (color !== null) {
+              result[`${type}ButtonColor`] = color;
             }
-            if (button.hasAttribute("aria-label")) {
-              result[`${type}ButtonAriaLabel`] = button.getAttribute("aria-label");
+            const ariaLabel = button.getAttribute("aria-label");
+            if (ariaLabel !== null) {
+              result[`${type}ButtonAriaLabel`] = ariaLabel;
             }
           });
           return result;
@@ -4128,18 +4685,18 @@
           const image = templateContent.querySelector("swal-image");
           if (image) {
             showWarningsForAttributes(image, ["src", "width", "height", "alt"]);
-            if (image.hasAttribute("src")) {
-              result.imageUrl = image.getAttribute("src");
-            }
-            if (image.hasAttribute("width")) {
-              result.imageWidth = image.getAttribute("width");
-            }
-            if (image.hasAttribute("height")) {
-              result.imageHeight = image.getAttribute("height");
-            }
-            if (image.hasAttribute("alt")) {
-              result.imageAlt = image.getAttribute("alt");
-            }
+            const src = image.getAttribute("src");
+            if (src !== null)
+              result.imageUrl = src || void 0;
+            const width = image.getAttribute("width");
+            if (width !== null)
+              result.imageWidth = width || void 0;
+            const height = image.getAttribute("height");
+            if (height !== null)
+              result.imageHeight = height || void 0;
+            const alt = image.getAttribute("alt");
+            if (alt !== null)
+              result.imageAlt = alt || void 0;
           }
           return result;
         };
@@ -4180,6 +4737,9 @@
             inputOptions.forEach((option) => {
               showWarningsForAttributes(option, ["value"]);
               const optionValue = option.getAttribute("value");
+              if (!optionValue) {
+                return;
+              }
               const optionName = option.innerHTML;
               result.inputOptions[optionValue] = optionName;
             });
@@ -4216,11 +4776,16 @@
         };
         const SHOW_CLASS_TIMEOUT = 10;
         const openPopup = (params) => {
+          var _globalState$eventEmi, _globalState$eventEmi2;
           const container = getContainer();
           const popup = getPopup();
+          if (!container || !popup) {
+            return;
+          }
           if (typeof params.willOpen === "function") {
             params.willOpen(popup);
           }
+          (_globalState$eventEmi = globalState.eventEmitter) === null || _globalState$eventEmi === void 0 || _globalState$eventEmi.emit("willOpen", popup);
           const bodyStyles = window.getComputedStyle(document.body);
           const initialBodyOverflow = bodyStyles.overflowY;
           addClasses(container, popup, params);
@@ -4228,30 +4793,40 @@
             setScrollingVisibility(container, popup);
           }, SHOW_CLASS_TIMEOUT);
           if (isModal()) {
-            fixScrollContainer(container, params.scrollbarPadding, initialBodyOverflow);
+            fixScrollContainer(container, params.scrollbarPadding !== void 0 ? params.scrollbarPadding : false, initialBodyOverflow);
             setAriaHidden();
+          }
+          if (isIOS && params.backdrop === false && popup.scrollHeight > container.clientHeight) {
+            container.style.pointerEvents = "auto";
           }
           if (!isToast() && !globalState.previousActiveElement) {
             globalState.previousActiveElement = document.activeElement;
           }
           if (typeof params.didOpen === "function") {
-            setTimeout(() => params.didOpen(popup));
+            const didOpen = params.didOpen;
+            setTimeout(() => didOpen(popup));
           }
-          removeClass(container, swalClasses["no-transition"]);
+          (_globalState$eventEmi2 = globalState.eventEmitter) === null || _globalState$eventEmi2 === void 0 || _globalState$eventEmi2.emit("didOpen", popup);
         };
         const swalOpenAnimationFinished = (event) => {
           const popup = getPopup();
-          if (event.target !== popup) {
+          if (!popup || event.target !== popup) {
             return;
           }
           const container = getContainer();
-          popup.removeEventListener(animationEndEvent, swalOpenAnimationFinished);
+          if (!container) {
+            return;
+          }
+          popup.removeEventListener("animationend", swalOpenAnimationFinished);
+          popup.removeEventListener("transitionend", swalOpenAnimationFinished);
           container.style.overflowY = "auto";
+          removeClass(container, swalClasses["no-transition"]);
         };
         const setScrollingVisibility = (container, popup) => {
-          if (animationEndEvent && hasCssAnimation(popup)) {
+          if (hasCssAnimation(popup)) {
             container.style.overflowY = "hidden";
-            popup.addEventListener(animationEndEvent, swalOpenAnimationFinished);
+            popup.addEventListener("animationend", swalOpenAnimationFinished);
+            popup.addEventListener("transitionend", swalOpenAnimationFinished);
           } else {
             container.style.overflowY = "auto";
           }
@@ -4259,20 +4834,30 @@
         const fixScrollContainer = (container, scrollbarPadding, initialBodyOverflow) => {
           iOSfix();
           if (scrollbarPadding && initialBodyOverflow !== "hidden") {
-            fixScrollbar();
+            replaceScrollbarWithPadding(initialBodyOverflow);
           }
           setTimeout(() => {
             container.scrollTop = 0;
           });
         };
         const addClasses = (container, popup, params) => {
-          addClass(container, params.showClass.backdrop);
-          popup.style.setProperty("opacity", "0", "important");
-          show(popup, "grid");
-          setTimeout(() => {
-            addClass(popup, params.showClass.popup);
-            popup.style.removeProperty("opacity");
-          }, SHOW_CLASS_TIMEOUT);
+          var _params$showClass;
+          if ((_params$showClass = params.showClass) !== null && _params$showClass !== void 0 && _params$showClass.backdrop) {
+            addClass(container, params.showClass.backdrop);
+          }
+          if (params.animation) {
+            popup.style.setProperty("opacity", "0", "important");
+            show(popup, "grid");
+            setTimeout(() => {
+              var _params$showClass2;
+              if ((_params$showClass2 = params.showClass) !== null && _params$showClass2 !== void 0 && _params$showClass2.popup) {
+                addClass(popup, params.showClass.popup);
+              }
+              popup.style.removeProperty("opacity");
+            }, SHOW_CLASS_TIMEOUT);
+          } else {
+            show(popup, "grid");
+          }
           addClass([document.documentElement, document.body], swalClasses.shown);
           if (params.heightAuto && params.backdrop && !params.toast) {
             addClass([document.documentElement, document.body], swalClasses["height-auto"]);
@@ -4281,28 +4866,30 @@
         var defaultInputValidators = {
           /**
            * @param {string} string
-           * @param {string} validationMessage
-           * @returns {Promise<void | string>}
+           * @param {string} [validationMessage]
+           * @returns {Promise<string | void>}
            */
           email: (string, validationMessage) => {
-            return /^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9.-]+\.[a-zA-Z0-9-]{2,24}$/.test(string) ? Promise.resolve() : Promise.resolve(validationMessage || "Invalid email address");
+            return /^[a-zA-Z0-9.+_'-]+@[a-zA-Z0-9.-]+\.[a-zA-Z0-9-]+$/.test(string) ? Promise.resolve() : Promise.resolve(validationMessage || "Invalid email address");
           },
           /**
            * @param {string} string
-           * @param {string} validationMessage
-           * @returns {Promise<void | string>}
+           * @param {string} [validationMessage]
+           * @returns {Promise<string | void>}
            */
           url: (string, validationMessage) => {
             return /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-z]{2,63}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)$/.test(string) ? Promise.resolve() : Promise.resolve(validationMessage || "Invalid URL");
           }
         };
         function setDefaultInputValidators(params) {
-          if (!params.inputValidator) {
-            Object.keys(defaultInputValidators).forEach((key) => {
-              if (params.input === key) {
-                params.inputValidator = defaultInputValidators[key];
-              }
-            });
+          if (params.inputValidator) {
+            return;
+          }
+          if (params.input === "email") {
+            params.inputValidator = defaultInputValidators["email"];
+          }
+          if (params.input === "url") {
+            params.inputValidator = defaultInputValidators["url"];
           }
         }
         function validateCustomTargetElement(params) {
@@ -4323,32 +4910,49 @@
           init(params);
         }
         let currentInstance;
+        var _promise = /* @__PURE__ */ new WeakMap();
         class SweetAlert {
-          constructor() {
+          /**
+           * @param {...(SweetAlertOptions | string)} args
+           * @this {SweetAlert}
+           */
+          constructor(...args) {
+            _classPrivateFieldInitSpec(
+              this,
+              _promise,
+              /** @type {Promise<SweetAlertResult>} */
+              Promise.resolve({
+                isConfirmed: false,
+                isDenied: false,
+                isDismissed: true
+              })
+            );
             if (typeof window === "undefined") {
               return;
             }
             currentInstance = this;
-            for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-              args[_key] = arguments[_key];
-            }
             const outerParams = Object.freeze(this.constructor.argsToParams(args));
-            Object.defineProperties(this, {
-              params: {
-                value: outerParams,
-                writable: false,
-                enumerable: true,
-                configurable: true
-              }
-            });
-            const promise = currentInstance._main(currentInstance.params);
-            privateProps.promise.set(this, promise);
+            this.params = outerParams;
+            this.isAwaitingPromise = false;
+            _classPrivateFieldSet2(_promise, this, this._main(currentInstance.params));
           }
-          _main(userParams) {
-            let mixinParams = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
+          /**
+           * @param {any} userParams
+           * @param {any} mixinParams
+           */
+          _main(userParams, mixinParams = {}) {
             showWarningsForParams(Object.assign({}, mixinParams, userParams));
             if (globalState.currentInstance) {
+              const swalPromiseResolve = privateMethods.swalPromiseResolve.get(globalState.currentInstance);
+              const {
+                isAwaitingPromise
+              } = globalState.currentInstance;
               globalState.currentInstance._destroy();
+              if (!isAwaitingPromise) {
+                swalPromiseResolve({
+                  isDismissed: true
+                });
+              }
               if (isModal()) {
                 unsetAriaHidden();
               }
@@ -4368,13 +4972,18 @@
             return swalPromise(currentInstance, domCache, innerParams);
           }
           // `catch` cannot be the name of a module export, so we define our thenable methods here instead
+          /**
+           * @param {any} onFulfilled
+           */
+          // oxlint-disable-next-line unicorn/no-thenable
           then(onFulfilled) {
-            const promise = privateProps.promise.get(this);
-            return promise.then(onFulfilled);
+            return _classPrivateFieldGet2(_promise, this).then(onFulfilled);
           }
+          /**
+           * @param {any} onFinally
+           */
           finally(onFinally) {
-            const promise = privateProps.promise.get(this);
-            return promise.finally(onFinally);
+            return _classPrivateFieldGet2(_promise, this).finally(onFinally);
           }
         }
         const swalPromise = (instance, domCache, innerParams) => {
@@ -4382,7 +4991,9 @@
             const dismissWith = (dismiss) => {
               instance.close({
                 isDismissed: true,
-                dismiss
+                dismiss,
+                isConfirmed: false,
+                isDenied: false
               });
             };
             privateMethods.swalPromiseResolve.set(instance, resolve);
@@ -4399,8 +5010,8 @@
             domCache.closeButton.onclick = () => {
               dismissWith(DismissReason.close);
             };
-            handlePopupClick(instance, domCache, dismissWith);
-            addKeydownHandler(instance, globalState, innerParams, dismissWith);
+            handlePopupClick(innerParams, domCache, dismissWith);
+            addKeydownHandler(globalState, innerParams, dismissWith);
             handleInputOptionsAndValue(instance, innerParams);
             openPopup(innerParams);
             setupTimer(globalState, innerParams, dismissWith);
@@ -4415,21 +5026,60 @@
           const params = Object.assign({}, defaultParams, mixinParams, templateParams, userParams);
           params.showClass = Object.assign({}, defaultParams.showClass, params.showClass);
           params.hideClass = Object.assign({}, defaultParams.hideClass, params.hideClass);
+          if (params.animation === false) {
+            params.showClass = {
+              backdrop: "swal2-noanimation"
+            };
+            params.hideClass = {};
+          }
           return params;
         };
         const populateDomCache = (instance) => {
-          const domCache = {
-            popup: getPopup(),
-            container: getContainer(),
-            actions: getActions(),
-            confirmButton: getConfirmButton(),
-            denyButton: getDenyButton(),
-            cancelButton: getCancelButton(),
-            loader: getLoader(),
-            closeButton: getCloseButton(),
-            validationMessage: getValidationMessage(),
-            progressSteps: getProgressSteps()
-          };
+          const domCache = (
+            /** @type {DomCache} */
+            {
+              popup: (
+                /** @type {HTMLElement} */
+                getPopup()
+              ),
+              container: (
+                /** @type {HTMLElement} */
+                getContainer()
+              ),
+              actions: (
+                /** @type {HTMLElement} */
+                getActions()
+              ),
+              confirmButton: (
+                /** @type {HTMLElement} */
+                getConfirmButton()
+              ),
+              denyButton: (
+                /** @type {HTMLElement} */
+                getDenyButton()
+              ),
+              cancelButton: (
+                /** @type {HTMLElement} */
+                getCancelButton()
+              ),
+              loader: (
+                /** @type {HTMLElement} */
+                getLoader()
+              ),
+              closeButton: (
+                /** @type {HTMLElement} */
+                getCloseButton()
+              ),
+              validationMessage: (
+                /** @type {HTMLElement} */
+                getValidationMessage()
+              ),
+              progressSteps: (
+                /** @type {HTMLElement} */
+                getProgressSteps()
+              )
+            }
+          );
           privateProps.domCache.set(instance, domCache);
           return domCache;
         };
@@ -4441,12 +5091,15 @@
               dismissWith("timer");
               delete globalState2.timeout;
             }, innerParams.timer);
-            if (innerParams.timerProgressBar) {
+            if (innerParams.timerProgressBar && timerProgressBar) {
               show(timerProgressBar);
               applyCustomClass(timerProgressBar, innerParams, "timerProgressBar");
               setTimeout(() => {
                 if (globalState2.timeout && globalState2.timeout.running) {
-                  animateTimerProgressBar(innerParams.timer);
+                  animateTimerProgressBar(
+                    /** @type {number} */
+                    innerParams.timer
+                  );
                 }
               });
             }
@@ -4457,12 +5110,27 @@
             return;
           }
           if (!callIfFunction(innerParams.allowEnterKey)) {
-            blurActiveElement();
+            warnAboutDeprecation("allowEnterKey", "preConfirm: () => false");
+            domCache.popup.focus();
             return;
           }
-          if (!focusButton(domCache, innerParams)) {
-            setFocus(-1, 1);
+          if (focusAutofocus(domCache)) {
+            return;
           }
+          if (focusButton(domCache, innerParams)) {
+            return;
+          }
+          setFocus(-1, 1);
+        };
+        const focusAutofocus = (domCache) => {
+          const autofocusElements = Array.from(domCache.popup.querySelectorAll("[autofocus]"));
+          for (const autofocusElement of autofocusElements) {
+            if (autofocusElement instanceof HTMLElement && isVisible$1(autofocusElement)) {
+              autofocusElement.focus();
+              return true;
+            }
+          }
+          return false;
         };
         const focusButton = (domCache, innerParams) => {
           if (innerParams.focusDeny && isVisible$1(domCache.denyButton)) {
@@ -4479,44 +5147,36 @@
           }
           return false;
         };
-        const blurActiveElement = () => {
-          if (document.activeElement instanceof HTMLElement && typeof document.activeElement.blur === "function") {
-            document.activeElement.blur();
-          }
-        };
-        if (typeof window !== "undefined" && /^ru\b/.test(navigator.language) && location.host.match(/\.(ru|su|xn--p1ai)$/)) {
-          const now = new Date();
-          const initiationDate = localStorage.getItem("swal-initiation");
-          if (!initiationDate) {
-            localStorage.setItem("swal-initiation", `${now}`);
-          } else if ((now.getTime() - Date.parse(initiationDate)) / (1e3 * 60 * 60 * 24) > 3) {
-            setTimeout(() => {
-              document.body.style.pointerEvents = "none";
-              const ukrainianAnthem = document.createElement("audio");
-              ukrainianAnthem.src = "https://flag-gimn.ru/wp-content/uploads/2021/09/Ukraina.mp3";
-              ukrainianAnthem.loop = true;
-              document.body.appendChild(ukrainianAnthem);
-              setTimeout(() => {
-                ukrainianAnthem.play().catch(() => {
-                });
-              }, 2500);
-            }, 500);
-          }
-        }
-        Object.assign(SweetAlert.prototype, instanceMethods);
+        SweetAlert.prototype.disableButtons = disableButtons;
+        SweetAlert.prototype.enableButtons = enableButtons;
+        SweetAlert.prototype.getInput = getInput;
+        SweetAlert.prototype.disableInput = disableInput;
+        SweetAlert.prototype.enableInput = enableInput;
+        SweetAlert.prototype.hideLoading = hideLoading;
+        SweetAlert.prototype.disableLoading = hideLoading;
+        SweetAlert.prototype.showValidationMessage = showValidationMessage;
+        SweetAlert.prototype.resetValidationMessage = resetValidationMessage;
+        SweetAlert.prototype.close = close;
+        SweetAlert.prototype.closePopup = close;
+        SweetAlert.prototype.closeModal = close;
+        SweetAlert.prototype.closeToast = close;
+        SweetAlert.prototype.rejectPromise = rejectPromise;
+        SweetAlert.prototype.update = update;
+        SweetAlert.prototype._destroy = _destroy;
         Object.assign(SweetAlert, staticMethods);
         Object.keys(instanceMethods).forEach((key) => {
-          SweetAlert[key] = function() {
-            if (currentInstance) {
-              return currentInstance[key](...arguments);
+          SweetAlert[key] = function(...args) {
+            if (currentInstance && currentInstance[key]) {
+              return currentInstance[key](...args);
             }
+            return void 0;
           };
         });
         SweetAlert.DismissReason = DismissReason;
-        SweetAlert.version = "11.6.16";
-        const Swal8 = SweetAlert;
-        Swal8.default = Swal8;
-        return Swal8;
+        SweetAlert.version = "11.26.25";
+        const Swal9 = SweetAlert;
+        Swal9.default = Swal9;
+        return Swal9;
       });
       if (typeof exports !== "undefined" && exports.Sweetalert2) {
         exports.swal = exports.sweetAlert = exports.Swal = exports.SweetAlert = exports.Sweetalert2;
@@ -4531,7 +5191,7 @@
           } catch (e2) {
             n.innerText = t;
           }
-      }(document, '.swal2-popup.swal2-toast{box-sizing:border-box;grid-column:1/4 !important;grid-row:1/4 !important;grid-template-columns:min-content auto min-content;padding:1em;overflow-y:hidden;background:#fff;box-shadow:0 0 1px rgba(0,0,0,.075),0 1px 2px rgba(0,0,0,.075),1px 2px 4px rgba(0,0,0,.075),1px 3px 8px rgba(0,0,0,.075),2px 4px 16px rgba(0,0,0,.075);pointer-events:all}.swal2-popup.swal2-toast>*{grid-column:2}.swal2-popup.swal2-toast .swal2-title{margin:.5em 1em;padding:0;font-size:1em;text-align:initial}.swal2-popup.swal2-toast .swal2-loading{justify-content:center}.swal2-popup.swal2-toast .swal2-input{height:2em;margin:.5em;font-size:1em}.swal2-popup.swal2-toast .swal2-validation-message{font-size:1em}.swal2-popup.swal2-toast .swal2-footer{margin:.5em 0 0;padding:.5em 0 0;font-size:.8em}.swal2-popup.swal2-toast .swal2-close{grid-column:3/3;grid-row:1/99;align-self:center;width:.8em;height:.8em;margin:0;font-size:2em}.swal2-popup.swal2-toast .swal2-html-container{margin:.5em 1em;padding:0;overflow:initial;font-size:1em;text-align:initial}.swal2-popup.swal2-toast .swal2-html-container:empty{padding:0}.swal2-popup.swal2-toast .swal2-loader{grid-column:1;grid-row:1/99;align-self:center;width:2em;height:2em;margin:.25em}.swal2-popup.swal2-toast .swal2-icon{grid-column:1;grid-row:1/99;align-self:center;width:2em;min-width:2em;height:2em;margin:0 .5em 0 0}.swal2-popup.swal2-toast .swal2-icon .swal2-icon-content{display:flex;align-items:center;font-size:1.8em;font-weight:bold}.swal2-popup.swal2-toast .swal2-icon.swal2-success .swal2-success-ring{width:2em;height:2em}.swal2-popup.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line]{top:.875em;width:1.375em}.swal2-popup.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=left]{left:.3125em}.swal2-popup.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=right]{right:.3125em}.swal2-popup.swal2-toast .swal2-actions{justify-content:flex-start;height:auto;margin:0;margin-top:.5em;padding:0 .5em}.swal2-popup.swal2-toast .swal2-styled{margin:.25em .5em;padding:.4em .6em;font-size:1em}.swal2-popup.swal2-toast .swal2-success{border-color:#a5dc86}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-circular-line]{position:absolute;width:1.6em;height:3em;transform:rotate(45deg);border-radius:50%}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-circular-line][class$=left]{top:-0.8em;left:-0.5em;transform:rotate(-45deg);transform-origin:2em 2em;border-radius:4em 0 0 4em}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-circular-line][class$=right]{top:-0.25em;left:.9375em;transform-origin:0 1.5em;border-radius:0 4em 4em 0}.swal2-popup.swal2-toast .swal2-success .swal2-success-ring{width:2em;height:2em}.swal2-popup.swal2-toast .swal2-success .swal2-success-fix{top:0;left:.4375em;width:.4375em;height:2.6875em}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-line]{height:.3125em}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-line][class$=tip]{top:1.125em;left:.1875em;width:.75em}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-line][class$=long]{top:.9375em;right:.1875em;width:1.375em}.swal2-popup.swal2-toast .swal2-success.swal2-icon-show .swal2-success-line-tip{animation:swal2-toast-animate-success-line-tip .75s}.swal2-popup.swal2-toast .swal2-success.swal2-icon-show .swal2-success-line-long{animation:swal2-toast-animate-success-line-long .75s}.swal2-popup.swal2-toast.swal2-show{animation:swal2-toast-show .5s}.swal2-popup.swal2-toast.swal2-hide{animation:swal2-toast-hide .1s forwards}.swal2-container{display:grid;position:fixed;z-index:1060;top:0;right:0;bottom:0;left:0;box-sizing:border-box;grid-template-areas:"top-start     top            top-end" "center-start  center         center-end" "bottom-start  bottom-center  bottom-end";grid-template-rows:minmax(min-content, auto) minmax(min-content, auto) minmax(min-content, auto);height:100%;padding:.625em;overflow-x:hidden;transition:background-color .1s;-webkit-overflow-scrolling:touch}.swal2-container.swal2-backdrop-show,.swal2-container.swal2-noanimation{background:rgba(0,0,0,.4)}.swal2-container.swal2-backdrop-hide{background:rgba(0,0,0,0) !important}.swal2-container.swal2-top-start,.swal2-container.swal2-center-start,.swal2-container.swal2-bottom-start{grid-template-columns:minmax(0, 1fr) auto auto}.swal2-container.swal2-top,.swal2-container.swal2-center,.swal2-container.swal2-bottom{grid-template-columns:auto minmax(0, 1fr) auto}.swal2-container.swal2-top-end,.swal2-container.swal2-center-end,.swal2-container.swal2-bottom-end{grid-template-columns:auto auto minmax(0, 1fr)}.swal2-container.swal2-top-start>.swal2-popup{align-self:start}.swal2-container.swal2-top>.swal2-popup{grid-column:2;align-self:start;justify-self:center}.swal2-container.swal2-top-end>.swal2-popup,.swal2-container.swal2-top-right>.swal2-popup{grid-column:3;align-self:start;justify-self:end}.swal2-container.swal2-center-start>.swal2-popup,.swal2-container.swal2-center-left>.swal2-popup{grid-row:2;align-self:center}.swal2-container.swal2-center>.swal2-popup{grid-column:2;grid-row:2;align-self:center;justify-self:center}.swal2-container.swal2-center-end>.swal2-popup,.swal2-container.swal2-center-right>.swal2-popup{grid-column:3;grid-row:2;align-self:center;justify-self:end}.swal2-container.swal2-bottom-start>.swal2-popup,.swal2-container.swal2-bottom-left>.swal2-popup{grid-column:1;grid-row:3;align-self:end}.swal2-container.swal2-bottom>.swal2-popup{grid-column:2;grid-row:3;justify-self:center;align-self:end}.swal2-container.swal2-bottom-end>.swal2-popup,.swal2-container.swal2-bottom-right>.swal2-popup{grid-column:3;grid-row:3;align-self:end;justify-self:end}.swal2-container.swal2-grow-row>.swal2-popup,.swal2-container.swal2-grow-fullscreen>.swal2-popup{grid-column:1/4;width:100%}.swal2-container.swal2-grow-column>.swal2-popup,.swal2-container.swal2-grow-fullscreen>.swal2-popup{grid-row:1/4;align-self:stretch}.swal2-container.swal2-no-transition{transition:none !important}.swal2-popup{display:none;position:relative;box-sizing:border-box;grid-template-columns:minmax(0, 100%);width:32em;max-width:100%;padding:0 0 1.25em;border:none;border-radius:5px;background:#fff;color:#545454;font-family:inherit;font-size:1rem}.swal2-popup:focus{outline:none}.swal2-popup.swal2-loading{overflow-y:hidden}.swal2-title{position:relative;max-width:100%;margin:0;padding:.8em 1em 0;color:inherit;font-size:1.875em;font-weight:600;text-align:center;text-transform:none;word-wrap:break-word}.swal2-actions{display:flex;z-index:1;box-sizing:border-box;flex-wrap:wrap;align-items:center;justify-content:center;width:auto;margin:1.25em auto 0;padding:0}.swal2-actions:not(.swal2-loading) .swal2-styled[disabled]{opacity:.4}.swal2-actions:not(.swal2-loading) .swal2-styled:hover{background-image:linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1))}.swal2-actions:not(.swal2-loading) .swal2-styled:active{background-image:linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2))}.swal2-loader{display:none;align-items:center;justify-content:center;width:2.2em;height:2.2em;margin:0 1.875em;animation:swal2-rotate-loading 1.5s linear 0s infinite normal;border-width:.25em;border-style:solid;border-radius:100%;border-color:#2778c4 rgba(0,0,0,0) #2778c4 rgba(0,0,0,0)}.swal2-styled{margin:.3125em;padding:.625em 1.1em;transition:box-shadow .1s;box-shadow:0 0 0 3px rgba(0,0,0,0);font-weight:500}.swal2-styled:not([disabled]){cursor:pointer}.swal2-styled.swal2-confirm{border:0;border-radius:.25em;background:initial;background-color:#7066e0;color:#fff;font-size:1em}.swal2-styled.swal2-confirm:focus{box-shadow:0 0 0 3px rgba(112,102,224,.5)}.swal2-styled.swal2-deny{border:0;border-radius:.25em;background:initial;background-color:#dc3741;color:#fff;font-size:1em}.swal2-styled.swal2-deny:focus{box-shadow:0 0 0 3px rgba(220,55,65,.5)}.swal2-styled.swal2-cancel{border:0;border-radius:.25em;background:initial;background-color:#6e7881;color:#fff;font-size:1em}.swal2-styled.swal2-cancel:focus{box-shadow:0 0 0 3px rgba(110,120,129,.5)}.swal2-styled.swal2-default-outline:focus{box-shadow:0 0 0 3px rgba(100,150,200,.5)}.swal2-styled:focus{outline:none}.swal2-styled::-moz-focus-inner{border:0}.swal2-footer{justify-content:center;margin:1em 0 0;padding:1em 1em 0;border-top:1px solid #eee;color:inherit;font-size:1em}.swal2-timer-progress-bar-container{position:absolute;right:0;bottom:0;left:0;grid-column:auto !important;overflow:hidden;border-bottom-right-radius:5px;border-bottom-left-radius:5px}.swal2-timer-progress-bar{width:100%;height:.25em;background:rgba(0,0,0,.2)}.swal2-image{max-width:100%;margin:2em auto 1em}.swal2-close{z-index:2;align-items:center;justify-content:center;width:1.2em;height:1.2em;margin-top:0;margin-right:0;margin-bottom:-1.2em;padding:0;overflow:hidden;transition:color .1s,box-shadow .1s;border:none;border-radius:5px;background:rgba(0,0,0,0);color:#ccc;font-family:serif;font-family:monospace;font-size:2.5em;cursor:pointer;justify-self:end}.swal2-close:hover{transform:none;background:rgba(0,0,0,0);color:#f27474}.swal2-close:focus{outline:none;box-shadow:inset 0 0 0 3px rgba(100,150,200,.5)}.swal2-close::-moz-focus-inner{border:0}.swal2-html-container{z-index:1;justify-content:center;margin:1em 1.6em .3em;padding:0;overflow:auto;color:inherit;font-size:1.125em;font-weight:normal;line-height:normal;text-align:center;word-wrap:break-word;word-break:break-word}.swal2-input,.swal2-file,.swal2-textarea,.swal2-select,.swal2-radio,.swal2-checkbox{margin:1em 2em 3px}.swal2-input,.swal2-file,.swal2-textarea{box-sizing:border-box;width:auto;transition:border-color .1s,box-shadow .1s;border:1px solid #d9d9d9;border-radius:.1875em;background:rgba(0,0,0,0);box-shadow:inset 0 1px 1px rgba(0,0,0,.06),0 0 0 3px rgba(0,0,0,0);color:inherit;font-size:1.125em}.swal2-input.swal2-inputerror,.swal2-file.swal2-inputerror,.swal2-textarea.swal2-inputerror{border-color:#f27474 !important;box-shadow:0 0 2px #f27474 !important}.swal2-input:focus,.swal2-file:focus,.swal2-textarea:focus{border:1px solid #b4dbed;outline:none;box-shadow:inset 0 1px 1px rgba(0,0,0,.06),0 0 0 3px rgba(100,150,200,.5)}.swal2-input::placeholder,.swal2-file::placeholder,.swal2-textarea::placeholder{color:#ccc}.swal2-range{margin:1em 2em 3px;background:#fff}.swal2-range input{width:80%}.swal2-range output{width:20%;color:inherit;font-weight:600;text-align:center}.swal2-range input,.swal2-range output{height:2.625em;padding:0;font-size:1.125em;line-height:2.625em}.swal2-input{height:2.625em;padding:0 .75em}.swal2-file{width:75%;margin-right:auto;margin-left:auto;background:rgba(0,0,0,0);font-size:1.125em}.swal2-textarea{height:6.75em;padding:.75em}.swal2-select{min-width:50%;max-width:100%;padding:.375em .625em;background:rgba(0,0,0,0);color:inherit;font-size:1.125em}.swal2-radio,.swal2-checkbox{align-items:center;justify-content:center;background:#fff;color:inherit}.swal2-radio label,.swal2-checkbox label{margin:0 .6em;font-size:1.125em}.swal2-radio input,.swal2-checkbox input{flex-shrink:0;margin:0 .4em}.swal2-input-label{display:flex;justify-content:center;margin:1em auto 0}.swal2-validation-message{align-items:center;justify-content:center;margin:1em 0 0;padding:.625em;overflow:hidden;background:#f0f0f0;color:#666;font-size:1em;font-weight:300}.swal2-validation-message::before{content:"!";display:inline-block;width:1.5em;min-width:1.5em;height:1.5em;margin:0 .625em;border-radius:50%;background-color:#f27474;color:#fff;font-weight:600;line-height:1.5em;text-align:center}.swal2-icon{position:relative;box-sizing:content-box;justify-content:center;width:5em;height:5em;margin:2.5em auto .6em;border:0.25em solid rgba(0,0,0,0);border-radius:50%;border-color:#000;font-family:inherit;line-height:5em;cursor:default;user-select:none}.swal2-icon .swal2-icon-content{display:flex;align-items:center;font-size:3.75em}.swal2-icon.swal2-error{border-color:#f27474;color:#f27474}.swal2-icon.swal2-error .swal2-x-mark{position:relative;flex-grow:1}.swal2-icon.swal2-error [class^=swal2-x-mark-line]{display:block;position:absolute;top:2.3125em;width:2.9375em;height:.3125em;border-radius:.125em;background-color:#f27474}.swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=left]{left:1.0625em;transform:rotate(45deg)}.swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=right]{right:1em;transform:rotate(-45deg)}.swal2-icon.swal2-error.swal2-icon-show{animation:swal2-animate-error-icon .5s}.swal2-icon.swal2-error.swal2-icon-show .swal2-x-mark{animation:swal2-animate-error-x-mark .5s}.swal2-icon.swal2-warning{border-color:#facea8;color:#f8bb86}.swal2-icon.swal2-warning.swal2-icon-show{animation:swal2-animate-error-icon .5s}.swal2-icon.swal2-warning.swal2-icon-show .swal2-icon-content{animation:swal2-animate-i-mark .5s}.swal2-icon.swal2-info{border-color:#9de0f6;color:#3fc3ee}.swal2-icon.swal2-info.swal2-icon-show{animation:swal2-animate-error-icon .5s}.swal2-icon.swal2-info.swal2-icon-show .swal2-icon-content{animation:swal2-animate-i-mark .8s}.swal2-icon.swal2-question{border-color:#c9dae1;color:#87adbd}.swal2-icon.swal2-question.swal2-icon-show{animation:swal2-animate-error-icon .5s}.swal2-icon.swal2-question.swal2-icon-show .swal2-icon-content{animation:swal2-animate-question-mark .8s}.swal2-icon.swal2-success{border-color:#a5dc86;color:#a5dc86}.swal2-icon.swal2-success [class^=swal2-success-circular-line]{position:absolute;width:3.75em;height:7.5em;transform:rotate(45deg);border-radius:50%}.swal2-icon.swal2-success [class^=swal2-success-circular-line][class$=left]{top:-0.4375em;left:-2.0635em;transform:rotate(-45deg);transform-origin:3.75em 3.75em;border-radius:7.5em 0 0 7.5em}.swal2-icon.swal2-success [class^=swal2-success-circular-line][class$=right]{top:-0.6875em;left:1.875em;transform:rotate(-45deg);transform-origin:0 3.75em;border-radius:0 7.5em 7.5em 0}.swal2-icon.swal2-success .swal2-success-ring{position:absolute;z-index:2;top:-0.25em;left:-0.25em;box-sizing:content-box;width:100%;height:100%;border:.25em solid rgba(165,220,134,.3);border-radius:50%}.swal2-icon.swal2-success .swal2-success-fix{position:absolute;z-index:1;top:.5em;left:1.625em;width:.4375em;height:5.625em;transform:rotate(-45deg)}.swal2-icon.swal2-success [class^=swal2-success-line]{display:block;position:absolute;z-index:2;height:.3125em;border-radius:.125em;background-color:#a5dc86}.swal2-icon.swal2-success [class^=swal2-success-line][class$=tip]{top:2.875em;left:.8125em;width:1.5625em;transform:rotate(45deg)}.swal2-icon.swal2-success [class^=swal2-success-line][class$=long]{top:2.375em;right:.5em;width:2.9375em;transform:rotate(-45deg)}.swal2-icon.swal2-success.swal2-icon-show .swal2-success-line-tip{animation:swal2-animate-success-line-tip .75s}.swal2-icon.swal2-success.swal2-icon-show .swal2-success-line-long{animation:swal2-animate-success-line-long .75s}.swal2-icon.swal2-success.swal2-icon-show .swal2-success-circular-line-right{animation:swal2-rotate-success-circular-line 4.25s ease-in}.swal2-progress-steps{flex-wrap:wrap;align-items:center;max-width:100%;margin:1.25em auto;padding:0;background:rgba(0,0,0,0);font-weight:600}.swal2-progress-steps li{display:inline-block;position:relative}.swal2-progress-steps .swal2-progress-step{z-index:20;flex-shrink:0;width:2em;height:2em;border-radius:2em;background:#2778c4;color:#fff;line-height:2em;text-align:center}.swal2-progress-steps .swal2-progress-step.swal2-active-progress-step{background:#2778c4}.swal2-progress-steps .swal2-progress-step.swal2-active-progress-step~.swal2-progress-step{background:#add8e6;color:#fff}.swal2-progress-steps .swal2-progress-step.swal2-active-progress-step~.swal2-progress-step-line{background:#add8e6}.swal2-progress-steps .swal2-progress-step-line{z-index:10;flex-shrink:0;width:2.5em;height:.4em;margin:0 -1px;background:#2778c4}[class^=swal2]{-webkit-tap-highlight-color:rgba(0,0,0,0)}.swal2-show{animation:swal2-show .3s}.swal2-hide{animation:swal2-hide .15s forwards}.swal2-noanimation{transition:none}.swal2-scrollbar-measure{position:absolute;top:-9999px;width:50px;height:50px;overflow:scroll}.swal2-rtl .swal2-close{margin-right:initial;margin-left:0}.swal2-rtl .swal2-timer-progress-bar{right:0;left:auto}@keyframes swal2-toast-show{0%{transform:translateY(-0.625em) rotateZ(2deg)}33%{transform:translateY(0) rotateZ(-2deg)}66%{transform:translateY(0.3125em) rotateZ(2deg)}100%{transform:translateY(0) rotateZ(0deg)}}@keyframes swal2-toast-hide{100%{transform:rotateZ(1deg);opacity:0}}@keyframes swal2-toast-animate-success-line-tip{0%{top:.5625em;left:.0625em;width:0}54%{top:.125em;left:.125em;width:0}70%{top:.625em;left:-0.25em;width:1.625em}84%{top:1.0625em;left:.75em;width:.5em}100%{top:1.125em;left:.1875em;width:.75em}}@keyframes swal2-toast-animate-success-line-long{0%{top:1.625em;right:1.375em;width:0}65%{top:1.25em;right:.9375em;width:0}84%{top:.9375em;right:0;width:1.125em}100%{top:.9375em;right:.1875em;width:1.375em}}@keyframes swal2-show{0%{transform:scale(0.7)}45%{transform:scale(1.05)}80%{transform:scale(0.95)}100%{transform:scale(1)}}@keyframes swal2-hide{0%{transform:scale(1);opacity:1}100%{transform:scale(0.5);opacity:0}}@keyframes swal2-animate-success-line-tip{0%{top:1.1875em;left:.0625em;width:0}54%{top:1.0625em;left:.125em;width:0}70%{top:2.1875em;left:-0.375em;width:3.125em}84%{top:3em;left:1.3125em;width:1.0625em}100%{top:2.8125em;left:.8125em;width:1.5625em}}@keyframes swal2-animate-success-line-long{0%{top:3.375em;right:2.875em;width:0}65%{top:3.375em;right:2.875em;width:0}84%{top:2.1875em;right:0;width:3.4375em}100%{top:2.375em;right:.5em;width:2.9375em}}@keyframes swal2-rotate-success-circular-line{0%{transform:rotate(-45deg)}5%{transform:rotate(-45deg)}12%{transform:rotate(-405deg)}100%{transform:rotate(-405deg)}}@keyframes swal2-animate-error-x-mark{0%{margin-top:1.625em;transform:scale(0.4);opacity:0}50%{margin-top:1.625em;transform:scale(0.4);opacity:0}80%{margin-top:-0.375em;transform:scale(1.15)}100%{margin-top:0;transform:scale(1);opacity:1}}@keyframes swal2-animate-error-icon{0%{transform:rotateX(100deg);opacity:0}100%{transform:rotateX(0deg);opacity:1}}@keyframes swal2-rotate-loading{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}@keyframes swal2-animate-question-mark{0%{transform:rotateY(-360deg)}100%{transform:rotateY(0)}}@keyframes swal2-animate-i-mark{0%{transform:rotateZ(45deg);opacity:0}25%{transform:rotateZ(-25deg);opacity:.4}50%{transform:rotateZ(15deg);opacity:.8}75%{transform:rotateZ(-5deg);opacity:1}100%{transform:rotateX(0);opacity:1}}body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown){overflow:hidden}body.swal2-height-auto{height:auto !important}body.swal2-no-backdrop .swal2-container{background-color:rgba(0,0,0,0) !important;pointer-events:none}body.swal2-no-backdrop .swal2-container .swal2-popup{pointer-events:all}body.swal2-no-backdrop .swal2-container .swal2-modal{box-shadow:0 0 10px rgba(0,0,0,.4)}@media print{body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown){overflow-y:scroll !important}body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown)>[aria-hidden=true]{display:none}body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown) .swal2-container{position:static !important}}body.swal2-toast-shown .swal2-container{box-sizing:border-box;width:360px;max-width:100%;background-color:rgba(0,0,0,0);pointer-events:none}body.swal2-toast-shown .swal2-container.swal2-top{top:0;right:auto;bottom:auto;left:50%;transform:translateX(-50%)}body.swal2-toast-shown .swal2-container.swal2-top-end,body.swal2-toast-shown .swal2-container.swal2-top-right{top:0;right:0;bottom:auto;left:auto}body.swal2-toast-shown .swal2-container.swal2-top-start,body.swal2-toast-shown .swal2-container.swal2-top-left{top:0;right:auto;bottom:auto;left:0}body.swal2-toast-shown .swal2-container.swal2-center-start,body.swal2-toast-shown .swal2-container.swal2-center-left{top:50%;right:auto;bottom:auto;left:0;transform:translateY(-50%)}body.swal2-toast-shown .swal2-container.swal2-center{top:50%;right:auto;bottom:auto;left:50%;transform:translate(-50%, -50%)}body.swal2-toast-shown .swal2-container.swal2-center-end,body.swal2-toast-shown .swal2-container.swal2-center-right{top:50%;right:0;bottom:auto;left:auto;transform:translateY(-50%)}body.swal2-toast-shown .swal2-container.swal2-bottom-start,body.swal2-toast-shown .swal2-container.swal2-bottom-left{top:auto;right:auto;bottom:0;left:0}body.swal2-toast-shown .swal2-container.swal2-bottom{top:auto;right:auto;bottom:0;left:50%;transform:translateX(-50%)}body.swal2-toast-shown .swal2-container.swal2-bottom-end,body.swal2-toast-shown .swal2-container.swal2-bottom-right{top:auto;right:0;bottom:0;left:auto}');
+      }(document, ':root{--swal2-outline: 0 0 0 3px rgba(100, 150, 200, 0.5);--swal2-container-padding: 0.625em;--swal2-backdrop: rgba(0, 0, 0, 0.4);--swal2-backdrop-transition: background-color 0.15s;--swal2-width: 32em;--swal2-padding: 0 0 1.25em;--swal2-border: none;--swal2-border-radius: 0.3125rem;--swal2-background: white;--swal2-color: #545454;--swal2-show-animation: swal2-show 0.3s;--swal2-hide-animation: swal2-hide 0.15s forwards;--swal2-icon-zoom: 1;--swal2-title-padding: 0.8em 1em 0;--swal2-html-container-padding: 1em 1.6em 0.3em;--swal2-input-border: 1px solid #d9d9d9;--swal2-input-border-radius: 0.1875em;--swal2-input-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.06), 0 0 0 3px transparent;--swal2-input-background: transparent;--swal2-input-transition: border-color 0.2s, box-shadow 0.2s;--swal2-input-hover-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.06), 0 0 0 3px transparent;--swal2-input-focus-border: 1px solid #b4dbed;--swal2-input-focus-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.06), 0 0 0 3px rgba(100, 150, 200, 0.5);--swal2-progress-step-background: #add8e6;--swal2-validation-message-background: #f0f0f0;--swal2-validation-message-color: #666;--swal2-footer-border-color: #eee;--swal2-footer-background: transparent;--swal2-footer-color: inherit;--swal2-timer-progress-bar-background: rgba(0, 0, 0, 0.3);--swal2-close-button-position: initial;--swal2-close-button-inset: auto;--swal2-close-button-font-size: 2.5em;--swal2-close-button-color: #ccc;--swal2-close-button-transition: color 0.2s, box-shadow 0.2s;--swal2-close-button-outline: initial;--swal2-close-button-box-shadow: inset 0 0 0 3px transparent;--swal2-close-button-focus-box-shadow: inset var(--swal2-outline);--swal2-close-button-hover-transform: none;--swal2-actions-justify-content: center;--swal2-actions-width: auto;--swal2-actions-margin: 1.25em auto 0;--swal2-actions-padding: 0;--swal2-actions-border-radius: 0;--swal2-actions-background: transparent;--swal2-action-button-transition: background-color 0.2s, box-shadow 0.2s;--swal2-action-button-hover: black 10%;--swal2-action-button-active: black 10%;--swal2-confirm-button-box-shadow: none;--swal2-confirm-button-border-radius: 0.25em;--swal2-confirm-button-background-color: #7066e0;--swal2-confirm-button-color: #fff;--swal2-deny-button-box-shadow: none;--swal2-deny-button-border-radius: 0.25em;--swal2-deny-button-background-color: #dc3741;--swal2-deny-button-color: #fff;--swal2-cancel-button-box-shadow: none;--swal2-cancel-button-border-radius: 0.25em;--swal2-cancel-button-background-color: #6e7881;--swal2-cancel-button-color: #fff;--swal2-toast-show-animation: swal2-toast-show 0.5s;--swal2-toast-hide-animation: swal2-toast-hide 0.1s forwards;--swal2-toast-border: none;--swal2-toast-box-shadow: 0 0 1px hsl(0deg 0% 0% / 0.075), 0 1px 2px hsl(0deg 0% 0% / 0.075), 1px 2px 4px hsl(0deg 0% 0% / 0.075), 1px 3px 8px hsl(0deg 0% 0% / 0.075), 2px 4px 16px hsl(0deg 0% 0% / 0.075)}[data-swal2-theme=dark]{--swal2-dark-theme-black: #19191a;--swal2-dark-theme-white: #e1e1e1;--swal2-background: var(--swal2-dark-theme-black);--swal2-color: var(--swal2-dark-theme-white);--swal2-footer-border-color: #555;--swal2-input-background: color-mix(in srgb, var(--swal2-dark-theme-black), var(--swal2-dark-theme-white) 10%);--swal2-validation-message-background: color-mix( in srgb, var(--swal2-dark-theme-black), var(--swal2-dark-theme-white) 10% );--swal2-validation-message-color: var(--swal2-dark-theme-white);--swal2-timer-progress-bar-background: rgba(255, 255, 255, 0.7)}@media(prefers-color-scheme: dark){[data-swal2-theme=auto]{--swal2-dark-theme-black: #19191a;--swal2-dark-theme-white: #e1e1e1;--swal2-background: var(--swal2-dark-theme-black);--swal2-color: var(--swal2-dark-theme-white);--swal2-footer-border-color: #555;--swal2-input-background: color-mix(in srgb, var(--swal2-dark-theme-black), var(--swal2-dark-theme-white) 10%);--swal2-validation-message-background: color-mix( in srgb, var(--swal2-dark-theme-black), var(--swal2-dark-theme-white) 10% );--swal2-validation-message-color: var(--swal2-dark-theme-white);--swal2-timer-progress-bar-background: rgba(255, 255, 255, 0.7)}}body.swal2-shown:not(.swal2-no-backdrop,.swal2-toast-shown){overflow:hidden}body.swal2-height-auto{height:auto !important}body.swal2-no-backdrop .swal2-container{background-color:rgba(0,0,0,0) !important;pointer-events:none}body.swal2-no-backdrop .swal2-container .swal2-popup{pointer-events:auto}body.swal2-no-backdrop .swal2-container .swal2-modal{box-shadow:0 0 10px var(--swal2-backdrop)}body.swal2-toast-shown .swal2-container{box-sizing:border-box;width:360px;max-width:100%;background-color:rgba(0,0,0,0);pointer-events:none}body.swal2-toast-shown .swal2-container.swal2-top{inset:0 auto auto 50%;transform:translateX(-50%)}body.swal2-toast-shown .swal2-container.swal2-top-end,body.swal2-toast-shown .swal2-container.swal2-top-right{inset:0 0 auto auto}body.swal2-toast-shown .swal2-container.swal2-top-start,body.swal2-toast-shown .swal2-container.swal2-top-left{inset:0 auto auto 0}body.swal2-toast-shown .swal2-container.swal2-center-start,body.swal2-toast-shown .swal2-container.swal2-center-left{inset:50% auto auto 0;transform:translateY(-50%)}body.swal2-toast-shown .swal2-container.swal2-center{inset:50% auto auto 50%;transform:translate(-50%, -50%)}body.swal2-toast-shown .swal2-container.swal2-center-end,body.swal2-toast-shown .swal2-container.swal2-center-right{inset:50% 0 auto auto;transform:translateY(-50%)}body.swal2-toast-shown .swal2-container.swal2-bottom-start,body.swal2-toast-shown .swal2-container.swal2-bottom-left{inset:auto auto 0 0}body.swal2-toast-shown .swal2-container.swal2-bottom{inset:auto auto 0 50%;transform:translateX(-50%)}body.swal2-toast-shown .swal2-container.swal2-bottom-end,body.swal2-toast-shown .swal2-container.swal2-bottom-right{inset:auto 0 0 auto}@media print{body.swal2-shown:not(.swal2-no-backdrop,.swal2-toast-shown){overflow-y:scroll !important}body.swal2-shown:not(.swal2-no-backdrop,.swal2-toast-shown)>[aria-hidden=true]{display:none}body.swal2-shown:not(.swal2-no-backdrop,.swal2-toast-shown) .swal2-container{position:static !important}}div:where(.swal2-container){display:grid;position:fixed;z-index:1060;inset:0;box-sizing:border-box;grid-template-areas:"top-start     top            top-end" "center-start  center         center-end" "bottom-start  bottom-center  bottom-end";grid-template-rows:minmax(min-content, auto) minmax(min-content, auto) minmax(min-content, auto);height:100%;padding:var(--swal2-container-padding);overflow-x:hidden;transition:var(--swal2-backdrop-transition);-webkit-overflow-scrolling:touch}div:where(.swal2-container).swal2-backdrop-show,div:where(.swal2-container).swal2-noanimation{background:var(--swal2-backdrop)}div:where(.swal2-container).swal2-backdrop-hide{background:rgba(0,0,0,0) !important}div:where(.swal2-container).swal2-top-start,div:where(.swal2-container).swal2-center-start,div:where(.swal2-container).swal2-bottom-start{grid-template-columns:minmax(0, 1fr) auto auto}div:where(.swal2-container).swal2-top,div:where(.swal2-container).swal2-center,div:where(.swal2-container).swal2-bottom{grid-template-columns:auto minmax(0, 1fr) auto}div:where(.swal2-container).swal2-top-end,div:where(.swal2-container).swal2-center-end,div:where(.swal2-container).swal2-bottom-end{grid-template-columns:auto auto minmax(0, 1fr)}div:where(.swal2-container).swal2-top-start>.swal2-popup{align-self:start}div:where(.swal2-container).swal2-top>.swal2-popup{grid-column:2;place-self:start center}div:where(.swal2-container).swal2-top-end>.swal2-popup,div:where(.swal2-container).swal2-top-right>.swal2-popup{grid-column:3;place-self:start end}div:where(.swal2-container).swal2-center-start>.swal2-popup,div:where(.swal2-container).swal2-center-left>.swal2-popup{grid-row:2;align-self:center}div:where(.swal2-container).swal2-center>.swal2-popup{grid-column:2;grid-row:2;place-self:center center}div:where(.swal2-container).swal2-center-end>.swal2-popup,div:where(.swal2-container).swal2-center-right>.swal2-popup{grid-column:3;grid-row:2;place-self:center end}div:where(.swal2-container).swal2-bottom-start>.swal2-popup,div:where(.swal2-container).swal2-bottom-left>.swal2-popup{grid-column:1;grid-row:3;align-self:end}div:where(.swal2-container).swal2-bottom>.swal2-popup{grid-column:2;grid-row:3;place-self:end center}div:where(.swal2-container).swal2-bottom-end>.swal2-popup,div:where(.swal2-container).swal2-bottom-right>.swal2-popup{grid-column:3;grid-row:3;place-self:end end}div:where(.swal2-container).swal2-grow-row>.swal2-popup,div:where(.swal2-container).swal2-grow-fullscreen>.swal2-popup{grid-column:1/4;width:100%}div:where(.swal2-container).swal2-grow-column>.swal2-popup,div:where(.swal2-container).swal2-grow-fullscreen>.swal2-popup{grid-row:1/4;align-self:stretch}div:where(.swal2-container).swal2-no-transition{transition:none !important}div:where(.swal2-container)[popover]{width:auto;border:0}div:where(.swal2-container) div:where(.swal2-popup){display:none;position:relative;box-sizing:border-box;grid-template-columns:minmax(0, 100%);width:var(--swal2-width);max-width:100%;padding:var(--swal2-padding);border:var(--swal2-border);border-radius:var(--swal2-border-radius);background:var(--swal2-background);color:var(--swal2-color);font-family:inherit;font-size:1rem}div:where(.swal2-container) div:where(.swal2-popup):focus{outline:none}div:where(.swal2-container) div:where(.swal2-popup).swal2-loading{overflow-y:hidden}div:where(.swal2-container) div:where(.swal2-popup).swal2-draggable{cursor:grab}div:where(.swal2-container) div:where(.swal2-popup).swal2-draggable div:where(.swal2-icon){cursor:grab}div:where(.swal2-container) div:where(.swal2-popup).swal2-dragging{cursor:grabbing}div:where(.swal2-container) div:where(.swal2-popup).swal2-dragging div:where(.swal2-icon){cursor:grabbing}div:where(.swal2-container) h2:where(.swal2-title){position:relative;max-width:100%;margin:0;padding:var(--swal2-title-padding);color:inherit;font-size:1.875em;font-weight:600;text-align:center;text-transform:none;overflow-wrap:break-word;cursor:initial}div:where(.swal2-container) div:where(.swal2-actions){display:flex;z-index:1;box-sizing:border-box;flex-wrap:wrap;align-items:center;justify-content:var(--swal2-actions-justify-content);width:var(--swal2-actions-width);margin:var(--swal2-actions-margin);padding:var(--swal2-actions-padding);border-radius:var(--swal2-actions-border-radius);background:var(--swal2-actions-background)}div:where(.swal2-container) div:where(.swal2-loader){display:none;align-items:center;justify-content:center;width:2.2em;height:2.2em;margin:0 1.875em;animation:swal2-rotate-loading 1.5s linear 0s infinite normal;border-width:.25em;border-style:solid;border-radius:100%;border-color:#2778c4 rgba(0,0,0,0) #2778c4 rgba(0,0,0,0)}div:where(.swal2-container) button:where(.swal2-styled){margin:.3125em;padding:.625em 1.1em;transition:var(--swal2-action-button-transition);border:none;box-shadow:0 0 0 3px rgba(0,0,0,0);font-weight:500}div:where(.swal2-container) button:where(.swal2-styled):not([disabled]){cursor:pointer}div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm){border-radius:var(--swal2-confirm-button-border-radius);background:initial;background-color:var(--swal2-confirm-button-background-color);box-shadow:var(--swal2-confirm-button-box-shadow);color:var(--swal2-confirm-button-color);font-size:1em}div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm):hover{background-color:color-mix(in srgb, var(--swal2-confirm-button-background-color), var(--swal2-action-button-hover))}div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm):active{background-color:color-mix(in srgb, var(--swal2-confirm-button-background-color), var(--swal2-action-button-active))}div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-deny){border-radius:var(--swal2-deny-button-border-radius);background:initial;background-color:var(--swal2-deny-button-background-color);box-shadow:var(--swal2-deny-button-box-shadow);color:var(--swal2-deny-button-color);font-size:1em}div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-deny):hover{background-color:color-mix(in srgb, var(--swal2-deny-button-background-color), var(--swal2-action-button-hover))}div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-deny):active{background-color:color-mix(in srgb, var(--swal2-deny-button-background-color), var(--swal2-action-button-active))}div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-cancel){border-radius:var(--swal2-cancel-button-border-radius);background:initial;background-color:var(--swal2-cancel-button-background-color);box-shadow:var(--swal2-cancel-button-box-shadow);color:var(--swal2-cancel-button-color);font-size:1em}div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-cancel):hover{background-color:color-mix(in srgb, var(--swal2-cancel-button-background-color), var(--swal2-action-button-hover))}div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-cancel):active{background-color:color-mix(in srgb, var(--swal2-cancel-button-background-color), var(--swal2-action-button-active))}div:where(.swal2-container) button:where(.swal2-styled):focus-visible{outline:none;box-shadow:var(--swal2-action-button-focus-box-shadow)}div:where(.swal2-container) button:where(.swal2-styled)[disabled]:not(.swal2-loading){opacity:.4}div:where(.swal2-container) button:where(.swal2-styled)::-moz-focus-inner{border:0}div:where(.swal2-container) div:where(.swal2-footer){margin:1em 0 0;padding:1em 1em 0;border-top:1px solid var(--swal2-footer-border-color);background:var(--swal2-footer-background);color:var(--swal2-footer-color);font-size:1em;text-align:center;cursor:initial}div:where(.swal2-container) .swal2-timer-progress-bar-container{position:absolute;right:0;bottom:0;left:0;grid-column:auto !important;overflow:hidden;border-bottom-right-radius:var(--swal2-border-radius);border-bottom-left-radius:var(--swal2-border-radius)}div:where(.swal2-container) div:where(.swal2-timer-progress-bar){width:100%;height:.25em;background:var(--swal2-timer-progress-bar-background)}div:where(.swal2-container) img:where(.swal2-image){max-width:100%;margin:2em auto 1em;cursor:initial}div:where(.swal2-container) button:where(.swal2-close){position:var(--swal2-close-button-position);inset:var(--swal2-close-button-inset);z-index:2;align-items:center;justify-content:center;width:1.2em;height:1.2em;margin-top:0;margin-right:0;margin-bottom:-1.2em;padding:0;overflow:hidden;transition:var(--swal2-close-button-transition);border:none;border-radius:var(--swal2-border-radius);outline:var(--swal2-close-button-outline);background:rgba(0,0,0,0);color:var(--swal2-close-button-color);font-family:monospace;font-size:var(--swal2-close-button-font-size);cursor:pointer;justify-self:end}div:where(.swal2-container) button:where(.swal2-close):hover{transform:var(--swal2-close-button-hover-transform);background:rgba(0,0,0,0);color:#f27474}div:where(.swal2-container) button:where(.swal2-close):focus-visible{outline:none;box-shadow:var(--swal2-close-button-focus-box-shadow)}div:where(.swal2-container) button:where(.swal2-close)::-moz-focus-inner{border:0}div:where(.swal2-container) div:where(.swal2-html-container){z-index:1;justify-content:center;margin:0;padding:var(--swal2-html-container-padding);overflow:auto;color:inherit;font-size:1.125em;font-weight:normal;line-height:normal;text-align:center;overflow-wrap:break-word;word-break:break-word;cursor:initial}div:where(.swal2-container) input:where(.swal2-input),div:where(.swal2-container) input:where(.swal2-file),div:where(.swal2-container) textarea:where(.swal2-textarea),div:where(.swal2-container) select:where(.swal2-select),div:where(.swal2-container) div:where(.swal2-radio),div:where(.swal2-container) label:where(.swal2-checkbox){margin:1em 2em 3px}div:where(.swal2-container) input:where(.swal2-input),div:where(.swal2-container) input:where(.swal2-file),div:where(.swal2-container) textarea:where(.swal2-textarea){box-sizing:border-box;width:auto;transition:var(--swal2-input-transition);border:var(--swal2-input-border);border-radius:var(--swal2-input-border-radius);background:var(--swal2-input-background);box-shadow:var(--swal2-input-box-shadow);color:inherit;font-size:1.125em}div:where(.swal2-container) input:where(.swal2-input).swal2-inputerror,div:where(.swal2-container) input:where(.swal2-file).swal2-inputerror,div:where(.swal2-container) textarea:where(.swal2-textarea).swal2-inputerror{border-color:#f27474 !important;box-shadow:0 0 2px #f27474 !important}div:where(.swal2-container) input:where(.swal2-input):hover,div:where(.swal2-container) input:where(.swal2-file):hover,div:where(.swal2-container) textarea:where(.swal2-textarea):hover{box-shadow:var(--swal2-input-hover-box-shadow)}div:where(.swal2-container) input:where(.swal2-input):focus,div:where(.swal2-container) input:where(.swal2-file):focus,div:where(.swal2-container) textarea:where(.swal2-textarea):focus{border:var(--swal2-input-focus-border);outline:none;box-shadow:var(--swal2-input-focus-box-shadow)}div:where(.swal2-container) input:where(.swal2-input)::placeholder,div:where(.swal2-container) input:where(.swal2-file)::placeholder,div:where(.swal2-container) textarea:where(.swal2-textarea)::placeholder{color:#ccc}div:where(.swal2-container) .swal2-range{margin:1em 2em 3px;background:var(--swal2-background)}div:where(.swal2-container) .swal2-range input{width:80%}div:where(.swal2-container) .swal2-range output{width:20%;color:inherit;font-weight:600;text-align:center}div:where(.swal2-container) .swal2-range input,div:where(.swal2-container) .swal2-range output{height:2.625em;padding:0;font-size:1.125em;line-height:2.625em}div:where(.swal2-container) .swal2-input{height:2.625em;padding:0 .75em}div:where(.swal2-container) .swal2-file{width:75%;margin-right:auto;margin-left:auto;background:var(--swal2-input-background);font-size:1.125em}div:where(.swal2-container) .swal2-textarea{height:6.75em;padding:.75em}div:where(.swal2-container) .swal2-select{min-width:50%;max-width:100%;padding:.375em .625em;background:var(--swal2-input-background);color:inherit;font-size:1.125em}div:where(.swal2-container) .swal2-radio,div:where(.swal2-container) .swal2-checkbox{align-items:center;justify-content:center;background:var(--swal2-background);color:inherit}div:where(.swal2-container) .swal2-radio label,div:where(.swal2-container) .swal2-checkbox label{margin:0 .6em;font-size:1.125em}div:where(.swal2-container) .swal2-radio input,div:where(.swal2-container) .swal2-checkbox input{flex-shrink:0;margin:0 .4em}div:where(.swal2-container) label:where(.swal2-input-label){display:flex;justify-content:center;margin:1em auto 0}div:where(.swal2-container) div:where(.swal2-validation-message){align-items:center;justify-content:center;margin:1em 0 0;padding:.625em;overflow:hidden;background:var(--swal2-validation-message-background);color:var(--swal2-validation-message-color);font-size:1em;font-weight:300}div:where(.swal2-container) div:where(.swal2-validation-message)::before{content:"!";display:inline-block;width:1.5em;min-width:1.5em;height:1.5em;margin:0 .625em;border-radius:50%;background-color:#f27474;color:#fff;font-weight:600;line-height:1.5em;text-align:center}div:where(.swal2-container) .swal2-progress-steps{flex-wrap:wrap;align-items:center;max-width:100%;margin:1.25em auto;padding:0;background:rgba(0,0,0,0);font-weight:600}div:where(.swal2-container) .swal2-progress-steps li{display:inline-block;position:relative}div:where(.swal2-container) .swal2-progress-steps .swal2-progress-step{z-index:20;flex-shrink:0;width:2em;height:2em;border-radius:2em;background:#2778c4;color:#fff;line-height:2em;text-align:center}div:where(.swal2-container) .swal2-progress-steps .swal2-progress-step.swal2-active-progress-step{background:#2778c4}div:where(.swal2-container) .swal2-progress-steps .swal2-progress-step.swal2-active-progress-step~.swal2-progress-step{background:var(--swal2-progress-step-background);color:#fff}div:where(.swal2-container) .swal2-progress-steps .swal2-progress-step.swal2-active-progress-step~.swal2-progress-step-line{background:var(--swal2-progress-step-background)}div:where(.swal2-container) .swal2-progress-steps .swal2-progress-step-line{z-index:10;flex-shrink:0;width:2.5em;height:.4em;margin:0 -1px;background:#2778c4}div:where(.swal2-icon){position:relative;box-sizing:content-box;justify-content:center;width:5em;height:5em;margin:2.5em auto .6em;zoom:var(--swal2-icon-zoom);border:.25em solid rgba(0,0,0,0);border-radius:50%;border-color:#000;font-family:inherit;line-height:5em;cursor:default;user-select:none}div:where(.swal2-icon) .swal2-icon-content{display:flex;align-items:center;font-size:3.75em}div:where(.swal2-icon).swal2-error{border-color:#f27474;color:#f27474}div:where(.swal2-icon).swal2-error .swal2-x-mark{position:relative;flex-grow:1}div:where(.swal2-icon).swal2-error [class^=swal2-x-mark-line]{display:block;position:absolute;top:2.3125em;width:2.9375em;height:.3125em;border-radius:.125em;background-color:#f27474}div:where(.swal2-icon).swal2-error [class^=swal2-x-mark-line][class$=left]{left:1.0625em;transform:rotate(45deg)}div:where(.swal2-icon).swal2-error [class^=swal2-x-mark-line][class$=right]{right:1em;transform:rotate(-45deg)}div:where(.swal2-icon).swal2-error.swal2-icon-show{animation:swal2-animate-error-icon .5s}div:where(.swal2-icon).swal2-error.swal2-icon-show .swal2-x-mark{animation:swal2-animate-error-x-mark .5s}div:where(.swal2-icon).swal2-warning{border-color:#f8bb86;color:#f8bb86}div:where(.swal2-icon).swal2-warning.swal2-icon-show{animation:swal2-animate-error-icon .5s}div:where(.swal2-icon).swal2-warning.swal2-icon-show .swal2-icon-content{animation:swal2-animate-i-mark .5s}div:where(.swal2-icon).swal2-info{border-color:#3fc3ee;color:#3fc3ee}div:where(.swal2-icon).swal2-info.swal2-icon-show{animation:swal2-animate-error-icon .5s}div:where(.swal2-icon).swal2-info.swal2-icon-show .swal2-icon-content{animation:swal2-animate-i-mark .8s}div:where(.swal2-icon).swal2-question{border-color:#87adbd;color:#87adbd}div:where(.swal2-icon).swal2-question.swal2-icon-show{animation:swal2-animate-error-icon .5s}div:where(.swal2-icon).swal2-question.swal2-icon-show .swal2-icon-content{animation:swal2-animate-question-mark .8s}div:where(.swal2-icon).swal2-success{border-color:#a5dc86;color:#a5dc86}div:where(.swal2-icon).swal2-success [class^=swal2-success-circular-line]{position:absolute;width:3.75em;height:7.5em;border-radius:50%}div:where(.swal2-icon).swal2-success [class^=swal2-success-circular-line][class$=left]{top:-0.4375em;left:-2.0635em;transform:rotate(-45deg);transform-origin:3.75em 3.75em;border-radius:7.5em 0 0 7.5em}div:where(.swal2-icon).swal2-success [class^=swal2-success-circular-line][class$=right]{top:-0.6875em;left:1.875em;transform:rotate(-45deg);transform-origin:0 3.75em;border-radius:0 7.5em 7.5em 0}div:where(.swal2-icon).swal2-success .swal2-success-ring{position:absolute;z-index:2;top:-0.25em;left:-0.25em;box-sizing:content-box;width:100%;height:100%;border:.25em solid rgba(165,220,134,.3);border-radius:50%}div:where(.swal2-icon).swal2-success .swal2-success-fix{position:absolute;z-index:1;top:.5em;left:1.625em;width:.4375em;height:5.625em;transform:rotate(-45deg)}div:where(.swal2-icon).swal2-success [class^=swal2-success-line]{display:block;position:absolute;z-index:2;height:.3125em;border-radius:.125em;background-color:#a5dc86}div:where(.swal2-icon).swal2-success [class^=swal2-success-line][class$=tip]{top:2.875em;left:.8125em;width:1.5625em;transform:rotate(45deg)}div:where(.swal2-icon).swal2-success [class^=swal2-success-line][class$=long]{top:2.375em;right:.5em;width:2.9375em;transform:rotate(-45deg)}div:where(.swal2-icon).swal2-success.swal2-icon-show .swal2-success-line-tip{animation:swal2-animate-success-line-tip .75s}div:where(.swal2-icon).swal2-success.swal2-icon-show .swal2-success-line-long{animation:swal2-animate-success-line-long .75s}div:where(.swal2-icon).swal2-success.swal2-icon-show .swal2-success-circular-line-right{animation:swal2-rotate-success-circular-line 4.25s ease-in}[class^=swal2]{-webkit-tap-highlight-color:rgba(0,0,0,0)}.swal2-show{animation:var(--swal2-show-animation)}.swal2-hide{animation:var(--swal2-hide-animation)}.swal2-noanimation{transition:none}.swal2-scrollbar-measure{position:absolute;top:-9999px;width:50px;height:50px;overflow:scroll}.swal2-rtl .swal2-close{margin-right:initial;margin-left:0}.swal2-rtl .swal2-timer-progress-bar{right:0;left:auto}.swal2-toast{box-sizing:border-box;grid-column:1/4 !important;grid-row:1/4 !important;grid-template-columns:min-content auto min-content;padding:1em;overflow-y:hidden;border:var(--swal2-toast-border);background:var(--swal2-background);box-shadow:var(--swal2-toast-box-shadow);pointer-events:auto}.swal2-toast>*{grid-column:2}.swal2-toast h2:where(.swal2-title){margin:.5em 1em;padding:0;font-size:1em;text-align:initial}.swal2-toast .swal2-loading{justify-content:center}.swal2-toast input:where(.swal2-input){height:2em;margin:.5em;font-size:1em}.swal2-toast .swal2-validation-message{font-size:1em}.swal2-toast div:where(.swal2-footer){margin:.5em 0 0;padding:.5em 0 0;font-size:.8em}.swal2-toast button:where(.swal2-close){grid-column:3/3;grid-row:1/99;align-self:center;width:.8em;height:.8em;margin:0;font-size:2em}.swal2-toast div:where(.swal2-html-container){margin:.5em 1em;padding:0;overflow:initial;font-size:1em;text-align:initial}.swal2-toast div:where(.swal2-html-container):empty{padding:0}.swal2-toast .swal2-loader{grid-column:1;grid-row:1/99;align-self:center;width:2em;height:2em;margin:.25em}.swal2-toast .swal2-icon{grid-column:1;grid-row:1/99;align-self:center;width:2em;min-width:2em;height:2em;margin:0 .5em 0 0}.swal2-toast .swal2-icon .swal2-icon-content{display:flex;align-items:center;font-size:1.8em;font-weight:bold}.swal2-toast .swal2-icon.swal2-success .swal2-success-ring{width:2em;height:2em}.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line]{top:.875em;width:1.375em}.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=left]{left:.3125em}.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=right]{right:.3125em}.swal2-toast div:where(.swal2-actions){justify-content:flex-start;height:auto;margin:0;margin-top:.5em;padding:0 .5em}.swal2-toast button:where(.swal2-styled){margin:.25em .5em;padding:.4em .6em;font-size:1em}.swal2-toast .swal2-success{border-color:#a5dc86}.swal2-toast .swal2-success [class^=swal2-success-circular-line]{position:absolute;width:1.6em;height:3em;border-radius:50%}.swal2-toast .swal2-success [class^=swal2-success-circular-line][class$=left]{top:-0.8em;left:-0.5em;transform:rotate(-45deg);transform-origin:2em 2em;border-radius:4em 0 0 4em}.swal2-toast .swal2-success [class^=swal2-success-circular-line][class$=right]{top:-0.25em;left:.9375em;transform-origin:0 1.5em;border-radius:0 4em 4em 0}.swal2-toast .swal2-success .swal2-success-ring{width:2em;height:2em}.swal2-toast .swal2-success .swal2-success-fix{top:0;left:.4375em;width:.4375em;height:2.6875em}.swal2-toast .swal2-success [class^=swal2-success-line]{height:.3125em}.swal2-toast .swal2-success [class^=swal2-success-line][class$=tip]{top:1.125em;left:.1875em;width:.75em}.swal2-toast .swal2-success [class^=swal2-success-line][class$=long]{top:.9375em;right:.1875em;width:1.375em}.swal2-toast .swal2-success.swal2-icon-show .swal2-success-line-tip{animation:swal2-toast-animate-success-line-tip .75s}.swal2-toast .swal2-success.swal2-icon-show .swal2-success-line-long{animation:swal2-toast-animate-success-line-long .75s}.swal2-toast.swal2-show{animation:var(--swal2-toast-show-animation)}.swal2-toast.swal2-hide{animation:var(--swal2-toast-hide-animation)}@keyframes swal2-show{0%{transform:translate3d(0, -50px, 0) scale(0.9);opacity:0}100%{transform:translate3d(0, 0, 0) scale(1);opacity:1}}@keyframes swal2-hide{0%{transform:translate3d(0, 0, 0) scale(1);opacity:1}100%{transform:translate3d(0, -50px, 0) scale(0.9);opacity:0}}@keyframes swal2-animate-success-line-tip{0%{top:1.1875em;left:.0625em;width:0}54%{top:1.0625em;left:.125em;width:0}70%{top:2.1875em;left:-0.375em;width:3.125em}84%{top:3em;left:1.3125em;width:1.0625em}100%{top:2.8125em;left:.8125em;width:1.5625em}}@keyframes swal2-animate-success-line-long{0%{top:3.375em;right:2.875em;width:0}65%{top:3.375em;right:2.875em;width:0}84%{top:2.1875em;right:0;width:3.4375em}100%{top:2.375em;right:.5em;width:2.9375em}}@keyframes swal2-rotate-success-circular-line{0%{transform:rotate(-45deg)}5%{transform:rotate(-45deg)}12%{transform:rotate(-405deg)}100%{transform:rotate(-405deg)}}@keyframes swal2-animate-error-x-mark{0%{margin-top:1.625em;transform:scale(0.4);opacity:0}50%{margin-top:1.625em;transform:scale(0.4);opacity:0}80%{margin-top:-0.375em;transform:scale(1.15)}100%{margin-top:0;transform:scale(1);opacity:1}}@keyframes swal2-animate-error-icon{0%{transform:rotateX(100deg);opacity:0}100%{transform:rotateX(0deg);opacity:1}}@keyframes swal2-rotate-loading{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}@keyframes swal2-animate-question-mark{0%{transform:rotateY(-360deg)}100%{transform:rotateY(0)}}@keyframes swal2-animate-i-mark{0%{transform:rotateZ(45deg);opacity:0}25%{transform:rotateZ(-25deg);opacity:.4}50%{transform:rotateZ(15deg);opacity:.8}75%{transform:rotateZ(-5deg);opacity:1}100%{transform:rotateX(0);opacity:1}}@keyframes swal2-toast-show{0%{transform:translateY(-0.625em) rotateZ(2deg)}33%{transform:translateY(0) rotateZ(-2deg)}66%{transform:translateY(0.3125em) rotateZ(2deg)}100%{transform:translateY(0) rotateZ(0deg)}}@keyframes swal2-toast-hide{100%{transform:rotateZ(1deg);opacity:0}}@keyframes swal2-toast-animate-success-line-tip{0%{top:.5625em;left:.0625em;width:0}54%{top:.125em;left:.125em;width:0}70%{top:.625em;left:-0.25em;width:1.625em}84%{top:1.0625em;left:.75em;width:.5em}100%{top:1.125em;left:.1875em;width:.75em}}@keyframes swal2-toast-animate-success-line-long{0%{top:1.625em;right:1.375em;width:0}65%{top:1.25em;right:.9375em;width:0}84%{top:.9375em;right:0;width:1.125em}100%{top:.9375em;right:.1875em;width:1.375em}}');
     }
   });
 
@@ -4630,7 +5290,7 @@
     return GenIcon({ "tag": "svg", "attr": { "viewBox": "0 0 24 24" }, "child": [{ "tag": "path", "attr": { "fill": "none", "d": "M0 0h24v24H0z" } }, { "tag": "path", "attr": { "d": "M3 5h2V3c-1.1 0-2 .9-2 2zm0 8h2v-2H3v2zm4 8h2v-2H7v2zM3 9h2V7H3v2zm10-6h-2v2h2V3zm6 0v2h2c0-1.1-.9-2-2-2zM5 21v-2H3c0 1.1.9 2 2 2zm-2-4h2v-2H3v2zM9 3H7v2h2V3zm2 18h2v-2h-2v2zm8-8h2v-2h-2v2zm0 8c1.1 0 2-.9 2-2h-2v2zm0-12h2V7h-2v2zm0 8h2v-2h-2v2zm-4 4h2v-2h-2v2zm0-16h2V3h-2v2zM7 17h10V7H7v10zm2-8h6v6H9V9z" } }] })(props);
   }
   function MdDesktopWindows(props) {
-    return GenIcon({ "tag": "svg", "attr": { "viewBox": "0 0 24 24" }, "child": [{ "tag": "path", "attr": { "fill": "none", "d": "M0 0h24v24H0z" } }, { "tag": "path", "attr": { "d": "M21 2H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h7v2H8v2h8v-2h-2v-2h7c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H3V4h18v12z" } }] })(props);
+    return GenIcon({ "tag": "svg", "attr": { "viewBox": "0 0 24 24" }, "child": [{ "tag": "path", "attr": { "fill": "none", "d": "M0 0h24v24H0z" } }, { "tag": "path", "attr": { "d": "M20 3H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h6v2H8v2h8v-2h-2v-2h6c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2" } }] })(props);
   }
 
   // src/errors.ts
@@ -4656,12 +5316,14 @@
     }
     current = false;
     id = makeId(12);
-    async previewBackground() {
+    static attributes = [];
+    static backgroundTypeName;
+    async previewBackground(_path = []) {
       throw new NotImplementedError(
         "Method previewBackground is not implemented"
       );
     }
-    async backgroundElement() {
+    async backgroundElement(_path = []) {
       throw new NotImplementedError(
         "Method backgroundElement is not implemented"
       );
@@ -4677,19 +5339,18 @@
     hooks__onBeforeRemoveBackground(removedBG) {
     }
   };
-  __publicField(BaseBackground, "attributes", []);
-  __publicField(BaseBackground, "backgroundTypeName");
 
   // src/background/cssBackground.tsx
   var import_sweetalert2 = __toESM(require_sweetalert2_all());
-  var _CSSBackground = class extends BaseBackground {
+  var CSSBackground = class _CSSBackground extends BaseBackground {
+    static backgroundTypeName = "CSS";
     constructor(css) {
       super();
       this.css = css;
     }
     css;
     async backgroundElement() {
-      return /* @__PURE__ */ h("div", { style: { width: "100px", height: "100px", background: this.css } }, /* @__PURE__ */ h("div", { style: { width: "100%", height: "100%", background: this.css } }));
+      return /* @__PURE__ */ h("div", { className: "BGE-cssBackground", style: { background: this.css } });
     }
     async previewBackground() {
       return () => /* @__PURE__ */ h("div", { style: { background: this.css } });
@@ -4709,8 +5370,6 @@
         return null;
     }
   };
-  var CSSBackground = _CSSBackground;
-  __publicField(CSSBackground, "backgroundTypeName", "CSS");
 
   // src/hooks.ts
   function useLocalStorage(key, initialValue, parse = JSON.parse, stringify = JSON.stringify) {
@@ -4723,9 +5382,12 @@
         return initialValue;
       }
     });
+    const valueRef = React.useRef(storedValue);
+    valueRef.current = storedValue;
     const setValue = (value) => {
       try {
-        const valueToStore = value instanceof Function ? value(storedValue) : value;
+        const valueToStore = value instanceof Function ? value(valueRef.current) : value;
+        valueRef.current = valueToStore;
         setStoredValue(valueToStore);
         window.localStorage.setItem(key, stringify(valueToStore));
       } catch (error) {
@@ -4773,13 +5435,10 @@
   function usePromise(promise, inputs) {
     const [{ error, result, state }, dispatch] = React.useReducer(reducer, defaultState);
     React.useEffect(() => {
-      promise = resolvePromise(promise);
-      if (!promise) {
-        return;
-      }
+      const resolvedPromise = Promise.resolve().then(() => resolvePromise(promise));
       let canceled = false;
       dispatch({ type: states.pending });
-      promise.then(
+      resolvedPromise.then(
         (result2) => !canceled && dispatch({
           payload: result2,
           type: states.resolved
@@ -4795,18 +5454,111 @@
     }, inputs);
     return [result, error, state];
   }
-  function useInterval(callback, delay) {
-    const savedCallback = React.useRef();
-    React.useEffect(() => {
-      savedCallback.current = callback;
-    }, [callback]);
-    React.useEffect(() => {
-      function tick() {
-        savedCallback.current();
-      }
-      let id = setInterval(tick, delay);
-      return () => clearInterval(id);
-    }, []);
+
+  // src/scale.ts
+  var MIN_BACKGROUND_SCALE = 0.25;
+  var MAX_BACKGROUND_SCALE = 3;
+  function clampScale(value) {
+    if (!Number.isFinite(value))
+      return 1;
+    return Math.min(MAX_BACKGROUND_SCALE, Math.max(MIN_BACKGROUND_SCALE, value));
+  }
+
+  // src/blur.ts
+  var BLUR_MIN = 0;
+  var BLUR_MAX = 60;
+  var BLUR_STEP = 0.1;
+  var BLUR_PULSE_STRENGTH_MIN = 0;
+  var BLUR_PULSE_STRENGTH_MAX = 60;
+  var BLUR_PULSE_STRENGTH_STEP = 0.5;
+  var BLUR_PULSE_STRENGTH_DEFAULT = 10;
+  var BLUR_TRANSITION_MIN = 0;
+  var BLUR_TRANSITION_MAX = 500;
+  var BLUR_TRANSITION_STEP = 10;
+  var BLUR_TRANSITION_DEFAULT = 160;
+  function clampBlur(value, fallback = BLUR_MIN) {
+    if (!Number.isFinite(value))
+      return fallback;
+    return Math.min(BLUR_MAX, Math.max(BLUR_MIN, value));
+  }
+  function toNumber(value, fallback) {
+    const parsed = typeof value === "number" ? value : parseFloat(String(value));
+    return Number.isFinite(parsed) ? parsed : fallback;
+  }
+  function clampStoredNumber(raw, min, max, fallback) {
+    const parsed = toNumber(raw, Number.NaN);
+    if (!Number.isFinite(parsed))
+      return fallback;
+    return Math.min(max, Math.max(min, parsed));
+  }
+  function clampBlurValue(value) {
+    return clampBlur(toNumber(value, BLUR_MIN));
+  }
+  function parseBackgroundBlur(raw) {
+    return clampStoredNumber(raw, BLUR_MIN, BLUR_MAX, 0);
+  }
+  function parseBackgroundBrightness(raw) {
+    return clampStoredNumber(raw, 0, 1, 1);
+  }
+  function parseBackgroundScale(raw) {
+    return clampStoredNumber(raw, 0.25, 3, 1);
+  }
+  function clampBlurPulseStrength(value) {
+    if (!Number.isFinite(value))
+      return BLUR_PULSE_STRENGTH_DEFAULT;
+    return Math.min(
+      BLUR_PULSE_STRENGTH_MAX,
+      Math.max(BLUR_PULSE_STRENGTH_MIN, value)
+    );
+  }
+  function clampBlurPulseStrengthValue(value) {
+    return clampBlurPulseStrength(toNumber(value, BLUR_PULSE_STRENGTH_DEFAULT));
+  }
+  function parseBlurPulseStrength(raw) {
+    return clampStoredNumber(
+      raw,
+      BLUR_PULSE_STRENGTH_MIN,
+      BLUR_PULSE_STRENGTH_MAX,
+      BLUR_PULSE_STRENGTH_DEFAULT
+    );
+  }
+  function clampBlurTransition(value) {
+    if (!Number.isFinite(value))
+      return BLUR_TRANSITION_DEFAULT;
+    const clamped = Math.min(
+      BLUR_TRANSITION_MAX,
+      Math.max(BLUR_TRANSITION_MIN, value)
+    );
+    return Math.round(clamped);
+  }
+  function clampBlurTransitionValue(value) {
+    return clampBlurTransition(toNumber(value, BLUR_TRANSITION_DEFAULT));
+  }
+  function parseBlurTransition(raw) {
+    return clampStoredNumber(
+      raw,
+      BLUR_TRANSITION_MIN,
+      BLUR_TRANSITION_MAX,
+      BLUR_TRANSITION_DEFAULT
+    );
+  }
+  function backgroundEffectStyle(blur, brightness, scale) {
+    const blurValue = clampBlur(blur);
+    const brightnessValue = Number.isFinite(brightness) ? brightness : 1;
+    const filter = [
+      blurValue > 0 ? `blur(${blurValue}px)` : "",
+      brightnessValue !== 1 ? `brightness(${brightnessValue})` : ""
+    ].filter(Boolean).join(" ");
+    return {
+      filter: filter || "none",
+      transform: scale !== 1 ? `scale(${scale})` : "none"
+    };
+  }
+  function blurTransitionCss(durationMs) {
+    const duration = clampBlurTransition(durationMs);
+    if (duration <= 0)
+      return "";
+    return `filter ${duration}ms ease, transform ${duration}ms ease`;
   }
 
   // src/keys.ts
@@ -4815,107 +5567,429 @@
   var STORE_BGSCALE = "cc.microblock.bgenhanced.backgroundscale";
   var STORE_BGBLUR = "cc.microblock.bgenhanced.backgrounblur";
   var STORE_BGBRIGHTNESS = "cc.microblock.bgenhanced.backgroundbrightness";
+  var STORE_BGBLURTRANSITION = "cc.microblock.bgenhanced.blurtransition";
+  var STORE_BGBLURPULSE = "cc.microblock.bgenhanced.blurpulsestrength";
+  var STORE_BGMAXEDGE = "cc.microblock.bgenhanced.maximageedge";
 
-  // src/index.tsx
-  var import_react3 = __toESM(require_react());
+  // src/mediaLoad.ts
+  var mountedUrls = /* @__PURE__ */ new Map();
+  var preloadedUrls = /* @__PURE__ */ new Map();
+  function mountFileCached(path) {
+    if (!path)
+      return Promise.resolve("");
+    let pending = mountedUrls.get(path);
+    if (pending === void 0) {
+      pending = betterncm.fs.mountFile(path);
+      mountedUrls.set(path, pending);
+      pending.catch(() => mountedUrls.delete(path));
+    }
+    return pending;
+  }
+  function addPreloadLink(url) {
+    if (!url || document.querySelector(`link[data-bge-preload="${CSS.escape(url)}"]`))
+      return;
+    const link = document.createElement("link");
+    link.rel = "preload";
+    link.as = "image";
+    link.href = url;
+    link.setAttribute("data-bge-preload", url);
+    document.head.appendChild(link);
+  }
+  async function preloadBackground(target) {
+    try {
+      const url = await resolveTargetUrl(target);
+      if (!url)
+        return "";
+      addPreloadLink(url);
+      let pending = preloadedUrls.get(url);
+      if (pending === void 0) {
+        pending = new Promise((resolve) => {
+          const image = new Image();
+          image.onload = () => resolve(url);
+          image.onerror = () => resolve(url);
+          image.src = url;
+        });
+        preloadedUrls.set(url, pending);
+      }
+      await pending;
+      return url;
+    } catch {
+      return "";
+    }
+  }
+  async function resolveTargetUrl(target) {
+    if (typeof target === "string")
+      return target;
+    if (!target || typeof target !== "object")
+      return "";
+    const asImage = target;
+    if (typeof asImage.resolveImageUrl === "function") {
+      return await asImage.resolveImageUrl();
+    }
+    const asUrl = target;
+    return typeof asUrl.url === "string" ? asUrl.url : "";
+  }
+  function preloadBackgrounds(backgrounds) {
+    if (!Array.isArray(backgrounds))
+      return;
+    for (const background of backgrounds)
+      preloadBackground(background);
+  }
+  function useMountedUrl(imageUrl) {
+    const [url, setUrl] = React.useState("");
+    React.useEffect(() => {
+      if (!imageUrl) {
+        setUrl("");
+        return;
+      }
+      let disposed = false;
+      setUrl("");
+      mountFileCached(imageUrl).then(
+        (mounted) => {
+          if (!disposed)
+            setUrl(mounted || "");
+        },
+        () => {
+          if (!disposed)
+            setUrl("");
+        }
+      );
+      return () => {
+        disposed = true;
+      };
+    }, [imageUrl]);
+    return url;
+  }
 
   // src/background/coverImageBackground.tsx
-  var lastUrl = "";
-  var _CoverImageBackground = class extends BaseBackground {
+  function getCoverUrl() {
+    const image = document.querySelector(".normal.j-cover, .cmd-image");
+    if (!image?.src)
+      return "";
+    const url = new URL(image.src, document.baseURI);
+    const query = url.search.slice(1);
+    const nested = url.searchParams.get("url") || url.searchParams.get("src") || query;
+    const direct = /^https?:\/\//.test(nested) ? nested : "";
+    return direct || image.src;
+  }
+  function Cover({ preview = false }) {
+    const [url, setUrl] = React.useState("");
+    const previousUrl = React.useRef("");
+    const displayedUrl = React.useRef("");
+    React.useEffect(() => {
+      let disposed = false;
+      let latest = "";
+      let pending;
+      const update = () => {
+        const next = getCoverUrl();
+        if (!next || next === latest)
+          return;
+        latest = next;
+        preloadBackground(next);
+        if (pending)
+          pending.onload = pending.onerror = null;
+        const image = new Image();
+        pending = image;
+        image.onload = () => {
+          if (!disposed && latest === next) {
+            previousUrl.current = displayedUrl.current;
+            displayedUrl.current = next;
+            setUrl(next);
+          }
+          image.onload = image.onerror = null;
+        };
+        image.onerror = () => {
+          image.onload = image.onerror = null;
+          if (latest === next)
+            latest = "";
+        };
+        image.src = next;
+      };
+      const observer = new MutationObserver(update);
+      observer.observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ["src"] });
+      update();
+      return () => {
+        disposed = true;
+        observer.disconnect();
+        if (pending)
+          pending.onload = pending.onerror = null;
+      };
+    }, []);
+    if (preview)
+      return /* @__PURE__ */ h("div", { style: { background: url ? `url(${JSON.stringify(url)}) center / cover` : "transparent" } });
+    return /* @__PURE__ */ h("div", { className: "BGE-coverImageBG" }, previousUrl.current && /* @__PURE__ */ h("img", { className: "BGE-coverImageBG-b", src: previousUrl.current }), url && /* @__PURE__ */ h("img", { key: url, className: "BGE-coverImageBG-a BGE-coverImageBG-enter", src: url }));
+  }
+  var CoverImageBackground = class _CoverImageBackground extends BaseBackground {
+    constructor(ImageUrl = "") {
+      super();
+      this.ImageUrl = ImageUrl;
+    }
+    static backgroundTypeName = "\u5F53\u524D\u5C01\u9762";
+    async backgroundElement() {
+      return /* @__PURE__ */ h(Cover, null);
+    }
+    async previewBackground() {
+      return () => /* @__PURE__ */ h(Cover, { preview: true });
+    }
+    static async askAndCreate() {
+      return new _CoverImageBackground();
+    }
+    static default() {
+      return new _CoverImageBackground();
+    }
+  };
+
+  // src/background/imageBackground.tsx
+  var import_sweetalert22 = __toESM(require_sweetalert2_all());
+
+  // src/imageCache.ts
+  var THUMBNAIL_MAX_EDGE = 48;
+  var THUMBNAIL_QUALITY = 0.55;
+  var CACHE_FOLDER = ".bge-cache";
+  var cacheDirReady = /* @__PURE__ */ new Map();
+  var prepared = /* @__PURE__ */ new Map();
+  function fitWithin({ width, height }, maxEdge) {
+    if (!(width > 0) || !(height > 0) || !(maxEdge > 0))
+      return { width: 0, height: 0 };
+    if (width <= maxEdge && height <= maxEdge)
+      return { width, height };
+    const ratio = maxEdge / Math.max(width, height);
+    return {
+      width: Math.max(1, Math.round(width * ratio)),
+      height: Math.max(1, Math.round(height * ratio))
+    };
+  }
+  function hashPath(value) {
+    let hash = 2166136261;
+    for (let index = 0; index < value.length; index++) {
+      hash ^= value.charCodeAt(index);
+      hash = Math.imul(hash, 16777619);
+    }
+    return (hash >>> 0).toString(36);
+  }
+  function cacheFileName(filePath, maxEdge) {
+    return `${hashPath(filePath)}-${maxEdge}w.webp`;
+  }
+  function compressibleKind(filePath) {
+    const extension = (filePath.split(/[?#]/)[0].match(/\.([a-z0-9]+)$/i)?.[1] ?? "").toLowerCase();
+    if (!extension)
+      return "thumbnail";
+    if (["mp4", "webm", "mov", "mkv", "avi"].includes(extension))
+      return "skip";
+    if (["gif", "apng", "svg", "bmp", "ico"].includes(extension))
+      return "skip";
+    if (["jpg", "jpeg", "png", "webp", "avif"].includes(extension))
+      return "compress";
+    return "thumbnail";
+  }
+  function formatBytes(bytes) {
+    if (!Number.isFinite(bytes) || bytes <= 0)
+      return "0 KB";
+    if (bytes < 1024 * 1024)
+      return `${Math.round(bytes / 1024)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  }
+  function canvasToBlob(canvas, quality) {
+    return new Promise((resolve) => {
+      try {
+        canvas.toBlob((blob) => resolve(blob && blob.size > 0 ? blob : null), "image/webp", quality);
+      } catch {
+        resolve(null);
+      }
+    });
+  }
+  async function drawToBlob(blob, maxEdge, quality) {
+    const bitmap = await createImageBitmap(blob).catch(() => null);
+    if (bitmap === null)
+      return null;
+    try {
+      const source = { width: bitmap.width, height: bitmap.height };
+      const target = fitWithin(source, maxEdge);
+      if (target.width <= 0 || target.height <= 0)
+        return null;
+      const canvas = document.createElement("canvas");
+      canvas.width = target.width;
+      canvas.height = target.height;
+      const context = canvas.getContext("2d");
+      if (context === null)
+        return null;
+      context.drawImage(bitmap, 0, 0, target.width, target.height);
+      const output = await canvasToBlob(canvas, quality);
+      return output === null ? null : { output, source };
+    } finally {
+      bitmap.close?.();
+    }
+  }
+  async function ensureCacheDir(pluginPath) {
+    const directory = `${pluginPath.replace(/[\\/]+$/, "")}/${CACHE_FOLDER}`;
+    let ready = cacheDirReady.get(directory);
+    if (ready === void 0) {
+      ready = betterncm.fs.mkdir(directory).then(
+        () => directory,
+        () => {
+          cacheDirReady.delete(directory);
+          throw new Error("\u65E0\u6CD5\u521B\u5EFA\u63D2\u4EF6\u7F13\u5B58\u76EE\u5F55");
+        }
+      );
+      cacheDirReady.set(directory, ready);
+    }
+    return await ready;
+  }
+  async function createThumbnail(filePath) {
+    const blob = await betterncm.fs.readFile(filePath);
+    if (!blob || blob.size === 0)
+      return "";
+    const scaled = await drawToBlob(blob, THUMBNAIL_MAX_EDGE, THUMBNAIL_QUALITY).catch(() => null);
+    if (scaled === null)
+      return "";
+    return await new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(typeof reader.result === "string" ? reader.result : "");
+      reader.onerror = () => resolve("");
+      reader.readAsDataURL(scaled.output);
+    });
+  }
+  async function compressInner(filePath, maxEdge, pluginPath) {
+    const directory = await ensureCacheDir(pluginPath);
+    const target = `${directory}/${cacheFileName(filePath, maxEdge)}`;
+    if (await betterncm.fs.exists(target))
+      return target;
+    const source = await betterncm.fs.readFile(filePath);
+    const scaled = await drawToBlob(source, maxEdge, 0.86);
+    if (scaled === null)
+      return "";
+    if (scaled.output.size >= source.size)
+      return "";
+    const written = await betterncm.fs.writeFile(target, scaled.output);
+    if (!written)
+      return "";
+    console.log(`BGEnhanced: ${filePath} ${formatBytes(source.size)} -> cached ${formatBytes(scaled.output.size)}`);
+    return target;
+  }
+  function prepareImage(filePath, maxEdge, pluginPath) {
+    if (!filePath || !(maxEdge > 0))
+      return Promise.resolve("");
+    if (compressibleKind(filePath) !== "compress")
+      return Promise.resolve("");
+    const key = `${filePath}|${maxEdge}`;
+    let pending = prepared.get(key);
+    if (pending === void 0) {
+      pending = compressInner(filePath, maxEdge, pluginPath).catch(() => "");
+      prepared.set(key, pending);
+    }
+    return pending;
+  }
+  async function cachedImagePath(filePath, maxEdge, pluginPath) {
+    if (!filePath || !(maxEdge > 0) || compressibleKind(filePath) !== "compress")
+      return "";
+    try {
+      const directory = await ensureCacheDir(pluginPath);
+      const target = `${directory}/${cacheFileName(filePath, maxEdge)}`;
+      return await betterncm.fs.exists(target) ? target : "";
+    } catch {
+      return "";
+    }
+  }
+  async function resolvedImagePath(filePath, maxEdge, pluginPath) {
+    return await cachedImagePath(filePath, maxEdge, pluginPath) || filePath;
+  }
+  async function mountedImageUrl(filePath, maxEdge, pluginPath) {
+    if (!filePath)
+      return "";
+    const path = await resolvedImagePath(filePath, maxEdge, pluginPath);
+    return await mountFileCached(path);
+  }
+
+  // src/background/imageBackground.tsx
+  function maxImageEdgeSetting() {
+    try {
+      const raw = window.localStorage.getItem(STORE_BGMAXEDGE);
+      if (raw === null || raw.trim() === "")
+        return 0;
+      const value = Number(raw);
+      return Number.isFinite(value) && value >= 0 ? value : 0;
+    } catch {
+      return 0;
+    }
+  }
+  function BackgroundImage({ imageUrl, thumbnail }) {
+    const full = useMountedUrl(imageUrl);
+    const placeholder = useMountedUrl(thumbnail);
+    const [loaded, setLoaded] = React.useState(false);
+    if (!full && !placeholder)
+      return null;
+    return /* @__PURE__ */ h(f, null, thumbnail && !(loaded && placeholder) && /* @__PURE__ */ h(
+      "img",
+      {
+        "aria-hidden": "true",
+        src: placeholder,
+        style: {
+          filter: "blur(24px)",
+          transform: "scale(1.15)",
+          transformOrigin: "center",
+          opacity: !placeholder ? 0 : loaded ? 0 : 1
+        }
+      }
+    ), full && /* @__PURE__ */ h(
+      "img",
+      {
+        src: full,
+        onLoad: () => setLoaded(true),
+        onError: () => setLoaded(true),
+        style: { opacity: loaded ? 1 : 0 }
+      }
+    ));
+  }
+  var ImageBackground = class _ImageBackground extends BaseBackground {
+    static backgroundTypeName = "\u56FE\u7247";
     constructor(ImageUrl) {
       super();
       this.ImageUrl = ImageUrl;
     }
     ImageUrl;
-    async backgroundElement() {
-      return /* @__PURE__ */ h("div", { className: "BGE-coverImageBG" }, /* @__PURE__ */ h(
-        "img",
-        {
-          className: "BGE-coverImageBG-a"
-        }
-      ), /* @__PURE__ */ h(
-        "img",
-        {
-          className: "BGE-coverImageBG-b"
-        }
-      ));
-    }
-    async previewBackground() {
-      return () => /* @__PURE__ */ h("div", { className: "BGE-coverImageBGPreview", style: { background: "transparent" } });
-    }
-    static async askAndCreate() {
-      lastUrl = "";
-      return new _CoverImageBackground("");
-    }
-    static default() {
-      return new _CoverImageBackground("");
-    }
-  };
-  var CoverImageBackground = _CoverImageBackground;
-  __publicField(CoverImageBackground, "backgroundTypeName", "\u5F53\u524D\u5C01\u9762");
-  setInterval(async () => {
-    const preloadImage = (src) => new Promise((resolve, reject) => {
-      const image = new Image();
-      image.onload = resolve;
-      image.onerror = reject;
-      image.src = src;
-    });
-    if (document.querySelector(".normal.j-cover, .cmd-image")) {
-      const url = `${document.querySelector(".normal.j-cover, .cmd-image").src.split("?")[1]}`;
-      if (lastUrl !== url) {
-        lastUrl = url;
-        await preloadImage(url).catch(() => {
-        });
-      }
-      for (const img of document.querySelectorAll(".BGE-coverImageBG")) {
-        const a = img.querySelector(".BGE-coverImageBG-a");
-        const b = img.querySelector(".BGE-coverImageBG-b");
-        if (a.src !== url) {
-          b.style.opacity = "0";
-          b.src = url;
-          await new Promise((r) => {
-            b.addEventListener("load", r);
-            b.addEventListener("error", r);
-          });
-          a.style.opacity = "0";
-          b.style.opacity = "1";
-          await new Promise((r) => setTimeout(r, 1100));
-          b.classList.add("BGE-coverImageBG-a");
-          b.classList.remove("BGE-coverImageBG-b");
-          a.classList.add("BGE-coverImageBG-b");
-          a.classList.remove("BGE-coverImageBG-a");
-          a.src = "";
-          b.parentElement.appendChild(a);
-        }
-      }
-      for (const img of document.querySelectorAll(".BGE-coverImageBGPreview")) {
-        img.style.background = `url(${url}) 0% 0% / cover`;
-      }
-    }
-  }, 300);
-
-  // src/background/imageBackground.tsx
-  var import_sweetalert22 = __toESM(require_sweetalert2_all());
-  var _mountedImageUrl;
-  var _ImageBackground = class extends BaseBackground {
-    constructor(ImageUrl) {
-      super();
-      __publicField(this, "ImageUrl");
-      __privateAdd(this, _mountedImageUrl, void 0);
-      this.ImageUrl = ImageUrl;
-    }
+    /** Optional downscaled copy in the plugin cache; "" means "use ImageUrl". */
+    cachePath = "";
+    /** Optional ≤48px data url used as the blurred placeholder. */
+    thumbnail = "";
+    #mountedImageUrl;
+    #mountedFor = "";
     async getMountedImageUrl() {
-      if (__privateGet(this, _mountedImageUrl) === void 0)
-        __privateSet(this, _mountedImageUrl, betterncm.fs.mountFile(this.ImageUrl));
-      return await __privateGet(this, _mountedImageUrl);
+      const key = `${this.cachePath}|${maxImageEdgeSetting()}`;
+      if (this.#mountedImageUrl === void 0 || this.#mountedFor !== key) {
+        this.#mountedFor = key;
+        this.#mountedImageUrl = (this.cachePath ? mountFileCached(this.cachePath) : mountedImageUrl(this.ImageUrl, maxImageEdgeSetting(), plugin.pluginPath)).catch(() => mountFileCached(this.ImageUrl));
+      }
+      return await this.#mountedImageUrl;
+    }
+    /** Lets the plugin preload this background before React renders it. */
+    async resolveImageUrl() {
+      return await this.getMountedImageUrl();
+    }
+    /**
+     * Fills in `cachePath` and `thumbnail` once, if not generated yet. Runs in
+     * the background so a large original is never required for the first paint.
+     */
+    async prepare() {
+      let changed = false;
+      if (compressibleKind(this.ImageUrl) === "compress") {
+        const generated = await prepareImage(this.ImageUrl, maxImageEdgeSetting(), plugin.pluginPath);
+        const cachePath = generated || await resolvedImagePath(this.ImageUrl, maxImageEdgeSetting(), plugin.pluginPath);
+        if (cachePath && cachePath !== this.ImageUrl && cachePath !== this.cachePath) {
+          this.cachePath = cachePath;
+          changed = true;
+        }
+      }
+      if (!this.thumbnail) {
+        const thumbnail = await createThumbnail(this.ImageUrl);
+        if (thumbnail) {
+          this.thumbnail = thumbnail;
+          changed = true;
+        }
+      }
+      return changed;
     }
     async backgroundElement() {
-      return /* @__PURE__ */ h(
-        "img",
-        {
-          src: await this.getMountedImageUrl()
-        }
-      );
+      return /* @__PURE__ */ h(BackgroundImage, { imageUrl: this.ImageUrl, thumbnail: this.thumbnail });
     }
     async previewBackground() {
       const url = await this.getMountedImageUrl();
@@ -4936,41 +6010,59 @@
         );
         return null;
       }
-      if (path)
-        return new _ImageBackground(path);
-      return null;
+      if (!path)
+        return null;
+      const background = new _ImageBackground(path);
+      const maxEdge = maxImageEdgeSetting();
+      void (async () => {
+        try {
+          const sourceSize = (await betterncm.fs.readFile(path))?.size ?? 0;
+          await background.prepare();
+          if (background.cachePath) {
+            const cachedSize = (await betterncm.fs.readFile(background.cachePath))?.size ?? 0;
+            if (maxEdge > 0 && cachedSize > 0 && sourceSize > 0) {
+              import_sweetalert22.default.fire({
+                toast: true,
+                position: "bottom-end",
+                timer: 6e3,
+                showConfirmButton: false,
+                icon: "success",
+                title: `\u5DF2\u751F\u6210\u4F18\u5316\u526F\u672C\uFF1A${formatBytes(sourceSize)} \u2192 ${formatBytes(cachedSize)}`,
+                text: "\u539F\u6587\u4EF6\u4FDD\u6301\u4E0D\u53D8\uFF0C\u4EC5\u7528\u4E8E\u663E\u793A\u3002"
+              });
+            }
+          }
+        } catch {
+        }
+      })();
+      return background;
     }
   };
-  var ImageBackground = _ImageBackground;
-  _mountedImageUrl = new WeakMap();
-  __publicField(ImageBackground, "backgroundTypeName", "\u56FE\u7247");
 
   // src/background/maskedBackground.tsx
   var import_sweetalert23 = __toESM(require_sweetalert2_all());
 
+  // src/background/resolution.ts
+  function enterBackground(path, id) {
+    if (path.includes(id))
+      throw new Error(`\u80CC\u666F\u5FAA\u73AF\u5F15\u7528\uFF1A${[...path, id].join(" \u2192 ")}`);
+    return [...path, id];
+  }
+  function chooseBackground(items, random = Math.random) {
+    if (!items.length)
+      throw new Error("\u6CA1\u6709\u53EF\u4F9B\u62BD\u9009\u7684\u80CC\u666F\uFF0C\u8BF7\u6DFB\u52A0\u80CC\u666F\u6216\u8C03\u6574\u6392\u9664\u5217\u8868\u3002");
+    return items[Math.min(items.length - 1, Math.floor(random() * items.length))];
+  }
+
   // src/background/RecursiveLockBackground.ts
   var RecursiveLockBackground = class extends BaseBackground {
-    #recursiveCount = 0;
-    resetRecursiveCount() {
-      this.#recursiveCount = 0;
-    }
-    checkRecursive() {
-      return this.#recursiveCount++ > 50;
+    enter(path) {
+      return enterBackground(path, this.id);
     }
   };
 
   // src/background/maskedBackground.tsx
-  var _targetBGElement, _targetBackground, targetBackground_fn, _getStyleSheet, getStyleSheet_fn;
-  var _MaskedBackground = class extends RecursiveLockBackground {
-    constructor() {
-      super(...arguments);
-      __privateAdd(this, _targetBackground);
-      __privateAdd(this, _getStyleSheet);
-      __publicField(this, "target");
-      __publicField(this, "maskColor", "#ffffff22");
-      __publicField(this, "maskBlur", 0);
-      __privateAdd(this, _targetBGElement, void 0);
-    }
+  var MaskedBackground = class _MaskedBackground extends RecursiveLockBackground {
     async onConfig() {
       const ConfigMenu = () => {
         const [target, setTarget] = React.useState(this.target);
@@ -5011,47 +6103,32 @@
         ));
       };
       const p = import_sweetalert23.default.fire({ title: "\u906E\u7F69\u80CC\u666F\u8BBE\u7F6E", html: "<div id=MaskedBackgroundConfigContainer class=BGEnhanced-Config style='font-size:.5em;' />" });
-      ReactDOM.render(/* @__PURE__ */ h(ConfigMenu, null), document.getElementById("MaskedBackgroundConfigContainer"));
-      await p;
-      __privateSet(this, _targetBGElement, void 0);
-      this.resetRecursiveCount();
+      const container = document.getElementById("MaskedBackgroundConfigContainer");
+      ReactDOM.render(/* @__PURE__ */ h(ConfigMenu, null), container);
+      try {
+        await p;
+      } finally {
+        ReactDOM.unmountComponentAtNode(container);
+      }
       return;
     }
-    async previewBackground() {
-      if (this.checkRecursive())
-        return () => /* @__PURE__ */ h("div", null, "Potential circular reference detected.");
-      const preview = await (await __privateMethod(this, _targetBackground, targetBackground_fn).call(this)).previewBackground();
-      return () => /* @__PURE__ */ h(f, null, preview, /* @__PURE__ */ h("div", { className: `bgMask-${this.id}` }), /* @__PURE__ */ h("style", null, __privateMethod(this, _getStyleSheet, getStyleSheet_fn).call(this)));
+    static backgroundTypeName = "\u906E\u7F69\u80CC\u666F";
+    static attributes = ["recursive"];
+    target = "";
+    maskColor = "#ffffff22";
+    maskBlur = 0;
+    targetBackground() {
+      const target = selfPlugin.backgroundList.find((bg) => bg.id === this.target);
+      if (!target)
+        throw new Error("\u906E\u7F69\u5BF9\u8C61\u4E0D\u5B58\u5728\uFF0C\u8BF7\u91CD\u65B0\u9009\u62E9\u80CC\u666F\u3002");
+      return target;
     }
-    async backgroundElement() {
-      if (this.checkRecursive())
-        return /* @__PURE__ */ h("div", null, "Potential circular reference detected.");
-      return /* @__PURE__ */ h(f, null, await (await __privateMethod(this, _targetBackground, targetBackground_fn).call(this)).backgroundElement(), /* @__PURE__ */ h("div", { className: `bgMask-${this.id}` }), /* @__PURE__ */ h("style", null, __privateMethod(this, _getStyleSheet, getStyleSheet_fn).call(this)));
+    async previewBackground(path = []) {
+      const Preview = await this.targetBackground().previewBackground(this.enter(path));
+      return () => /* @__PURE__ */ h(f, null, /* @__PURE__ */ h(Preview, null), /* @__PURE__ */ h("div", { className: `bgMask-${this.id}` }), /* @__PURE__ */ h("style", null, this.#getStyleSheet()));
     }
-    static default() {
-      return new _MaskedBackground();
-    }
-    static async askAndCreate() {
-      const bg = new _MaskedBackground();
-      await bg.onConfig();
-      return bg;
-    }
-  };
-  var MaskedBackground = _MaskedBackground;
-  _targetBGElement = new WeakMap();
-  _targetBackground = new WeakSet();
-  targetBackground_fn = async function() {
-    if (!__privateGet(this, _targetBGElement)) {
-      __privateSet(this, _targetBGElement, Promise.race([
-        betterncm.utils.waitForFunction(() => selfPlugin.backgroundList.length),
-        betterncm.utils.delay(1e3).then((_) => Promise.reject("Timeout"))
-      ]).then(() => selfPlugin.backgroundList.find((bg) => bg.id === this.target)));
-    }
-    return __privateGet(this, _targetBGElement);
-  };
-  _getStyleSheet = new WeakSet();
-  getStyleSheet_fn = function() {
-    return `
+    #getStyleSheet() {
+      return `
 .bgMask-${this.id}{
     position:absolute;
     left:0;
@@ -5062,20 +6139,24 @@
     backdrop-filter:blur(${this.maskBlur}px);
 }
 `;
+    }
+    async backgroundElement(path = []) {
+      const element = await this.targetBackground().backgroundElement(this.enter(path));
+      return /* @__PURE__ */ h(f, null, element, /* @__PURE__ */ h("div", { className: `bgMask-${this.id}` }), /* @__PURE__ */ h("style", null, this.#getStyleSheet()));
+    }
+    static default() {
+      return new _MaskedBackground();
+    }
+    static async askAndCreate() {
+      const bg = new _MaskedBackground();
+      await bg.onConfig();
+      return bg;
+    }
   };
-  __publicField(MaskedBackground, "backgroundTypeName", "\u906E\u7F69\u80CC\u666F");
-  __publicField(MaskedBackground, "attributes", ["recursive"]);
 
   // src/background/randomBackground.tsx
   var import_sweetalert24 = __toESM(require_sweetalert2_all());
-  var _randBGElement, _randomBackground, randomBackground_fn;
-  var _RandomBackground = class extends RecursiveLockBackground {
-    constructor() {
-      super(...arguments);
-      __privateAdd(this, _randomBackground);
-      __publicField(this, "excludeList", []);
-      __privateAdd(this, _randBGElement, void 0);
-    }
+  var RandomBackground = class _RandomBackground extends RecursiveLockBackground {
     async onConfig() {
       const ConfigMenu = () => {
         const [excludes, setExcludes] = React.useState(this.excludeList);
@@ -5113,20 +6194,32 @@
         ));
       };
       const p = import_sweetalert24.default.fire({ title: "\u968F\u673A\u80CC\u666F\u8BBE\u7F6E", html: "<div id=RandBGConfigContainer class=BGEnhanced-Config style='font-size:.5em;' />" });
-      ReactDOM.render(/* @__PURE__ */ h(ConfigMenu, null), document.getElementById("RandBGConfigContainer"));
-      await p;
-      this.resetRecursiveCount();
+      const container = document.getElementById("RandBGConfigContainer");
+      ReactDOM.render(/* @__PURE__ */ h(ConfigMenu, null), container);
+      try {
+        await p;
+      } finally {
+        ReactDOM.unmountComponentAtNode(container);
+      }
+      this.#selected = void 0;
       return;
     }
-    async previewBackground() {
-      if (this.checkRecursive())
-        return () => /* @__PURE__ */ h("div", null, "Potential circular reference detected.");
-      return (await __privateMethod(this, _randomBackground, randomBackground_fn).call(this)).previewBackground();
+    static backgroundTypeName = "\u968F\u673A\u62BD\u9009";
+    static attributes = ["recursive"];
+    excludeList = [];
+    #selected;
+    randomBackground() {
+      const candidates = selfPlugin.backgroundList.filter((bg) => bg !== this && !this.excludeList.includes(bg.id));
+      if (!this.#selected || !candidates.includes(this.#selected)) {
+        this.#selected = chooseBackground(candidates);
+      }
+      return this.#selected;
     }
-    async backgroundElement() {
-      if (this.checkRecursive())
-        return /* @__PURE__ */ h("div", null, "Potential circular reference detected.");
-      return (await __privateMethod(this, _randomBackground, randomBackground_fn).call(this)).backgroundElement();
+    async previewBackground(path = []) {
+      return this.randomBackground().previewBackground(this.enter(path));
+    }
+    async backgroundElement(path = []) {
+      return this.randomBackground().backgroundElement(this.enter(path));
     }
     static default() {
       return new _RandomBackground();
@@ -5144,26 +6237,11 @@
       this.excludeList = this.excludeList.filter((id) => background.id !== id);
     }
   };
-  var RandomBackground = _RandomBackground;
-  _randBGElement = new WeakMap();
-  _randomBackground = new WeakSet();
-  randomBackground_fn = async function() {
-    if (!__privateGet(this, _randBGElement)) {
-      __privateSet(this, _randBGElement, Promise.race([
-        betterncm.utils.waitForFunction(() => selfPlugin.backgroundList.length),
-        betterncm.utils.delay(1e3).then((_) => Promise.reject("Timeout"))
-      ]).then(() => selfPlugin.backgroundList.filter((bg) => {
-        return bg !== this && !this.excludeList.includes(bg.id);
-      }).sort((_) => Math.random() - 0.5)[0]));
-    }
-    return __privateGet(this, _randBGElement);
-  };
-  __publicField(RandomBackground, "backgroundTypeName", "\u968F\u673A\u62BD\u9009");
-  __publicField(RandomBackground, "attributes", ["recursive"]);
 
   // src/background/remoteImageBackground.tsx
   var import_sweetalert25 = __toESM(require_sweetalert2_all());
-  var _RemoteImageBackground = class extends BaseBackground {
+  var RemoteImageBackground = class _RemoteImageBackground extends BaseBackground {
+    static backgroundTypeName = "\u5728\u7EBF\u56FE\u7247";
     constructor(ImageUrl) {
       super();
       this.ImageUrl = ImageUrl;
@@ -5205,12 +6283,11 @@
         return null;
     }
   };
-  var RemoteImageBackground = _RemoteImageBackground;
-  __publicField(RemoteImageBackground, "backgroundTypeName", "\u5728\u7EBF\u56FE\u7247");
 
   // src/background/remoteRandImageBackgroundLoli.tsx
   var import_sweetalert26 = __toESM(require_sweetalert2_all());
-  var _RemoteRandImageBackgroundLoli = class extends RemoteImageBackground {
+  var RemoteRandImageBackgroundLoli = class _RemoteRandImageBackgroundLoli extends RemoteImageBackground {
+    static backgroundTypeName = "\u968F\u673A\u4E8C\u6B21\u5143";
     constructor(url) {
       super(url);
     }
@@ -5218,17 +6295,21 @@
       return new _RemoteRandImageBackgroundLoli("");
     }
     static async askAndCreate() {
-      import_sweetalert26.default.showLoading(null);
-      const redirectedUrl = await fetch("https://www.loliapi.com/acg/pc/");
-      import_sweetalert26.default.clickCancel();
-      return new _RemoteRandImageBackgroundLoli(redirectedUrl.url);
+      import_sweetalert26.default.fire({ title: "\u6B63\u5728\u83B7\u53D6\u80CC\u666F\u2026", didOpen: () => import_sweetalert26.default.showLoading() });
+      try {
+        const response = await fetch("https://www.loliapi.com/acg/pc/");
+        if (!response.ok)
+          throw new Error(`HTTP ${response.status}`);
+        return new _RemoteRandImageBackgroundLoli(response.url);
+      } finally {
+        import_sweetalert26.default.close();
+      }
     }
   };
-  var RemoteRandImageBackgroundLoli = _RemoteRandImageBackgroundLoli;
-  __publicField(RemoteRandImageBackgroundLoli, "backgroundTypeName", "\u968F\u673A\u4E8C\u6B21\u5143");
 
   // src/background/remoteRandImageBackgroundScenery.tsx
-  var _RemoteRandImageBackgroundScenery = class extends BaseBackground {
+  var RemoteRandImageBackgroundScenery = class _RemoteRandImageBackgroundScenery extends BaseBackground {
+    static backgroundTypeName = "\u5FC5\u5E94\u6BCF\u65E5";
     ImageUrl = "https://api.dujin.org/bing/1920.php";
     constructor() {
       super();
@@ -5237,12 +6318,12 @@
       return /* @__PURE__ */ h(
         "img",
         {
-          src: `${this.ImageUrl}?${new Date().getTime()}`
+          src: `${this.ImageUrl}?${(/* @__PURE__ */ new Date()).getTime()}`
         }
       );
     }
     async previewBackground() {
-      return () => /* @__PURE__ */ h("div", { style: { background: `url(${this.ImageUrl}?${new Date().getTime()}) 0% 0% / cover` } });
+      return () => /* @__PURE__ */ h("div", { style: { background: `url(${this.ImageUrl}?${(/* @__PURE__ */ new Date()).getTime()}) 0% 0% / cover` } });
     }
     static default() {
       return new _RemoteRandImageBackgroundScenery();
@@ -5251,34 +6332,34 @@
       return new _RemoteRandImageBackgroundScenery();
     }
   };
-  var RemoteRandImageBackgroundScenery = _RemoteRandImageBackgroundScenery;
-  __publicField(RemoteRandImageBackgroundScenery, "backgroundTypeName", "\u5FC5\u5E94\u6BCF\u65E5");
 
   // src/background/videoBackground.tsx
   var import_sweetalert27 = __toESM(require_sweetalert2_all());
-  var _mountedVideoUrl;
-  var _VideoBackground = class extends BaseBackground {
+  function BackgroundVideo({ videoUrl }) {
+    const url = useMountedUrl(videoUrl);
+    if (!url)
+      return null;
+    return /* @__PURE__ */ h("video", { autoPlay: true, loop: true, muted: true, preload: "auto", src: url });
+  }
+  var VideoBackground = class _VideoBackground extends BaseBackground {
+    static backgroundTypeName = "\u89C6\u9891";
     constructor(videoUrl) {
       super();
-      __publicField(this, "videoUrl");
-      __privateAdd(this, _mountedVideoUrl, void 0);
       this.videoUrl = videoUrl;
     }
+    videoUrl;
+    #mountedVideoUrl;
     async getMountedVideoUrl() {
-      if (__privateGet(this, _mountedVideoUrl) === void 0)
-        __privateSet(this, _mountedVideoUrl, betterncm.fs.mountFile(this.videoUrl));
-      return await __privateGet(this, _mountedVideoUrl);
+      if (this.#mountedVideoUrl === void 0)
+        this.#mountedVideoUrl = mountFileCached(this.videoUrl);
+      return await this.#mountedVideoUrl;
+    }
+    /** Lets the plugin preload this background before React renders it. */
+    async resolveImageUrl() {
+      return await this.getMountedVideoUrl();
     }
     async backgroundElement() {
-      return /* @__PURE__ */ h(
-        "video",
-        {
-          autoPlay: true,
-          loop: true,
-          muted: true,
-          src: await this.getMountedVideoUrl()
-        }
-      );
+      return /* @__PURE__ */ h(BackgroundVideo, { videoUrl: this.videoUrl });
     }
     async previewBackground() {
       const url = await this.getMountedVideoUrl();
@@ -5304,118 +6385,219 @@
       return null;
     }
   };
-  var VideoBackground = _VideoBackground;
-  _mountedVideoUrl = new WeakMap();
-  __publicField(VideoBackground, "backgroundTypeName", "\u89C6\u9891");
 
   // src/backgroundList.ts
-  var BackgroundTypes = [VideoBackground, CSSBackground, ImageBackground, RemoteRandImageBackgroundLoli, RemoteRandImageBackgroundScenery, CoverImageBackground, RandomBackground, RemoteImageBackground, MaskedBackground];
-  function useLocalStorageBackgroundList(key) {
-    return useLocalStorage(
-      key,
-      [],
-      (s) => {
-        const obj = JSON.parse(s);
-        return obj.map((value) => {
-          const def = BackgroundTypes.find(
-            (type) => type.name === value.type
-          )?.default();
-          return def && Object.assign(def, value);
-        }).filter((v) => v);
-      },
-      (s) => {
-        return JSON.stringify(
-          s.map((v) => ({
-            ...v,
-            type: BackgroundTypes.find((type) => v instanceof type)?.name
-          }))
-        );
+  var legacyTypes = {
+    VideoBackground: "video",
+    CSSBackground: "css",
+    ImageBackground: "image",
+    RemoteRandImageBackgroundLoli: "anime",
+    RemoteRandImageBackgroundScenery: "bing",
+    CoverImageBackground: "cover",
+    RandomBackground: "random",
+    RemoteImageBackground: "remote-image",
+    MaskedBackground: "masked"
+  };
+  var registry = [
+    { type: "video", ctor: VideoBackground },
+    { type: "css", ctor: CSSBackground },
+    { type: "image", ctor: ImageBackground },
+    { type: "anime", ctor: RemoteRandImageBackgroundLoli },
+    { type: "bing", ctor: RemoteRandImageBackgroundScenery },
+    { type: "cover", ctor: CoverImageBackground },
+    { type: "random", ctor: RandomBackground },
+    { type: "remote-image", ctor: RemoteImageBackground },
+    { type: "masked", ctor: MaskedBackground }
+  ];
+  var BackgroundTypes = registry.map((entry) => entry.ctor);
+  function parseBackgroundList(text) {
+    const data = JSON.parse(text);
+    const values = Array.isArray(data) ? data : data?.version === 1 ? data.backgrounds : null;
+    if (!Array.isArray(values))
+      throw new Error("\u4E0D\u652F\u6301\u7684\u80CC\u666F\u914D\u7F6E\u7248\u672C");
+    const seen = /* @__PURE__ */ new Set();
+    return values.flatMap((value) => {
+      if (!value || typeof value !== "object")
+        return [];
+      const normalizedType = legacyTypes[value.type] ?? value.type;
+      const entry = registry.find((entry2) => entry2.type === normalizedType);
+      if (!entry)
+        return [];
+      const instance = entry.ctor.default();
+      for (const key of Object.keys(instance)) {
+        if (key === "id" || key === "current")
+          continue;
+        const candidate = value[key];
+        const initial = instance[key];
+        if (Array.isArray(initial)) {
+          if (Array.isArray(candidate) && candidate.every((item) => typeof item === "string"))
+            instance[key] = candidate;
+        } else if (typeof candidate === typeof initial && (typeof candidate !== "number" || Number.isFinite(candidate))) {
+          instance[key] = candidate;
+        }
       }
-    );
+      if (typeof value.id === "string" && value.id && !seen.has(value.id))
+        instance.id = value.id;
+      seen.add(instance.id);
+      instance.current = value.current === true;
+      return [instance];
+    });
+  }
+  function stringifyBackgroundList(backgrounds) {
+    return JSON.stringify({ version: 1, backgrounds: backgrounds.map((bg) => {
+      const entry = registry.find((entry2) => bg.constructor === entry2.ctor);
+      if (!entry)
+        throw new Error("\u672A\u6CE8\u518C\u7684\u80CC\u666F\u7C7B\u578B");
+      return { ...bg, type: entry.type };
+    }) });
+  }
+  function useLocalStorageBackgroundList(key) {
+    return useLocalStorage(key, [], parseBackgroundList, stringifyBackgroundList);
+  }
+  function saveBackgroundList(key, backgrounds) {
+    try {
+      window.localStorage.setItem(key, stringifyBackgroundList(backgrounds));
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   // src/index.tsx
+  var import_sweetalert28 = __toESM(require_sweetalert2_all());
+
+  // src/resizeEffect.ts
+  function watchBlurPulse(host, strength, duration, setActive) {
+    if (!(strength > 0) || !(duration > 0))
+      return () => {
+      };
+    if (host.matchMedia?.("(prefers-reduced-motion: reduce)").matches)
+      return () => {
+      };
+    let timer;
+    let active = false;
+    const onResize = () => {
+      if (!active) {
+        active = true;
+        setActive(true);
+      }
+      host.clearTimeout(timer);
+      timer = host.setTimeout(() => {
+        active = false;
+        setActive(false);
+      }, duration);
+    };
+    host.addEventListener("resize", onResize, { passive: true });
+    return () => {
+      host.removeEventListener("resize", onResize);
+      host.clearTimeout(timer);
+      if (active)
+        setActive(false);
+    };
+  }
+
+  // src/index.tsx
+  var MAX_IMAGE_EDGE = 15360;
+  function parseMaxImageEdge(raw) {
+    if (raw === null || raw.trim() === "")
+      return 0;
+    return clampStoredNumber(raw, 0, MAX_IMAGE_EDGE, 0);
+  }
   document.body.classList.add("BGEnhanced");
+  console.log(`[BGEnhanced] ${"0.3.15"} loaded, build ${"2026-10-15T14:49:53.095Z"}`);
   var configElement = document.createElement("div");
   var BGDom = document.createElement("div");
   BGDom.classList.add("BGEnhanced-BackgoundDom");
+  function preloadCurrentBackground() {
+    try {
+      const stored = window.localStorage.getItem(STORE_BGLIST);
+      if (!stored)
+        return;
+      const backgroundList = parseBackgroundList(stored);
+      const current = backgroundList.find((bg) => bg.current) ?? backgroundList[0];
+      if (current)
+        preloadBackground(current);
+    } catch {
+    }
+  }
+  preloadCurrentBackground();
   var selfPlugin;
   plugin.onLoad((_selfPlugin) => {
     selfPlugin = _selfPlugin.mainPlugin;
     selfPlugin.backgroundList = [];
     ReactDOM.render(/* @__PURE__ */ h(Main, null), BGDom);
     document.body.appendChild(BGDom);
+    window.addEventListener("pagehide", () => {
+      ReactDOM.unmountComponentAtNode(BGDom);
+      BGDom.remove();
+      document.body.classList.remove("BGEnhanced", "prefab-transparency");
+    }, { once: true });
   });
   function BackgroundPreviewList({
     backgroundList,
     buttons,
-    currentIDs = null,
-    cache = true
+    currentIDs = null
   }) {
     function PreviewBackground(background, preview) {
       return /* @__PURE__ */ h("span", { className: `bg-block ${(currentIDs == null ? background.current : currentIDs.includes(background.id)) && "selected"}` }, preview, /* @__PURE__ */ h("div", { className: "info" }, /* @__PURE__ */ h("div", { className: "name" }, background.constructor.backgroundTypeName), /* @__PURE__ */ h("div", { className: "buttons" }, buttons(background))));
     }
-    const [backgroundPreviewList, setBackgroundPreviewList] = React.useState([]);
+    const [previews, setPreviews] = React.useState({});
     React.useEffect(() => {
-      const previewList = [];
-      for (const backgroundIndex in backgroundList) {
-        const background = backgroundList[backgroundIndex];
-        const previous = backgroundPreviewList.find(([_, base]) => background === base && JSON.stringify(background) === JSON.stringify(base));
-        if (cache && previous !== void 0) {
-          previewList.push(previous);
-        } else {
-          previewList.push([null, background]);
-          background.previewBackground().then((preview) => {
-            setBackgroundPreviewList((prev) => prev.map((previewVal) => {
-              if (previewVal[1] === background) {
-                console.log("BGE Preview:", preview);
-                if (preview)
-                  return [React.memo(preview), background];
-              }
-              return previewVal;
-            }));
-          });
-        }
+      let canceled = false;
+      setPreviews({});
+      for (const background of backgroundList) {
+        background.previewBackground().then((component) => {
+          if (!canceled)
+            setPreviews((prev) => ({ ...prev, [background.id]: { component } }));
+        }, (error) => {
+          if (!canceled)
+            setPreviews((prev) => ({ ...prev, [background.id]: { error: String(error) } }));
+        });
       }
-      setBackgroundPreviewList(previewList);
+      return () => {
+        canceled = true;
+      };
     }, [backgroundList]);
-    return /* @__PURE__ */ h(f, null, backgroundList.filter((v, i) => backgroundPreviewList[i]?.[0]).map((v, i) => backgroundPreviewList[i]?.[0] && PreviewBackground(v, (0, import_react3.createElement)(backgroundPreviewList[i]?.[0]))).filter((v) => v));
+    return /* @__PURE__ */ h(f, null, backgroundList.map((background) => {
+      const preview = previews[background.id];
+      return /* @__PURE__ */ h(React.Fragment, { key: background.id }, PreviewBackground(background, preview?.component ? React.createElement(preview.component) : /* @__PURE__ */ h("div", null, preview?.error ?? "\u52A0\u8F7D\u4E2D\u2026")));
+    }));
   }
   function Main() {
     const stylesheet = React.useMemo(
       () => betterncm_native.fs.readFileText(`${plugin.pluginPath}/index.css`),
       []
     );
-    const [dimensions, setDimensions] = React.useState({
-      height: window.innerHeight,
-      width: window.innerWidth
-    });
-    React.useEffect(() => {
-      function handleResize() {
-        setDimensions((dimensions2) => {
-          const newDimension = {
-            height: window.innerHeight,
-            width: window.innerWidth
-          };
-          if (newDimension.width !== dimensions2.width || newDimension.height !== dimensions2.height)
-            return newDimension;
-          return dimensions2;
-        });
-      }
-      window.addEventListener("resize", handleResize);
-    });
     const [backgroundScale, setBackgroundScale] = useLocalStorage(
       STORE_BGSCALE,
-      1
+      1,
+      parseBackgroundScale
     );
     const [backgroundBrightness, setBackgroundBrightness] = useLocalStorage(
       STORE_BGBRIGHTNESS,
-      1
+      1,
+      parseBackgroundBrightness
     );
     const [backgroundBlur, setBackgroundBlur] = useLocalStorage(
       STORE_BGBLUR,
-      0
+      0,
+      parseBackgroundBlur
     );
+    const [blurTransition, setBlurTransition] = useLocalStorage(
+      STORE_BGBLURTRANSITION,
+      BLUR_TRANSITION_DEFAULT,
+      parseBlurTransition
+    );
+    const [blurPulseStrength, setBlurPulseStrength] = useLocalStorage(
+      STORE_BGBLURPULSE,
+      BLUR_PULSE_STRENGTH_DEFAULT,
+      parseBlurPulseStrength
+    );
+    const [pulseBlur, setPulseBlur] = React.useState(0);
+    React.useEffect(() => {
+      const strength = blurPulseStrength;
+      const duration = blurTransition;
+      return watchBlurPulse(window, strength, duration, (active) => setPulseBlur(active ? strength : 0));
+    }, [blurPulseStrength, blurTransition]);
     const [backgroundMode, setBackgroundMode] = useLocalStorage(
       STORE_BGMODE,
       "cover-centered"
@@ -5433,58 +6615,60 @@
       }
     }, [prefabTransparencyStatus]);
     const [backgroundList, setBackgroundList] = useLocalStorageBackgroundList(STORE_BGLIST);
-    const [currentBackgroundId, setCurrentBackgroundId] = React.useState(backgroundList.find((bg) => bg.current)?.id ?? null);
+    const [maxImageEdge, setMaxImageEdge] = useLocalStorage(
+      STORE_BGMAXEDGE,
+      0,
+      parseMaxImageEdge
+    );
+    React.useEffect(() => {
+      preloadBackgrounds(backgroundList);
+    }, []);
+    React.useEffect(() => {
+      let disposed = false;
+      void (async () => {
+        let changed = false;
+        for (const background of backgroundList) {
+          const preparable = background;
+          if (typeof preparable.prepare !== "function")
+            continue;
+          try {
+            if (await preparable.prepare())
+              changed = true;
+          } catch {
+          }
+          if (disposed)
+            return;
+        }
+        if (changed)
+          saveBackgroundList(STORE_BGLIST, backgroundList);
+      })();
+      return () => {
+        disposed = true;
+      };
+    }, [backgroundList]);
     React.useEffect(() => {
       selfPlugin.backgroundList = backgroundList;
     }, [backgroundList]);
     const currentBackground = React.useMemo(() => {
       return backgroundList.find((bg) => bg.current) ?? backgroundList[0] ?? new CSSBackground("linear-gradient(45deg, #0037ff, #005aff)");
-    }, [currentBackgroundId]);
+    }, [backgroundList]);
+    const backgroundRenderKey = backgroundList.find((bg) => bg.current)?.id ?? backgroundList[0]?.id ?? "no-background";
     const [currentConfigBackground, setCurrentConfigBackground] = React.useState(null);
-    const [currentBackgroundElement] = usePromise(
-      React.useMemo(() => currentBackground.backgroundElement(), [currentBackgroundId]),
-      [currentBackgroundId]
+    const [currentBackgroundElement, backgroundError] = usePromise(
+      () => currentBackground.backgroundElement(),
+      [backgroundList]
     );
-    const backgroundParentRef = React.useRef(null);
-    const recalcBGSize = async () => {
-      if (backgroundParentRef.current && backgroundParentRef.current.firstElementChild) {
-        const bgDom = backgroundParentRef.current.firstElementChild;
-        bgDom.setAttribute("style", "");
-        const { width, height } = bgDom.getClientRects()[0];
-        bgDom.style.position = "relative";
-        if (backgroundMode === "cover") {
-          const scale = Math.max(dimensions.width / width, dimensions.height / height);
-          bgDom.style.width = `${width * scale}px`;
-          bgDom.style.height = `${height * scale}px`;
-        }
-        if (backgroundMode === "cover-centered") {
-          const scale = Math.max(dimensions.width / width, dimensions.height / height);
-          bgDom.style.width = `${width * scale}px`;
-          bgDom.style.height = `${height * scale}px`;
-          bgDom.style.marginLeft = `-${(width * scale - dimensions.width) / 2}px`;
-          bgDom.style.marginTop = `-${(height * scale - dimensions.height) / 2}px`;
-        }
-        if (backgroundMode === "stretch") {
-          bgDom.style.objectFit = "fill";
-          bgDom.style.width = `${dimensions.width}px`;
-          bgDom.style.height = `${dimensions.height}px`;
-        }
-      }
-    };
-    useInterval(recalcBGSize, 1e4);
-    React.useEffect(() => {
-      setTimeout(() => recalcBGSize());
-    }, [dimensions, backgroundMode, currentBackgroundElement, currentBackgroundId]);
-    React.useEffect(() => {
-      setTimeout(() => recalcBGSize(), 100);
-    }, [currentBackgroundId]);
-    window.addEventListener("load", () => recalcBGSize());
     async function askAndAddBackground(background) {
-      const result = await background.askAndCreate();
-      for (const bg of backgroundList)
-        bg.hooks__onBeforeAddBackground(result);
-      if (result != null)
-        setBackgroundList(backgroundList.concat([result]));
+      try {
+        const result = await background.askAndCreate();
+        if (result != null) {
+          for (const bg of backgroundList)
+            bg.hooks__onBeforeAddBackground(result);
+          setBackgroundList((prev) => prev.concat(result));
+        }
+      } catch (error) {
+        await import_sweetalert28.default.fire("\u6DFB\u52A0\u80CC\u666F\u5931\u8D25", String(error), "error");
+      }
     }
     function removeBackground(background) {
       for (const bg of backgroundList)
@@ -5492,7 +6676,6 @@
       setBackgroundList(backgroundList.filter((bg) => bg !== background));
     }
     function selectBackground(background) {
-      setCurrentBackgroundId(background.id);
       setBackgroundList(
         backgroundList.map((bg) => {
           if (bg === background)
@@ -5513,26 +6696,33 @@
         name
       );
     }
-    return /* @__PURE__ */ h(f, null, /* @__PURE__ */ h(
+    const effectiveScale = clampScale(backgroundScale);
+    const effectiveBlur = backgroundBlur + pulseBlur;
+    return /* @__PURE__ */ h(f, null, /* @__PURE__ */ h("div", { className: "BGE-viewport" }, /* @__PURE__ */ h(
       "div",
       {
         style: {
-          transform: `scale(${backgroundScale})`,
-          filter: `blur(${backgroundBlur}px) brightness(${backgroundBrightness})`
+          ...backgroundEffectStyle(effectiveBlur, backgroundBrightness, effectiveScale),
+          transform: effectiveScale !== 1 ? `scale(${effectiveScale})` : "none",
+          // Declared inline so the host theme's `transition: none !important`
+          // reset cannot suppress the configurable blur transition.
+          transition: blurTransitionCss(blurTransition) || "none"
         },
-        className: `background mode-${backgroundMode}`,
-        ref: backgroundParentRef
+        className: `background mode-${backgroundMode}`
       },
-      currentBackgroundElement
-    ), /* @__PURE__ */ h("style", { className: "BGEnhanced-styles" }, stylesheet), ReactDOM.createPortal(
-      /* @__PURE__ */ h(f, null, /* @__PURE__ */ h("div", { className: "BGEnhanced-Config" }, currentConfigBackground ? currentConfigBackground : /* @__PURE__ */ h(f, null, /* @__PURE__ */ h("div", { className: "buttons" }, /* @__PURE__ */ h("span", { className: "full expand-h u-ibtn5" }, /* @__PURE__ */ h("span", { className: "ico" }, /* @__PURE__ */ h(MdAdd, null)), /* @__PURE__ */ h("span", { className: "content" }, BackgroundTypes.map((type) => // rome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
-      /* @__PURE__ */ h(
-        "span",
-        {
-          className: "btn",
-          onClick: () => askAndAddBackground(type)
-        },
-        type.backgroundTypeName
+      /* @__PURE__ */ h("div", { className: "container", key: backgroundRenderKey }, backgroundError ? /* @__PURE__ */ h("div", { className: "BGEnhanced-error" }, String(backgroundError)) : currentBackgroundElement)
+    )), /* @__PURE__ */ h("style", { className: "BGEnhanced-styles" }, stylesheet), ReactDOM.createPortal(
+      /* @__PURE__ */ h(f, null, /* @__PURE__ */ h("div", { className: "BGEnhanced-Config" }, currentConfigBackground ? currentConfigBackground : /* @__PURE__ */ h(f, null, /* @__PURE__ */ h("div", { className: "buttons" }, /* @__PURE__ */ h("span", { className: "full expand-h u-ibtn5" }, /* @__PURE__ */ h("span", { className: "ico" }, /* @__PURE__ */ h(MdAdd, null)), /* @__PURE__ */ h("span", { className: "content" }, BackgroundTypes.map((type) => (
+        // rome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
+        /* @__PURE__ */ h(
+          "span",
+          {
+            key: type.name,
+            className: "btn",
+            onClick: () => askAndAddBackground(type)
+          },
+          type.backgroundTypeName
+        )
       )))), /* @__PURE__ */ h("span", { className: "extendable u-ibtn5" }, /* @__PURE__ */ h("span", { className: "ico" }, /* @__PURE__ */ h(MdDesktopWindows, null)), /* @__PURE__ */ h("span", { className: "content" }, /* @__PURE__ */ h(BackgroundModeElement, { name: "\u8986\u76D6", id: "cover" }), /* @__PURE__ */ h(BackgroundModeElement, { name: "\u8986\u76D6\u5C45\u4E2D", id: "cover-centered" }), /* @__PURE__ */ h(BackgroundModeElement, { name: "\u62C9\u4F38", id: "stretch" })))), /* @__PURE__ */ h("div", { className: "universalOptions u-ibtn5", style: {
         width: "100%",
         height: "max-content",
@@ -5540,43 +6730,84 @@
         padding: ".5em .6ex",
         opacity: "0.9",
         marginBottom: "1em"
-      } }, /* @__PURE__ */ h("div", null, /* @__PURE__ */ h("span", { style: { margin: ".5em" } }, "\u7F29\u653E"), /* @__PURE__ */ h(
-        "input",
+      } }, /* @__PURE__ */ h(
+        SliderRow,
         {
-          type: "range",
-          className: "range",
-          min: 0.8,
-          max: 1.4,
+          label: "\u7F29\u653E",
+          value: backgroundScale,
+          min: 0.25,
+          max: 3,
           step: 0.01,
-          style: { width: "calc(100% - 3em)", padding: ".5em" },
-          onChange: (e) => setBackgroundScale(parseFloat(e.target.value)),
-          defaultValue: backgroundScale
+          onChange: (value) => setBackgroundScale(clampScale(value))
         }
-      )), /* @__PURE__ */ h("div", null, /* @__PURE__ */ h("span", { style: { margin: ".5em" } }, "\u6A21\u7CCA"), /* @__PURE__ */ h(
-        "input",
+      ), /* @__PURE__ */ h(
+        SliderRow,
         {
-          type: "range",
-          className: "range",
+          label: "\u6A21\u7CCA",
+          suffix: "px",
+          value: backgroundBlur,
           min: 0,
-          max: 60,
-          step: 0.1,
-          style: { width: "calc(100% - 3em)", padding: ".5em" },
-          onChange: (e) => setBackgroundBlur(parseFloat(e.target.value)),
-          defaultValue: backgroundBlur
+          max: BLUR_MAX,
+          step: BLUR_STEP,
+          onChange: (value) => setBackgroundBlur(clampBlurValue(value))
         }
-      )), /* @__PURE__ */ h("div", null, /* @__PURE__ */ h("span", { style: { margin: ".5em" } }, "\u660E\u5EA6"), /* @__PURE__ */ h(
-        "input",
+      ), /* @__PURE__ */ h(
+        SliderRow,
         {
-          type: "range",
-          className: "range",
+          label: "\u660E\u5EA6",
+          value: backgroundBrightness,
           min: 0,
           max: 1,
           step: 0.01,
-          style: { width: "calc(100% - 3em)", padding: ".5em" },
-          onChange: (e) => setBackgroundBrightness(parseFloat(e.target.value)),
-          defaultValue: backgroundBrightness
+          onChange: (value) => setBackgroundBrightness(value)
         }
-      ))), /* @__PURE__ */ h(
+      )), /* @__PURE__ */ h("div", { className: "universalOptions u-ibtn5", style: {
+        width: "100%",
+        height: "max-content",
+        borderRadius: ".5em",
+        padding: ".5em .6ex",
+        opacity: "0.9",
+        marginBottom: "1em"
+      } }, /* @__PURE__ */ h("div", { style: { margin: ".5em", opacity: ".75" } }, "\u6A21\u7CCA\u8FC7\u6E21\uFF08\u4F5C\u7528\u4E8E\u7F29\u653E/\u5207\u6362\u80CC\u666F\u548C\u8C03\u6574\u6A21\u7CCA\u3001\u660E\u5EA6\u3001\u7F29\u653E\u65F6\uFF09"), /* @__PURE__ */ h(
+        SliderRow,
+        {
+          label: "\u8FC7\u6E21\u65F6\u95F4",
+          suffix: "ms",
+          value: blurTransition,
+          min: 0,
+          max: BLUR_TRANSITION_MAX,
+          step: BLUR_TRANSITION_STEP,
+          onChange: (value) => setBlurTransition(clampBlurTransitionValue(value))
+        }
+      ), /* @__PURE__ */ h(
+        SliderRow,
+        {
+          label: "\u7F29\u653E\u8109\u51B2\u5F3A\u5EA6",
+          suffix: "px",
+          value: blurPulseStrength,
+          min: 0,
+          max: BLUR_PULSE_STRENGTH_MAX,
+          step: BLUR_PULSE_STRENGTH_STEP,
+          onChange: (value) => setBlurPulseStrength(clampBlurPulseStrengthValue(value))
+        }
+      ), /* @__PURE__ */ h("div", { style: { margin: ".5em", fontSize: ".85em", opacity: ".75" } }, "\u8FC7\u6E21\u65F6\u95F4\u4E3A 0 \u6216\u8109\u51B2\u5F3A\u5EA6\u4E3A 0 \u65F6\u5173\u95ED\u5BF9\u5E94\u6548\u679C\uFF1B\u7CFB\u7EDF\u5F00\u542F\u300C\u51CF\u5C11\u52A8\u6001\u6548\u679C\u300D\u65F6\u540C\u6837\u505C\u7528\u8109\u51B2\u3002")), /* @__PURE__ */ h("div", { className: "universalOptions u-ibtn5", style: {
+        width: "100%",
+        height: "max-content",
+        borderRadius: ".5em",
+        padding: ".5em .6ex",
+        opacity: "0.9",
+        marginBottom: "1em"
+      } }, /* @__PURE__ */ h("div", { style: { margin: ".5em", opacity: ".75" } }, "\u672C\u5730\u56FE\u7247\u4F18\u5316\uFF08\u4EC5\u5BF9\u672C\u5730\u56FE\u7247\u751F\u6548\uFF0C\u539F\u6587\u4EF6\u4E0D\u4F1A\u88AB\u4FEE\u6539\uFF09"), /* @__PURE__ */ h(
+        SliderRow,
+        {
+          label: "\u526F\u672C\u6700\u957F\u8FB9",
+          value: maxImageEdge,
+          min: 0,
+          max: MAX_IMAGE_EDGE,
+          step: 256,
+          onChange: (value) => setMaxImageEdge(parseMaxImageEdge(String(value)))
+        }
+      ), /* @__PURE__ */ h("div", { style: { margin: ".5em", fontSize: ".85em", opacity: ".75" } }, "0 \u8868\u793A\u4E0D\u751F\u6210\u526F\u672C\u3001\u76F4\u63A5\u7528\u539F\u56FE\uFF0C\u8D8A\u5927\u8D8A\u6E05\u6670\uFF1B\u8BBE\u4E3A 0 \u4EE5\u5916\u7684\u503C\u65F6\u4F1A\u5728\u63D2\u4EF6\u76EE\u5F55\u7684 .bge-cache \u4E0B\u751F\u6210\u7F29\u5C0F\u526F\u672C\uFF0C\u5220\u9664\u8BE5\u76EE\u5F55\u5373\u53EF\u5168\u90E8\u91CD\u5EFA\u3002\u6240\u6709\u56FE\u7247\u90FD\u4F1A\u751F\u6210\u4E00\u5F20\u6A21\u7CCA\u5360\u4F4D\u56FE\u6765\u63A9\u76D6\u52A0\u8F7D\u8FC7\u7A0B\u3002")), /* @__PURE__ */ h(
         "div",
         {
           className: "u-ibtn5",
@@ -5592,8 +6823,12 @@
         },
         /* @__PURE__ */ h("span", { className: "btn" }, "[", prefabTransparencyStatus ? "\u221A" : "\xD7", "] \u9884\u5236\u5168\u900F\u660E")
       ), /* @__PURE__ */ h("div", { className: "backgrounds" }, /* @__PURE__ */ h(BackgroundPreviewList, { backgroundList, buttons: (background) => /* @__PURE__ */ h(f, null, /* @__PURE__ */ h("span", { className: "btn", onClick: async () => {
-        await background.onConfig();
-        setBackgroundList([...backgroundList]);
+        try {
+          await background.onConfig();
+          setBackgroundList((prev) => [...prev]);
+        } catch (error) {
+          await import_sweetalert28.default.fire("\u80CC\u666F\u914D\u7F6E\u5931\u8D25", String(error), "error");
+        }
       } }, /* @__PURE__ */ h(MdSettings, null)), /* @__PURE__ */ h(
         "span",
         {
@@ -5610,6 +6845,25 @@
         /* @__PURE__ */ h(MdSelectAll, null)
       )) }))))),
       configElement
+    ));
+  }
+  function NumberRow({ label, value }) {
+    return /* @__PURE__ */ h("span", { style: { margin: ".5em" } }, label, /* @__PURE__ */ h("span", { style: { opacity: ".7", marginLeft: ".4em" } }, value));
+  }
+  function SliderRow({ label, value, min, max, step, suffix, onChange }) {
+    return /* @__PURE__ */ h("div", null, /* @__PURE__ */ h(NumberRow, { label, value: suffix ? `${value}${suffix}` : value }), /* @__PURE__ */ h(
+      "input",
+      {
+        type: "range",
+        className: "range",
+        min,
+        max,
+        step,
+        "aria-label": label,
+        style: { width: "calc(100% - 3em)", padding: ".5em" },
+        value,
+        onChange: (e) => onChange(parseFloat(e.currentTarget.value))
+      }
     ));
   }
   plugin.onConfig(() => {
@@ -5631,7 +6885,7 @@ react/cjs/react.development.js:
 
 sweetalert2/dist/sweetalert2.all.js:
   (*!
-  * sweetalert2 v11.6.16
+  * sweetalert2 v11.26.25
   * Released under the MIT License.
   *)
 */

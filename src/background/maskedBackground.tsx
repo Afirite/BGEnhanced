@@ -5,6 +5,7 @@ import { BackgroundPreviewList, selfPlugin } from "..";
 import Swal from "sweetalert2";
 import { MdSelectAll } from "react-icons/md";
 import { RecursiveLockBackground } from "./RecursiveLockBackground";
+import { ResolutionPath } from "./resolution";
 
 export class MaskedBackground extends RecursiveLockBackground {
     async onConfig(): Promise<undefined> {
@@ -71,40 +72,30 @@ export class MaskedBackground extends RecursiveLockBackground {
 
         const p = Swal.fire({ title: "遮罩背景设置", html: "<div id=MaskedBackgroundConfigContainer class=BGEnhanced-Config style='font-size:.5em;' />" });
 
-        ReactDOM.render(<ConfigMenu />, document.getElementById("MaskedBackgroundConfigContainer"));
-
-        await p;
-
-        this.#targetBGElement = undefined;
-        this.resetRecursiveCount();
+        const container = document.getElementById("MaskedBackgroundConfigContainer")!;
+        ReactDOM.render(<ConfigMenu />, container);
+        try { await p; }
+        finally { ReactDOM.unmountComponentAtNode(container); }
 
         return;
     }
     static backgroundTypeName: string = "遮罩背景";
     static attributes = ["recursive"];
 
-    target: string
+    target: string = "";
     maskColor = "#ffffff22";
     maskBlur = 0;
-    #targetBGElement: Promise<BaseBackground> | undefined;
 
-
-    async #targetBackground() {
-        if (!this.#targetBGElement) {
-            this.#targetBGElement = Promise.race([
-                betterncm.utils.waitForFunction(() => selfPlugin.backgroundList.length),
-                betterncm.utils.delay(1000).then(_ => Promise.reject("Timeout"))
-            ]).then(() => selfPlugin.backgroundList.find(bg => bg.id === this.target));
-        }
-        return this.#targetBGElement;
+    private targetBackground(): BaseBackground {
+        const target = (selfPlugin.backgroundList as BaseBackground[]).find(bg => bg.id === this.target);
+        if (!target) throw new Error("遮罩对象不存在，请重新选择背景。");
+        return target;
     }
 
-    async previewBackground(): Promise<React.FC> {
-        if (this.checkRecursive()) return () => <div>Potential circular reference detected.</div>;
-
-        const preview = await(await this.#targetBackground()).previewBackground();
+    async previewBackground(path: ResolutionPath = []): Promise<React.FC> {
+        const Preview = await this.targetBackground().previewBackground(this.enter(path));
         return () => <>
-            {preview}
+            <Preview />
             <div className={`bgMask-${this.id}`} />
             <style>
                 {this.#getStyleSheet()}
@@ -126,11 +117,10 @@ export class MaskedBackground extends RecursiveLockBackground {
 `;
     }
 
-    async backgroundElement(): Promise<ReactElement> {
-        if (this.checkRecursive()) return <div>Potential circular reference detected.</div>;
-
+    async backgroundElement(path: ResolutionPath = []): Promise<ReactElement> {
+        const element = await this.targetBackground().backgroundElement(this.enter(path));
         return <>
-            {await (await this.#targetBackground()).backgroundElement()}
+            {element}
             <div className={`bgMask-${this.id}`} />
             <style>
                 {this.#getStyleSheet()}

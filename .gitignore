@@ -4,7 +4,5 @@ node_modules/
 /index.js
 /index.css
 /startup_script.css
-native/.vs
-native/Debug
-native/Release
-native/BGEnhanced.vcxproj.user
+# 打包产物（npm run pack 生成）
+/release/

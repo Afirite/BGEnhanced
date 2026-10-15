@@ -1,5 +1,6 @@
 import { Component, ReactElement } from "react";
 import { NotImplementedError } from "../errors";
+import { ResolutionPath } from "./resolution";
 
 function makeId(length) {
     var result = '';
@@ -20,12 +21,12 @@ export class BaseBackground {
     id: string = makeId(12);
     static attributes: string[] = [];
     static backgroundTypeName: string;
-    async previewBackground(): Promise<React.FC> {
+    async previewBackground(_path: ResolutionPath = []): Promise<React.FC> {
         throw new NotImplementedError(
             "Method previewBackground is not implemented",
         );
     }
-    async backgroundElement(): Promise<ReactElement> {
+    async backgroundElement(_path: ResolutionPath = []): Promise<ReactElement> {
         throw new NotImplementedError(
             "Method backgroundElement is not implemented",
         );

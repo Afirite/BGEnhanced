@@ -1,11 +1,8 @@
 import { BaseBackground } from "./background";
+import { enterBackground, ResolutionPath } from "./resolution";
 
 export class RecursiveLockBackground extends BaseBackground {
-    #recursiveCount = 0;
-    resetRecursiveCount() {
-        this.#recursiveCount = 0;
-    }
-    checkRecursive() {
-        return (this.#recursiveCount++ > 50);
+    protected enter(path: ResolutionPath): ResolutionPath {
+        return enterBackground(path, this.id);
     }
 }

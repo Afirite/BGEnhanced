@@ -413,3 +413,6 @@ declare const ReactDOM: typeof import("react-dom");
 declare const DEBUG: boolean;
 declare var betterncm_native: any;
 declare var BETTERNCM_FILES_PATH:string;
+/** Injected by build.js: plugin version and the moment the bundle was built. */
+declare const __BGE_VERSION__: string;
+declare const __BGE_BUILD__: string;

@@ -14,10 +14,13 @@ export function useLocalStorage<T>(
         }
     });
 
+    const valueRef = React.useRef(storedValue);
+    valueRef.current = storedValue;
     const setValue = (value: T | ((prevValue: T) => T)) => {
         try {
             const valueToStore =
-                value instanceof Function ? value(storedValue) : value;
+                value instanceof Function ? value(valueRef.current) : value;
+            valueRef.current = valueToStore;
             setStoredValue(valueToStore);
             window.localStorage.setItem(key, stringify(valueToStore));
         } catch (error) {
@@ -80,17 +83,12 @@ export function usePromise(promise, inputs) {
     const [{ error, result, state }, dispatch] = React.useReducer(reducer, defaultState);
 
     React.useEffect(() => {
-        promise = resolvePromise(promise);
-
-        if (!promise) {
-            return;
-        }
-
+        const resolvedPromise = Promise.resolve().then(() => resolvePromise(promise));
         let canceled = false;
 
         dispatch({ type: states.pending });
 
-        promise.then(
+        resolvedPromise.then(
             result => !canceled && dispatch({
                 payload: result,
                 type: states.resolved
@@ -111,7 +109,7 @@ export function usePromise(promise, inputs) {
 
 // https://www.30secondsofcode.org/articles/s/react-use-interval-explained
 export function useInterval(callback, delay) {
-    const savedCallback = React.useRef();
+    const savedCallback = React.useRef(callback);
 
     React.useEffect(() => {
         savedCallback.current = callback;
@@ -124,6 +122,6 @@ export function useInterval(callback, delay) {
         }
         let id = setInterval(tick, delay);
         return () => clearInterval(id);
-    }, []);
+    }, [delay]);
 }
 
