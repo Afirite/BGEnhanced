@@ -6503,7 +6503,7 @@
     return clampStoredNumber(raw, 0, MAX_IMAGE_EDGE, 0);
   }
   document.body.classList.add("BGEnhanced");
-  console.log(`[BGEnhanced] ${"0.3.15"} loaded, build ${"2026-10-15T14:49:53.095Z"}`);
+  console.log(`[BGEnhanced] ${"0.3.15"} loaded, build ${"2026-10-15T15:27:30.838Z"}`);
   var configElement = document.createElement("div");
   var BGDom = document.createElement("div");
   BGDom.classList.add("BGEnhanced-BackgoundDom");
