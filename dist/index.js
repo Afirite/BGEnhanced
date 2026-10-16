@@ -3593,7 +3593,7 @@
         const showLoading = (buttonToReplace) => {
           let popup = getPopup();
           if (!popup) {
-            new Swal9();
+            new Swal6();
           }
           popup = getPopup();
           if (!popup) {
@@ -5174,9 +5174,9 @@
         });
         SweetAlert.DismissReason = DismissReason;
         SweetAlert.version = "11.26.25";
-        const Swal9 = SweetAlert;
-        Swal9.default = Swal9;
-        return Swal9;
+        const Swal6 = SweetAlert;
+        Swal6.default = Swal6;
+        return Swal6;
       });
       if (typeof exports !== "undefined" && exports.Sweetalert2) {
         exports.swal = exports.sweetAlert = exports.Swal = exports.SweetAlert = exports.Sweetalert2;
@@ -5318,12 +5318,12 @@
     id = makeId(12);
     static attributes = [];
     static backgroundTypeName;
-    async previewBackground(_path = []) {
+    async previewBackground() {
       throw new NotImplementedError(
         "Method previewBackground is not implemented"
       );
     }
-    async backgroundElement(_path = []) {
+    async backgroundElement() {
       throw new NotImplementedError(
         "Method backgroundElement is not implemented"
       );
@@ -5375,8 +5375,19 @@
   function useLocalStorage(key, initialValue, parse = JSON.parse, stringify = JSON.stringify) {
     const [storedValue, setStoredValue] = React.useState(() => {
       try {
-        const item = window.localStorage.getItem(key);
-        return item ? parse(item) : initialValue;
+        const storage = window.localStorage;
+        const item = storage.getItem(key);
+        if (item === null)
+          return initialValue;
+        try {
+          return parse(item);
+        } catch (error) {
+          const backupKey = key + ".invalid-backup";
+          if (storage.getItem(backupKey) === null)
+            storage.setItem(backupKey, item);
+          storage.removeItem(key);
+          throw error;
+        }
       } catch (error) {
         console.log(error);
         return initialValue;
@@ -5387,9 +5398,9 @@
     const setValue = (value) => {
       try {
         const valueToStore = value instanceof Function ? value(valueRef.current) : value;
+        window.localStorage.setItem(key, stringify(valueToStore));
         valueRef.current = valueToStore;
         setStoredValue(valueToStore);
-        window.localStorage.setItem(key, stringify(valueToStore));
       } catch (error) {
         console.log(error);
       }
@@ -5661,9 +5672,52 @@
     return url;
   }
 
+  // src/background/coverImageObserver.ts
+  var coverImageSelector = ".normal.j-cover, .cmd-image";
+  function containsCover(node) {
+    if (node.nodeType !== 1)
+      return false;
+    const element = node;
+    return element.matches(coverImageSelector) || !!element.querySelector(coverImageSelector);
+  }
+  function affectsCover(record) {
+    if (record.type === "attributes") {
+      return record.attributeName === "src" && record.target.nodeType === 1 && record.target.matches(coverImageSelector);
+    }
+    if (record.type !== "childList")
+      return false;
+    return Array.from(record.addedNodes).some(containsCover) || Array.from(record.removedNodes).some(containsCover);
+  }
+  function observeCoverChanges(update) {
+    let disposed = false;
+    let frame;
+    const observer = new MutationObserver((records) => {
+      if (disposed || frame !== void 0 || !records.some(affectsCover))
+        return;
+      frame = requestAnimationFrame(() => {
+        frame = void 0;
+        if (!disposed)
+          update();
+      });
+    });
+    observer.observe(document.body, {
+      subtree: true,
+      childList: true,
+      attributes: true,
+      attributeFilter: ["src"]
+    });
+    update();
+    return () => {
+      disposed = true;
+      observer.disconnect();
+      if (frame !== void 0)
+        cancelAnimationFrame(frame);
+    };
+  }
+
   // src/background/coverImageBackground.tsx
   function getCoverUrl() {
-    const image = document.querySelector(".normal.j-cover, .cmd-image");
+    const image = document.querySelector(coverImageSelector);
     if (!image?.src)
       return "";
     const url = new URL(image.src, document.baseURI);
@@ -5705,12 +5759,10 @@
         };
         image.src = next;
       };
-      const observer = new MutationObserver(update);
-      observer.observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ["src"] });
-      update();
+      const stopObserving = observeCoverChanges(update);
       return () => {
         disposed = true;
-        observer.disconnect();
+        stopObserving();
         if (pending)
           pending.onload = pending.onerror = null;
       };
@@ -6000,7 +6052,14 @@
     }
     static async askAndCreate() {
       const path = await betterncm.app.openFileDialog(".webp .png .jpg .jpeg .bmp .gif\0", "./");
-      if (!betterncm_native.fs.exists(path)) {
+      if (!path)
+        return null;
+      let exists = false;
+      try {
+        exists = betterncm_native.fs.exists(path);
+      } catch {
+      }
+      if (!exists) {
         import_sweetalert22.default.fire(
           "\u6DFB\u52A0\u80CC\u666F\u5931\u8D25",
           `\u539F\u56E0\u53EF\u80FD\u4E3A\uFF1A
@@ -6010,8 +6069,6 @@
         );
         return null;
       }
-      if (!path)
-        return null;
       const background = new _ImageBackground(path);
       const maxEdge = maxImageEdgeSetting();
       void (async () => {
@@ -6039,207 +6096,8 @@
     }
   };
 
-  // src/background/maskedBackground.tsx
-  var import_sweetalert23 = __toESM(require_sweetalert2_all());
-
-  // src/background/resolution.ts
-  function enterBackground(path, id) {
-    if (path.includes(id))
-      throw new Error(`\u80CC\u666F\u5FAA\u73AF\u5F15\u7528\uFF1A${[...path, id].join(" \u2192 ")}`);
-    return [...path, id];
-  }
-  function chooseBackground(items, random = Math.random) {
-    if (!items.length)
-      throw new Error("\u6CA1\u6709\u53EF\u4F9B\u62BD\u9009\u7684\u80CC\u666F\uFF0C\u8BF7\u6DFB\u52A0\u80CC\u666F\u6216\u8C03\u6574\u6392\u9664\u5217\u8868\u3002");
-    return items[Math.min(items.length - 1, Math.floor(random() * items.length))];
-  }
-
-  // src/background/RecursiveLockBackground.ts
-  var RecursiveLockBackground = class extends BaseBackground {
-    enter(path) {
-      return enterBackground(path, this.id);
-    }
-  };
-
-  // src/background/maskedBackground.tsx
-  var MaskedBackground = class _MaskedBackground extends RecursiveLockBackground {
-    async onConfig() {
-      const ConfigMenu = () => {
-        const [target, setTarget] = React.useState(this.target);
-        const [maskColorMain, setMaskColorMain] = React.useState(this.maskColor.slice(0, 7));
-        const [maskColorOpacity, setMaskColorOpacity] = React.useState(parseInt(this.maskColor.slice(7, 9), 16));
-        const [maskBlur, setMaskBlur] = React.useState(this.maskBlur);
-        function pad(num, size) {
-          var s = "000" + num;
-          return s.substr(s.length - size);
-        }
-        React.useEffect(() => {
-          this.target = target;
-          this.maskColor = maskColorMain + pad(maskColorOpacity.toString(16), 2);
-          console.log(pad(maskColorOpacity.toString(16), 2));
-          this.maskBlur = maskBlur;
-        }, [target, maskColorMain, maskColorOpacity, maskBlur]);
-        const checkBackground = (bg) => {
-          setTarget(bg.id);
-        };
-        const filteredBGList = React.useMemo(
-          () => selfPlugin.backgroundList.filter((bg) => bg !== this),
-          []
-        );
-        return /* @__PURE__ */ h(f, null, /* @__PURE__ */ h("div", null, /* @__PURE__ */ h("span", null, "\u906E\u7F69\u989C\u8272\uFF1A"), /* @__PURE__ */ h("input", { type: "color", value: maskColorMain, onChange: (e) => setMaskColorMain(e.target.value) }), /* @__PURE__ */ h("br", null), /* @__PURE__ */ h("span", null, "\u906E\u7F69\u900F\u660E\u5EA6\uFF1A"), /* @__PURE__ */ h("input", { type: "range", value: maskColorOpacity, min: 0, max: 255, step: 1, onChange: (e) => setMaskColorOpacity(parseFloat(e.target.value)) }), /* @__PURE__ */ h("br", null), /* @__PURE__ */ h("span", null, "\u906E\u7F69\u9AD8\u65AF\u6A21\u7CCA\uFF1A"), /* @__PURE__ */ h("input", { type: "range", value: maskBlur, min: 0, max: 60, step: 1, onChange: (e) => setMaskBlur(parseFloat(e.target.value)) }), /* @__PURE__ */ h("br", null)), /* @__PURE__ */ h("div", null, "\u906E\u7F69\u5BF9\u8C61\uFF1A"), /* @__PURE__ */ h(
-          BackgroundPreviewList,
-          {
-            backgroundList: filteredBGList,
-            currentIDs: [target],
-            buttons: (bg) => /* @__PURE__ */ h(f, null, /* @__PURE__ */ h(
-              "span",
-              {
-                className: "btn",
-                onClick: () => checkBackground(bg)
-              },
-              /* @__PURE__ */ h(MdSelectAll, { color: "white" })
-            ))
-          }
-        ));
-      };
-      const p = import_sweetalert23.default.fire({ title: "\u906E\u7F69\u80CC\u666F\u8BBE\u7F6E", html: "<div id=MaskedBackgroundConfigContainer class=BGEnhanced-Config style='font-size:.5em;' />" });
-      const container = document.getElementById("MaskedBackgroundConfigContainer");
-      ReactDOM.render(/* @__PURE__ */ h(ConfigMenu, null), container);
-      try {
-        await p;
-      } finally {
-        ReactDOM.unmountComponentAtNode(container);
-      }
-      return;
-    }
-    static backgroundTypeName = "\u906E\u7F69\u80CC\u666F";
-    static attributes = ["recursive"];
-    target = "";
-    maskColor = "#ffffff22";
-    maskBlur = 0;
-    targetBackground() {
-      const target = selfPlugin.backgroundList.find((bg) => bg.id === this.target);
-      if (!target)
-        throw new Error("\u906E\u7F69\u5BF9\u8C61\u4E0D\u5B58\u5728\uFF0C\u8BF7\u91CD\u65B0\u9009\u62E9\u80CC\u666F\u3002");
-      return target;
-    }
-    async previewBackground(path = []) {
-      const Preview = await this.targetBackground().previewBackground(this.enter(path));
-      return () => /* @__PURE__ */ h(f, null, /* @__PURE__ */ h(Preview, null), /* @__PURE__ */ h("div", { className: `bgMask-${this.id}` }), /* @__PURE__ */ h("style", null, this.#getStyleSheet()));
-    }
-    #getStyleSheet() {
-      return `
-.bgMask-${this.id}{
-    position:absolute;
-    left:0;
-    top:0;
-    right:0;
-    bottom:0;
-    background:${this.maskColor};
-    backdrop-filter:blur(${this.maskBlur}px);
-}
-`;
-    }
-    async backgroundElement(path = []) {
-      const element = await this.targetBackground().backgroundElement(this.enter(path));
-      return /* @__PURE__ */ h(f, null, element, /* @__PURE__ */ h("div", { className: `bgMask-${this.id}` }), /* @__PURE__ */ h("style", null, this.#getStyleSheet()));
-    }
-    static default() {
-      return new _MaskedBackground();
-    }
-    static async askAndCreate() {
-      const bg = new _MaskedBackground();
-      await bg.onConfig();
-      return bg;
-    }
-  };
-
-  // src/background/randomBackground.tsx
-  var import_sweetalert24 = __toESM(require_sweetalert2_all());
-  var RandomBackground = class _RandomBackground extends RecursiveLockBackground {
-    async onConfig() {
-      const ConfigMenu = () => {
-        const [excludes, setExcludes] = React.useState(this.excludeList);
-        const currents = React.useMemo(
-          () => selfPlugin.backgroundList.map((bg) => bg.id).filter((id) => !excludes.includes(id)),
-          [excludes]
-        );
-        React.useEffect(() => {
-          this.excludeList = excludes;
-        }, [excludes]);
-        const checkBackground = (bg) => {
-          if (excludes.includes(bg.id))
-            setExcludes(excludes.filter((id) => id !== bg.id));
-          else
-            setExcludes([...excludes, bg.id]);
-        };
-        const filteredBGList = React.useMemo(
-          () => selfPlugin.backgroundList.filter((bg) => bg !== this),
-          []
-        );
-        return /* @__PURE__ */ h(f, null, /* @__PURE__ */ h(
-          BackgroundPreviewList,
-          {
-            backgroundList: filteredBGList,
-            currentIDs: currents,
-            buttons: (bg) => /* @__PURE__ */ h(f, null, /* @__PURE__ */ h(
-              "span",
-              {
-                className: "btn",
-                onClick: () => checkBackground(bg)
-              },
-              /* @__PURE__ */ h(MdSelectAll, { color: "white" })
-            ))
-          }
-        ));
-      };
-      const p = import_sweetalert24.default.fire({ title: "\u968F\u673A\u80CC\u666F\u8BBE\u7F6E", html: "<div id=RandBGConfigContainer class=BGEnhanced-Config style='font-size:.5em;' />" });
-      const container = document.getElementById("RandBGConfigContainer");
-      ReactDOM.render(/* @__PURE__ */ h(ConfigMenu, null), container);
-      try {
-        await p;
-      } finally {
-        ReactDOM.unmountComponentAtNode(container);
-      }
-      this.#selected = void 0;
-      return;
-    }
-    static backgroundTypeName = "\u968F\u673A\u62BD\u9009";
-    static attributes = ["recursive"];
-    excludeList = [];
-    #selected;
-    randomBackground() {
-      const candidates = selfPlugin.backgroundList.filter((bg) => bg !== this && !this.excludeList.includes(bg.id));
-      if (!this.#selected || !candidates.includes(this.#selected)) {
-        this.#selected = chooseBackground(candidates);
-      }
-      return this.#selected;
-    }
-    async previewBackground(path = []) {
-      return this.randomBackground().previewBackground(this.enter(path));
-    }
-    async backgroundElement(path = []) {
-      return this.randomBackground().backgroundElement(this.enter(path));
-    }
-    static default() {
-      return new _RandomBackground();
-    }
-    static async askAndCreate() {
-      const bg = new _RandomBackground();
-      bg.excludeList = [...selfPlugin.backgroundList.filter((background) => background.constructor.attributes.includes("recursive")).map((bg2) => bg2.id)];
-      return bg;
-    }
-    hooks__onBeforeAddBackground(background) {
-      if (background.constructor.attributes.includes("recursive"))
-        this.excludeList.push(background.id);
-    }
-    hooks__onBeforeRemoveBackground(background) {
-      this.excludeList = this.excludeList.filter((id) => background.id !== id);
-    }
-  };
-
   // src/background/remoteImageBackground.tsx
-  var import_sweetalert25 = __toESM(require_sweetalert2_all());
+  var import_sweetalert23 = __toESM(require_sweetalert2_all());
   var RemoteImageBackground = class _RemoteImageBackground extends BaseBackground {
     static backgroundTypeName = "\u5728\u7EBF\u56FE\u7247";
     constructor(ImageUrl) {
@@ -6262,7 +6120,7 @@
       return new _RemoteImageBackground("");
     }
     async onConfig() {
-      const result = await import_sweetalert25.default.fire({
+      const result = await import_sweetalert23.default.fire({
         title: "\u4FEE\u6539\u5728\u7EBF\u56FE\u7247\u80CC\u666FURL",
         inputValue: this.ImageUrl,
         input: "text"
@@ -6272,7 +6130,7 @@
       return;
     }
     static async askAndCreate() {
-      const result = await import_sweetalert25.default.fire({
+      const result = await import_sweetalert23.default.fire({
         title: "\u521B\u5EFA\u4E00\u4E2A\u5728\u7EBF\u56FE\u7247\u80CC\u666F",
         text: "\u4F60\u53EF\u4EE5\u5728\u6B64\u5199\u5165\u4E00\u4E2A\u6307\u5411\u56FE\u7247\u7684URL\u3002",
         input: "text"
@@ -6284,57 +6142,8 @@
     }
   };
 
-  // src/background/remoteRandImageBackgroundLoli.tsx
-  var import_sweetalert26 = __toESM(require_sweetalert2_all());
-  var RemoteRandImageBackgroundLoli = class _RemoteRandImageBackgroundLoli extends RemoteImageBackground {
-    static backgroundTypeName = "\u968F\u673A\u4E8C\u6B21\u5143";
-    constructor(url) {
-      super(url);
-    }
-    static default() {
-      return new _RemoteRandImageBackgroundLoli("");
-    }
-    static async askAndCreate() {
-      import_sweetalert26.default.fire({ title: "\u6B63\u5728\u83B7\u53D6\u80CC\u666F\u2026", didOpen: () => import_sweetalert26.default.showLoading() });
-      try {
-        const response = await fetch("https://www.loliapi.com/acg/pc/");
-        if (!response.ok)
-          throw new Error(`HTTP ${response.status}`);
-        return new _RemoteRandImageBackgroundLoli(response.url);
-      } finally {
-        import_sweetalert26.default.close();
-      }
-    }
-  };
-
-  // src/background/remoteRandImageBackgroundScenery.tsx
-  var RemoteRandImageBackgroundScenery = class _RemoteRandImageBackgroundScenery extends BaseBackground {
-    static backgroundTypeName = "\u5FC5\u5E94\u6BCF\u65E5";
-    ImageUrl = "https://api.dujin.org/bing/1920.php";
-    constructor() {
-      super();
-    }
-    async backgroundElement() {
-      return /* @__PURE__ */ h(
-        "img",
-        {
-          src: `${this.ImageUrl}?${(/* @__PURE__ */ new Date()).getTime()}`
-        }
-      );
-    }
-    async previewBackground() {
-      return () => /* @__PURE__ */ h("div", { style: { background: `url(${this.ImageUrl}?${(/* @__PURE__ */ new Date()).getTime()}) 0% 0% / cover` } });
-    }
-    static default() {
-      return new _RemoteRandImageBackgroundScenery();
-    }
-    static async askAndCreate() {
-      return new _RemoteRandImageBackgroundScenery();
-    }
-  };
-
   // src/background/videoBackground.tsx
-  var import_sweetalert27 = __toESM(require_sweetalert2_all());
+  var import_sweetalert24 = __toESM(require_sweetalert2_all());
   function BackgroundVideo({ videoUrl }) {
     const url = useMountedUrl(videoUrl);
     if (!url)
@@ -6370,8 +6179,15 @@
     }
     static async askAndCreate() {
       const path = await betterncm.app.openFileDialog(".mp4, .webm\0", "./");
-      if (!betterncm_native.fs.exists(path)) {
-        import_sweetalert27.default.fire(
+      if (!path)
+        return null;
+      let exists = false;
+      try {
+        exists = betterncm_native.fs.exists(path);
+      } catch {
+      }
+      if (!exists) {
+        import_sweetalert24.default.fire(
           "\u6DFB\u52A0\u80CC\u666F\u5931\u8D25",
           `\u539F\u56E0\u53EF\u80FD\u4E3A\uFF1A
 1. \u4F60\u9009\u4E2D\u7684\u8DEF\u5F84\u5185\u6709\u7279\u6B8A\u5B57\u7B26\uFF08\u4E2D\u6587\uFF0C\u5236\u8868\u7B26\u7B49\uFF09
@@ -6380,9 +6196,7 @@
         );
         return null;
       }
-      if (path)
-        return new _VideoBackground(path);
-      return null;
+      return new _VideoBackground(path);
     }
   };
 
@@ -6391,23 +6205,15 @@
     VideoBackground: "video",
     CSSBackground: "css",
     ImageBackground: "image",
-    RemoteRandImageBackgroundLoli: "anime",
-    RemoteRandImageBackgroundScenery: "bing",
     CoverImageBackground: "cover",
-    RandomBackground: "random",
-    RemoteImageBackground: "remote-image",
-    MaskedBackground: "masked"
+    RemoteImageBackground: "remote-image"
   };
   var registry = [
     { type: "video", ctor: VideoBackground },
     { type: "css", ctor: CSSBackground },
     { type: "image", ctor: ImageBackground },
-    { type: "anime", ctor: RemoteRandImageBackgroundLoli },
-    { type: "bing", ctor: RemoteRandImageBackgroundScenery },
     { type: "cover", ctor: CoverImageBackground },
-    { type: "random", ctor: RandomBackground },
-    { type: "remote-image", ctor: RemoteImageBackground },
-    { type: "masked", ctor: MaskedBackground }
+    { type: "remote-image", ctor: RemoteImageBackground }
   ];
   var BackgroundTypes = registry.map((entry) => entry.ctor);
   function parseBackgroundList(text) {
@@ -6463,7 +6269,7 @@
   }
 
   // src/index.tsx
-  var import_sweetalert28 = __toESM(require_sweetalert2_all());
+  var import_sweetalert25 = __toESM(require_sweetalert2_all());
 
   // src/resizeEffect.ts
   function watchBlurPulse(host, strength, duration, setActive) {
@@ -6503,7 +6309,7 @@
     return clampStoredNumber(raw, 0, MAX_IMAGE_EDGE, 0);
   }
   document.body.classList.add("BGEnhanced");
-  console.log(`[BGEnhanced] ${"0.3.15"} loaded, build ${"2026-10-15T15:27:30.838Z"}`);
+  console.log(`[BGEnhanced] ${"0.3.16"} loaded, build ${"2026-10-16T06:42:37.553Z"}`);
   var configElement = document.createElement("div");
   var BGDom = document.createElement("div");
   BGDom.classList.add("BGEnhanced-BackgoundDom");
@@ -6667,7 +6473,7 @@
           setBackgroundList((prev) => prev.concat(result));
         }
       } catch (error) {
-        await import_sweetalert28.default.fire("\u6DFB\u52A0\u80CC\u666F\u5931\u8D25", String(error), "error");
+        await import_sweetalert25.default.fire("\u6DFB\u52A0\u80CC\u666F\u5931\u8D25", String(error), "error");
       }
     }
     function removeBackground(background) {
@@ -6690,7 +6496,7 @@
       return /* @__PURE__ */ h(
         "span",
         {
-          className: `btn ${backgroundMode === id && "enabled"}`,
+          className: backgroundMode === id ? "bge-option-button enabled" : "bge-option-button",
           onClick: () => setBackgroundMode(id)
         },
         name
@@ -6703,27 +6509,24 @@
       {
         style: {
           ...backgroundEffectStyle(effectiveBlur, backgroundBrightness, effectiveScale),
-          transform: effectiveScale !== 1 ? `scale(${effectiveScale})` : "none",
-          // Declared inline so the host theme's `transition: none !important`
-          // reset cannot suppress the configurable blur transition.
-          transition: blurTransitionCss(blurTransition) || "none"
+          "--bge-background-transition": blurTransitionCss(blurTransition) || "none"
         },
         className: `background mode-${backgroundMode}`
       },
       /* @__PURE__ */ h("div", { className: "container", key: backgroundRenderKey }, backgroundError ? /* @__PURE__ */ h("div", { className: "BGEnhanced-error" }, String(backgroundError)) : currentBackgroundElement)
     )), /* @__PURE__ */ h("style", { className: "BGEnhanced-styles" }, stylesheet), ReactDOM.createPortal(
-      /* @__PURE__ */ h(f, null, /* @__PURE__ */ h("div", { className: "BGEnhanced-Config" }, currentConfigBackground ? currentConfigBackground : /* @__PURE__ */ h(f, null, /* @__PURE__ */ h("div", { className: "buttons" }, /* @__PURE__ */ h("span", { className: "full expand-h u-ibtn5" }, /* @__PURE__ */ h("span", { className: "ico" }, /* @__PURE__ */ h(MdAdd, null)), /* @__PURE__ */ h("span", { className: "content" }, BackgroundTypes.map((type) => (
+      /* @__PURE__ */ h(f, null, /* @__PURE__ */ h("div", { className: "BGEnhanced-Config" }, currentConfigBackground ? currentConfigBackground : /* @__PURE__ */ h(f, null, /* @__PURE__ */ h("div", { className: "bge-panels" }, /* @__PURE__ */ h("div", { className: "bge-panel" }, /* @__PURE__ */ h("div", { className: "bge-panel-head" }, /* @__PURE__ */ h("span", { className: "ico" }, /* @__PURE__ */ h(MdAdd, null)), /* @__PURE__ */ h("span", { className: "bge-panel-name" }, "\u6DFB\u52A0\u80CC\u666F")), /* @__PURE__ */ h("div", { className: "bge-panel-body" }, BackgroundTypes.map((type) => (
         // rome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
         /* @__PURE__ */ h(
           "span",
           {
             key: type.name,
-            className: "btn",
+            className: "bge-option-button",
             onClick: () => askAndAddBackground(type)
           },
           type.backgroundTypeName
         )
-      )))), /* @__PURE__ */ h("span", { className: "extendable u-ibtn5" }, /* @__PURE__ */ h("span", { className: "ico" }, /* @__PURE__ */ h(MdDesktopWindows, null)), /* @__PURE__ */ h("span", { className: "content" }, /* @__PURE__ */ h(BackgroundModeElement, { name: "\u8986\u76D6", id: "cover" }), /* @__PURE__ */ h(BackgroundModeElement, { name: "\u8986\u76D6\u5C45\u4E2D", id: "cover-centered" }), /* @__PURE__ */ h(BackgroundModeElement, { name: "\u62C9\u4F38", id: "stretch" })))), /* @__PURE__ */ h("div", { className: "universalOptions u-ibtn5", style: {
+      )))), /* @__PURE__ */ h("div", { className: "bge-panel" }, /* @__PURE__ */ h("div", { className: "bge-panel-head" }, /* @__PURE__ */ h("span", { className: "ico" }, /* @__PURE__ */ h(MdDesktopWindows, null)), /* @__PURE__ */ h("span", { className: "bge-panel-name" }, "\u80CC\u666F\u9002\u914D")), /* @__PURE__ */ h("div", { className: "bge-panel-body" }, /* @__PURE__ */ h(BackgroundModeElement, { name: "\u8986\u76D6", id: "cover" }), /* @__PURE__ */ h(BackgroundModeElement, { name: "\u8986\u76D6\u5C45\u4E2D", id: "cover-centered" }), /* @__PURE__ */ h(BackgroundModeElement, { name: "\u62C9\u4F38", id: "stretch" })))), /* @__PURE__ */ h("div", { className: "universalOptions bge-setting-group u-ibtn5", style: {
         width: "100%",
         height: "max-content",
         borderRadius: ".5em",
@@ -6761,7 +6564,7 @@
           step: 0.01,
           onChange: (value) => setBackgroundBrightness(value)
         }
-      )), /* @__PURE__ */ h("div", { className: "universalOptions u-ibtn5", style: {
+      )), /* @__PURE__ */ h("div", { className: "universalOptions bge-setting-group u-ibtn5", style: {
         width: "100%",
         height: "max-content",
         borderRadius: ".5em",
@@ -6790,7 +6593,7 @@
           step: BLUR_PULSE_STRENGTH_STEP,
           onChange: (value) => setBlurPulseStrength(clampBlurPulseStrengthValue(value))
         }
-      ), /* @__PURE__ */ h("div", { style: { margin: ".5em", fontSize: ".85em", opacity: ".75" } }, "\u8FC7\u6E21\u65F6\u95F4\u4E3A 0 \u6216\u8109\u51B2\u5F3A\u5EA6\u4E3A 0 \u65F6\u5173\u95ED\u5BF9\u5E94\u6548\u679C\uFF1B\u7CFB\u7EDF\u5F00\u542F\u300C\u51CF\u5C11\u52A8\u6001\u6548\u679C\u300D\u65F6\u540C\u6837\u505C\u7528\u8109\u51B2\u3002")), /* @__PURE__ */ h("div", { className: "universalOptions u-ibtn5", style: {
+      ), /* @__PURE__ */ h("div", { className: "bge-setting-description", style: { margin: ".5em", fontSize: "calc(.85em - .3px)", opacity: ".75" } }, "\u8FC7\u6E21\u65F6\u95F4\u4E3A 0 \u6216\u8109\u51B2\u5F3A\u5EA6\u4E3A 0 \u65F6\u5173\u95ED\u5BF9\u5E94\u6548\u679C\uFF1B\u7CFB\u7EDF\u5F00\u542F\u300C\u51CF\u5C11\u52A8\u6001\u6548\u679C\u300D\u65F6\u540C\u6837\u505C\u7528\u8109\u51B2\u3002")), /* @__PURE__ */ h("div", { className: "universalOptions bge-setting-group u-ibtn5", style: {
         width: "100%",
         height: "max-content",
         borderRadius: ".5em",
@@ -6807,14 +6610,14 @@
           step: 256,
           onChange: (value) => setMaxImageEdge(parseMaxImageEdge(String(value)))
         }
-      ), /* @__PURE__ */ h("div", { style: { margin: ".5em", fontSize: ".85em", opacity: ".75" } }, "0 \u8868\u793A\u4E0D\u751F\u6210\u526F\u672C\u3001\u76F4\u63A5\u7528\u539F\u56FE\uFF0C\u8D8A\u5927\u8D8A\u6E05\u6670\uFF1B\u8BBE\u4E3A 0 \u4EE5\u5916\u7684\u503C\u65F6\u4F1A\u5728\u63D2\u4EF6\u76EE\u5F55\u7684 .bge-cache \u4E0B\u751F\u6210\u7F29\u5C0F\u526F\u672C\uFF0C\u5220\u9664\u8BE5\u76EE\u5F55\u5373\u53EF\u5168\u90E8\u91CD\u5EFA\u3002\u6240\u6709\u56FE\u7247\u90FD\u4F1A\u751F\u6210\u4E00\u5F20\u6A21\u7CCA\u5360\u4F4D\u56FE\u6765\u63A9\u76D6\u52A0\u8F7D\u8FC7\u7A0B\u3002")), /* @__PURE__ */ h(
+      ), /* @__PURE__ */ h("div", { className: "bge-setting-description", style: { margin: ".5em", fontSize: "calc(.85em - .3px)", opacity: ".75" } }, "0 \u8868\u793A\u4E0D\u751F\u6210\u526F\u672C\u3001\u76F4\u63A5\u7528\u539F\u56FE\uFF0C\u8D8A\u5927\u8D8A\u6E05\u6670\uFF1B\u8BBE\u4E3A 0 \u4EE5\u5916\u7684\u503C\u65F6\u4F1A\u5728\u63D2\u4EF6\u76EE\u5F55\u7684 .bge-cache \u4E0B\u751F\u6210\u7F29\u5C0F\u526F\u672C\uFF0C\u5220\u9664\u8BE5\u76EE\u5F55\u5373\u53EF\u5168\u90E8\u91CD\u5EFA\u3002\u6240\u6709\u56FE\u7247\u90FD\u4F1A\u751F\u6210\u4E00\u5F20\u6A21\u7CCA\u5360\u4F4D\u56FE\u6765\u63A9\u76D6\u52A0\u8F7D\u8FC7\u7A0B\u3002")), /* @__PURE__ */ h(
         "div",
         {
-          className: "u-ibtn5",
+          className: "bge-setting-group u-ibtn5",
           style: {
             width: "100%",
             height: "max-content",
-            borderRadius: ".8em",
+            borderRadius: ".5em",
             padding: ".5em .6ex",
             opacity: "0.9",
             marginBottom: "1em"
@@ -6827,7 +6630,7 @@
           await background.onConfig();
           setBackgroundList((prev) => [...prev]);
         } catch (error) {
-          await import_sweetalert28.default.fire("\u80CC\u666F\u914D\u7F6E\u5931\u8D25", String(error), "error");
+          await import_sweetalert25.default.fire("\u80CC\u666F\u914D\u7F6E\u5931\u8D25", String(error), "error");
         }
       } }, /* @__PURE__ */ h(MdSettings, null)), /* @__PURE__ */ h(
         "span",

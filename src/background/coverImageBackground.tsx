@@ -1,8 +1,9 @@
 import { BaseBackground } from "./background";
 import { preloadBackground } from "../mediaLoad";
+import { coverImageSelector, observeCoverChanges } from "./coverImageObserver";
 
 function getCoverUrl(): string {
-    const image = document.querySelector<HTMLImageElement>(".normal.j-cover, .cmd-image");
+    const image = document.querySelector<HTMLImageElement>(coverImageSelector);
     if (!image?.src) return "";
     const url = new URL(image.src, document.baseURI);
     // Some host versions wrap the real image URL in an image-proxy query.
@@ -44,12 +45,10 @@ function Cover({ preview = false }: { preview?: boolean }) {
             };
             image.src = next;
         };
-        const observer = new MutationObserver(update);
-        observer.observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ["src"] });
-        update();
+        const stopObserving = observeCoverChanges(update);
         return () => {
             disposed = true;
-            observer.disconnect();
+            stopObserving();
             if (pending) pending.onload = pending.onerror = null;
         };
     }, []);

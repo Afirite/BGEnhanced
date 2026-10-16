@@ -17,19 +17,35 @@ import { useLocalStorage, usePromise } from "./hooks";
 import { clampScale } from "./scale";
 import { backgroundEffectStyle, blurTransitionCss, clampBlurValue, clampBlurPulseStrengthValue, clampBlurTransitionValue, clampStoredNumber, parseBackgroundBlur, parseBackgroundBrightness, parseBackgroundScale, parseBlurPulseStrength, parseBlurTransition, BLUR_MAX, BLUR_PULSE_STRENGTH_DEFAULT, BLUR_PULSE_STRENGTH_MAX, BLUR_PULSE_STRENGTH_STEP, BLUR_STEP, BLUR_TRANSITION_DEFAULT, BLUR_TRANSITION_MAX, BLUR_TRANSITION_STEP } from "./blur";
 import "./index.scss";
-import { STORE_BGBLUR, STORE_BGBLURPULSE, STORE_BGBLURTRANSITION, STORE_BGBRIGHTNESS, STORE_BGLIST, STORE_BGMAXEDGE, STORE_BGMODE, STORE_BGSCALE } from "./keys";
+import { STORE_BGBLUR, STORE_BGBLURPULSE, STORE_BGBLURTRANSITION, STORE_BGBRIGHTNESS, STORE_BGLIST, STORE_BGIMAGEFORMAT, STORE_BGIMAGEQUALITY, STORE_BGMAXEDGE, STORE_BGMODE, STORE_BGSCALE } from "./keys";
 import { ReactElement } from "react";
 import { BackgroundTypes, parseBackgroundList, saveBackgroundList, useLocalStorageBackgroundList } from "./backgroundList";
 import Swal from "sweetalert2";
 import { watchBlurPulse } from "./resizeEffect";
+import { ImageBackground } from "./background/imageBackground";
+import { formatBytes, optimizeImage } from "./imageCache";
 import { preloadBackground, preloadBackgrounds } from "./mediaLoad";
 
-/** 0 表示不生成副本，直接使用原图。 */
+/** 0 表示保留原图分辨率，仅按所选格式和质量编码。 */
 export const MAX_IMAGE_EDGE = 15360;
 
 export function parseMaxImageEdge(raw: string | null): number {
     if (raw === null || raw.trim() === "") return 0;
     return clampStoredNumber(raw, 0, MAX_IMAGE_EDGE, 0);
+}
+
+export type LocalImageFormat = "webp" | "jpeg";
+export function parseLocalImageFormat(raw: string): LocalImageFormat {
+    try {
+        const value = JSON.parse(raw);
+        return value === "jpeg" ? "jpeg" : "webp";
+    } catch {
+        return raw === "jpeg" ? "jpeg" : "webp";
+    }
+}
+export function parseLocalImageQuality(raw: string | null): number {
+    if (raw === null || raw.trim() === "") return 86;
+    return clampStoredNumber(raw, 10, 100, 86);
 }
 
 document.body.classList.add('BGEnhanced');
@@ -86,9 +102,9 @@ plugin.onLoad((_selfPlugin) => {
 // );
 
 export function BackgroundPreviewList({
-    backgroundList, buttons, currentIDs = null
+    backgroundList, buttons, currentIDs = null, revision = 0
 }: {
-    backgroundList: BaseBackground[], buttons: (base: BaseBackground) => ReactElement, currentIDs?: string[] | null
+    backgroundList: BaseBackground[], buttons: (base: BaseBackground) => ReactElement, currentIDs?: string[] | null, revision?: number
 }) {
     function PreviewBackground(background: BaseBackground, preview: ReactElement | null) {
         return (
@@ -121,7 +137,7 @@ export function BackgroundPreviewList({
             });
         }
         return () => { canceled = true; };
-    }, [backgroundList]);
+    }, [backgroundList, revision]);
 
     return <>
         {backgroundList.map(background => {
@@ -210,12 +226,24 @@ function Main() {
         0,
         parseMaxImageEdge,
     );
+    const [imageFormat, setImageFormat] = useLocalStorage<LocalImageFormat>(
+        STORE_BGIMAGEFORMAT,
+        "webp",
+        parseLocalImageFormat,
+    );
+    const [imageQuality, setImageQuality] = useLocalStorage(
+        STORE_BGIMAGEQUALITY,
+        86,
+        parseLocalImageQuality,
+    );
 
     // Warm every stored background once, so switching to another background in
     // the list does not start a cold download.
     React.useEffect(() => {
         preloadBackgrounds(backgroundList);
     }, []);
+
+    const [imageRevision, setImageRevision] = React.useState(0);
 
     // Generate the missing cached copy / blurred placeholder in the background.
     // Neither is needed for the first paint, so this never blocks the UI; when
@@ -235,10 +263,13 @@ function Main() {
                 }
                 if (disposed) return;
             }
-            if (changed) saveBackgroundList(STORE_BGLIST, backgroundList);
+            if (changed && !disposed) {
+                saveBackgroundList(STORE_BGLIST, backgroundList);
+                setImageRevision(value => value + 1);
+            }
         })();
         return () => { disposed = true; };
-    }, [backgroundList]);
+    }, [backgroundList, maxImageEdge, imageFormat, imageQuality]);
 
     React.useEffect(() => {
         selfPlugin.backgroundList = backgroundList;
@@ -264,7 +295,7 @@ function Main() {
     const [currentConfigBackground, setCurrentConfigBackground] = React.useState<ReactElement | null>(null);
 
     const [currentBackgroundElement, backgroundError] = usePromise(
-        () => currentBackground.backgroundElement(), [backgroundList]);
+        () => currentBackground.backgroundElement(), [backgroundList, maxImageEdge, imageFormat, imageQuality, imageRevision]);
 
     // Window sizing is handled entirely by CSS. No resize-driven React render
     // or read/write layout loop is necessary for image/video backgrounds.
@@ -299,9 +330,7 @@ function Main() {
     function BackgroundModeElement({ name, id }: { name: string, id: string }) {
         return (
             <span
-                className={`btn ${backgroundMode === id &&
-                    "enabled"
-                    }`}
+                className={backgroundMode === id ? "bge-option-button enabled" : "bge-option-button"}
                 onClick={() =>
                     setBackgroundMode(id)
                 }
@@ -323,11 +352,8 @@ function Main() {
                 <div
                     style={{
                         ...backgroundEffectStyle(effectiveBlur, backgroundBrightness, effectiveScale),
-                        transform: effectiveScale !== 1 ? `scale(${effectiveScale})` : "none",
-                        // Declared inline so the host theme's `transition: none !important`
-                        // reset cannot suppress the configurable blur transition.
-                        transition: blurTransitionCss(blurTransition) || "none",
-                    }}
+                        "--bge-background-transition": blurTransitionCss(blurTransition) || "none",
+                    } as React.CSSProperties}
                     className={`background mode-${backgroundMode}`}
                 >
                     <div className="container" key={backgroundRenderKey}>
@@ -345,17 +371,20 @@ function Main() {
                     <div className="BGEnhanced-Config">
                         {
                             currentConfigBackground ? currentConfigBackground : <>
-                                <div className="buttons">
-                                    <span className="full expand-h u-ibtn5">
-                                        <span className="ico">
-                                            <MdAdd />
-                                        </span>
-                                        <span className="content">
+                                <div className="bge-panels">
+                                    <div className="bge-panel">
+                                        <div className="bge-panel-head">
+                                            <span className="ico">
+                                                <MdAdd />
+                                            </span>
+                                            <span className="bge-panel-name">添加背景</span>
+                                        </div>
+                                        <div className="bge-panel-body">
                                             {BackgroundTypes.map((type) => (
                                                 // rome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
                                                 <span
                                                     key={type.name}
-                                                    className="btn"
+                                                    className="bge-option-button"
                                                     onClick={() =>
                                                         askAndAddBackground(type)
                                                     }
@@ -363,20 +392,23 @@ function Main() {
                                                     {type.backgroundTypeName}
                                                 </span>
                                             ))}
-                                        </span>
-                                    </span>
-                                    <span className="extendable u-ibtn5">
-                                        <span className="ico">
-                                            <MdDesktopWindows />
-                                        </span>
-                                        <span className="content">
+                                        </div>
+                                    </div>
+                                    <div className="bge-panel">
+                                        <div className="bge-panel-head">
+                                            <span className="ico">
+                                                <MdDesktopWindows />
+                                            </span>
+                                            <span className="bge-panel-name">背景适配</span>
+                                        </div>
+                                        <div className="bge-panel-body">
                                             <BackgroundModeElement name="覆盖" id="cover" />
                                             <BackgroundModeElement name="覆盖居中" id="cover-centered" />
                                             <BackgroundModeElement name="拉伸" id="stretch" />
-                                        </span>
-                                    </span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="universalOptions u-ibtn5" style={{
+                                <div className="universalOptions bge-setting-group u-ibtn5" style={{
                                     width: '100%',
                                     height: 'max-content',
                                     borderRadius: '.5em',
@@ -391,7 +423,7 @@ function Main() {
                                     <SliderRow label="明度" value={backgroundBrightness} min={0} max={1} step={0.01}
                                         onChange={value => setBackgroundBrightness(value)} />
                                 </div>
-                                <div className="universalOptions u-ibtn5" style={{
+                                <div className="universalOptions bge-setting-group u-ibtn5" style={{
                                     width: '100%',
                                     height: 'max-content',
                                     borderRadius: '.5em',
@@ -408,11 +440,11 @@ function Main() {
                                     <SliderRow label="缩放脉冲强度" suffix="px" value={blurPulseStrength}
                                         min={0} max={BLUR_PULSE_STRENGTH_MAX} step={BLUR_PULSE_STRENGTH_STEP}
                                         onChange={value => setBlurPulseStrength(clampBlurPulseStrengthValue(value))} />
-                                    <div style={{ margin: ".5em", fontSize: ".85em", opacity: ".75" }}>
+                                    <div className="bge-setting-description" style={{ margin: ".5em", fontSize: "calc(.85em - .3px)", opacity: ".75" }}>
                                         过渡时间为 0 或脉冲强度为 0 时关闭对应效果；系统开启「减少动态效果」时同样停用脉冲。
                                     </div>
                                 </div>
-                                <div className="universalOptions u-ibtn5" style={{
+                                <div className="universalOptions bge-setting-group u-ibtn5" style={{
                                     width: '100%',
                                     height: 'max-content',
                                     borderRadius: '.5em',
@@ -426,14 +458,25 @@ function Main() {
                                     <SliderRow label="副本最长边" value={maxImageEdge}
                                         min={0} max={MAX_IMAGE_EDGE} step={256}
                                         onChange={value => setMaxImageEdge(parseMaxImageEdge(String(value)))} />
-                                    <div style={{ margin: ".5em", fontSize: ".85em", opacity: ".75" }}>
-                                        0 表示不生成副本、直接用原图，越大越清晰；设为 0 以外的值时会在插件目录的 .bge-cache 下生成缩小副本，删除该目录即可全部重建。所有图片都会生成一张模糊占位图来掩盖加载过程。
+                                    <label className="bge-image-format-row">
+                                        <span>输出格式</span>
+                                        <select value={imageFormat} onChange={event => setImageFormat(event.currentTarget.value as LocalImageFormat)}>
+                                            <option value="webp">WebP</option>
+                                            <option value="jpeg">JPEG</option>
+                                        </select>
+                                    </label>
+                                    <SliderRow label="压缩质量" suffix="%" value={imageQuality} min={10} max={100} step={1}
+                                        onChange={value => setImageQuality(parseLocalImageQuality(String(value)))} />
+                                    <div className="bge-setting-description" style={{ margin: ".5em", fontSize: "calc(.85em - .3px)", opacity: ".75" }}>
+                                        副本最长边为 0 时不缩小分辨率，仍可按格式和质量生成副本；绝不放大，且结果不小于原图时保留原图。输出副本保存在 .bge-cache，原文件不会修改。JPEG 会将透明背景铺为白色；要保留透明效果请选择 WebP。
                                     </div>
+                                    <ImageOptimizationInfo background={currentBackground} maxEdge={maxImageEdge}
+                                        format={imageFormat} quality={imageQuality} revision={imageRevision} />
                                 </div>
-                                <div className="u-ibtn5" style={{
+                                <div className="bge-setting-group u-ibtn5" style={{
                                     width: '100%',
                                     height: 'max-content',
-                                    borderRadius: '.8em',
+                                    borderRadius: '.5em',
                                     padding: '.5em .6ex',
                                     opacity: '0.9',
                                     marginBottom: "1em"
@@ -446,7 +489,7 @@ function Main() {
                                     </span>
                                 </div>
                                 <div className="backgrounds">
-                                    <BackgroundPreviewList backgroundList={backgroundList} buttons={(background) => (
+                                    <BackgroundPreviewList backgroundList={backgroundList} revision={imageRevision} buttons={(background) => (
                                         <>
                                             <span className="btn" onClick={async () => {
                                                 try {
@@ -482,6 +525,27 @@ function Main() {
             )}
         </>
     );
+}
+
+function ImageOptimizationInfo({ background, maxEdge, format, quality, revision }: {
+    background: BaseBackground; maxEdge: number; format: LocalImageFormat; quality: number; revision: number;
+}) {
+    const [result, error, state] = usePromise(
+        () => background instanceof ImageBackground
+            ? optimizeImage(background.ImageUrl, maxEdge, plugin.pluginPath, { format, quality: quality / 100 })
+            : Promise.resolve(null),
+        [background, maxEdge, format, quality, revision],
+    );
+    if (!(background instanceof ImageBackground)) return <div className="bge-setting-description" style={{ margin: ".5em" }}>选中本地图片后显示尺寸和文件大小。</div>;
+    if (state === "pending") return <div style={{ margin: ".5em" }}>正在读取图片信息…</div>;
+    if (error || !result) return <div style={{ margin: ".5em" }}>无法读取图片信息，继续使用原图。</div>;
+    const describe = (info: { width: number; height: number; bytes: number }) =>
+        info.width > 0 ? info.width + "×" + info.height + "，" + formatBytes(info.bytes) : "尺寸未知";
+    return <div style={{ margin: ".5em" }} aria-live="polite">
+        <div>原图：{describe(result.source)}</div>
+        <div>显示：{describe(result.output)}</div>
+        <div>{result.path ? "已使用优化副本" : result.status === "failed" ? "优化失败，使用原图" : "无优化收益或格式不支持，使用原图"}</div>
+    </div>;
 }
 
 function NumberRow({ label, value }: { label: string, value: number | string }) {

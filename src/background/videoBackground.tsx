@@ -42,14 +42,20 @@ export class VideoBackground extends BaseBackground {
     }
     static async askAndCreate(): Promise<BaseBackground | null> {
         const path = await betterncm.app.openFileDialog(".mp4, .webm\0", "./");
-        if(!betterncm_native.fs.exists(path)) {
+        if (!path) return null;
+        let exists = false;
+        try {
+            exists = betterncm_native.fs.exists(path);
+        } catch {
+            // Report inaccessible paths through the same failure UI.
+        }
+        if (!exists) {
             Swal.fire('添加背景失败',
 `原因可能为：
 1. 你选中的路径内有特殊字符（中文，制表符等）
 2. 你选中的路径不存在`,'error')
             return null;
         }
-        if (path) return new VideoBackground(path);
-        return null;
+        return new VideoBackground(path);
     }
 }

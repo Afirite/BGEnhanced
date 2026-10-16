@@ -2,30 +2,21 @@ import { BaseBackground } from "./background/background";
 import { CoverImageBackground } from "./background/coverImageBackground";
 import { CSSBackground } from "./background/cssBackground";
 import { ImageBackground } from "./background/imageBackground";
-import { MaskedBackground } from "./background/maskedBackground";
-import { RandomBackground } from "./background/randomBackground";
 import { RemoteImageBackground } from "./background/remoteImageBackground";
-import { RemoteRandImageBackgroundLoli } from "./background/remoteRandImageBackgroundLoli";
-import { RemoteRandImageBackgroundScenery } from "./background/remoteRandImageBackgroundScenery";
 import { VideoBackground } from "./background/videoBackground";
 import { useLocalStorage } from "./hooks";
 
 const legacyTypes: Record<string, string> = {
     VideoBackground: "video", CSSBackground: "css", ImageBackground: "image",
-    RemoteRandImageBackgroundLoli: "anime", RemoteRandImageBackgroundScenery: "bing",
-    CoverImageBackground: "cover", RandomBackground: "random",
-    RemoteImageBackground: "remote-image", MaskedBackground: "masked",
+    CoverImageBackground: "cover",
+    RemoteImageBackground: "remote-image",
 };
 const registry = [
     { type: "video", ctor: VideoBackground },
     { type: "css", ctor: CSSBackground },
     { type: "image", ctor: ImageBackground },
-    { type: "anime", ctor: RemoteRandImageBackgroundLoli },
-    { type: "bing", ctor: RemoteRandImageBackgroundScenery },
     { type: "cover", ctor: CoverImageBackground },
-    { type: "random", ctor: RandomBackground },
     { type: "remote-image", ctor: RemoteImageBackground },
-    { type: "masked", ctor: MaskedBackground },
 ];
 export const BackgroundTypes = registry.map(entry => entry.ctor);
 

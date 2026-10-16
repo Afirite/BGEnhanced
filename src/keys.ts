@@ -8,5 +8,7 @@ export const STORE_BGBRIGHTNESS="cc.microblock.bgenhanced.backgroundbrightness";
 export const STORE_BGBLURTRANSITION="cc.microblock.bgenhanced.blurtransition";
 export const STORE_BGBLURPULSE="cc.microblock.bgenhanced.blurpulsestrength";
 // Local image optimisation: longest edge of the generated display copy, in px.
-// 0 means "do not generate a copy, use the original file".
+// 0 preserves source resolution; format and quality can still reduce file size.
 export const STORE_BGMAXEDGE="cc.microblock.bgenhanced.maximageedge";
+export const STORE_BGIMAGEFORMAT="cc.microblock.bgenhanced.imageformat";
+export const STORE_BGIMAGEQUALITY="cc.microblock.bgenhanced.imagequality";

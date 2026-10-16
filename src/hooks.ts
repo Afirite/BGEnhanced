@@ -6,8 +6,18 @@ export function useLocalStorage<T>(
 ): [T, (value: T | ((prevValue: T) => T)) => void] {
     const [storedValue, setStoredValue] = React.useState(() => {
         try {
-            const item = window.localStorage.getItem(key);
-            return item ? parse(item) : initialValue;
+            const storage = window.localStorage;
+            const item = storage.getItem(key);
+            if (item === null) return initialValue;
+            try {
+                return parse(item);
+            } catch (error) {
+                // Preserve the original before resetting; never erase it if backup fails.
+                const backupKey = key + ".invalid-backup";
+                if (storage.getItem(backupKey) === null) storage.setItem(backupKey, item);
+                storage.removeItem(key);
+                throw error;
+            }
         } catch (error) {
             console.log(error);
             return initialValue;
@@ -20,9 +30,10 @@ export function useLocalStorage<T>(
         try {
             const valueToStore =
                 value instanceof Function ? value(valueRef.current) : value;
+            // Persist first: failed serialization/storage must not publish unsaved state.
+            window.localStorage.setItem(key, stringify(valueToStore));
             valueRef.current = valueToStore;
             setStoredValue(valueToStore);
-            window.localStorage.setItem(key, stringify(valueToStore));
         } catch (error) {
             console.log(error);
         }

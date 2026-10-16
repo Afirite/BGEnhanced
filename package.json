@@ -1,6 +1,6 @@
 {
   "name": "bgenhanced",
-  "version": "0.3.15",
+  "version": "0.3.16",
   "private": true,
   "description": "BetterNCM 背景增强插件（纯前端）",
   "license": "MIT",
@@ -10,6 +10,14 @@
     "typecheck": "tsc --noEmit",
     "test": "node --test tests/*.test.js",
     "check": "npm run typecheck && npm test",
+    "version:show": "node ./scripts/version.js",
+    "version:patch": "node ./scripts/version.js patch",
+    "version:minor": "node ./scripts/version.js minor",
+    "version:major": "node ./scripts/version.js major",
+    "version:set": "node ./scripts/version.js",
+    "release:patch": "npm run version:patch && npm run check && npm run pack",
+    "release:minor": "npm run version:minor && npm run check && npm run pack",
+    "release:major": "npm run version:major && npm run check && npm run pack",
     "pack": "npm run build && node ./scripts/pack.js --no-build",
     "pack:only": "node ./scripts/pack.js --no-build"
   },

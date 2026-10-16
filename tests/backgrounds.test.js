@@ -7,12 +7,12 @@ const path = require("node:path");
 global.h = (type, props, ...children) => ({ type, props: props || {}, children });
 global.f = Symbol.for("test.fragment");
 
-let parseBackgroundList, stringifyBackgroundList, CSSBackground, RandomBackground, MaskedBackground;
+let parseBackgroundList, stringifyBackgroundList, CSSBackground, BackgroundTypes;
 global.__bgeTestPlugin = { backgroundList: [] };
 test.before(async () => {
 const bundled = (await build({
   stdin: {
-    contents: 'export * from "./backgroundList"; export * from "./background/cssBackground"; export * from "./background/randomBackground"; export * from "./background/maskedBackground";',
+    contents: 'export * from "./backgroundList"; export * from "./background/cssBackground";',
     resolveDir: path.join(__dirname, "../src"), loader: "ts"
   }, bundle: true, platform: "node", format: "cjs", write: false,
   jsxFactory: "h", jsxFragment: "f",
@@ -25,7 +25,7 @@ const bundled = (await build({
         loader: "js"
       }));
       build.onResolve({ filter: /^sweetalert2$/ }, () => ({ path: "sweetalert2", namespace: "stub" }));
-      build.onLoad({ filter: /^sweetalert2$/, namespace: "stub" }, () => ({ contents: "export default { fire: async () => ({}) };", loader: "js" }));
+      build.onLoad({ filter: /^sweetalert2$/, namespace: "stub" }, () => ({ contents: "export default { fire: (...args) => global.__bgeTestFire(...args) };", loader: "js" }));
       build.onResolve({ filter: /^react-icons\/md$/ }, () => ({ path: "icons", namespace: "stub" }));
       build.onLoad({ filter: /^icons$/, namespace: "stub" }, () => ({ contents: "export const MdSelectAll = () => null;", loader: "js" }));
     }
@@ -35,7 +35,7 @@ const compiled = new Module(__filename);
 compiled.filename = __filename;
 compiled.paths = Module._nodeModulePaths(__dirname);
 compiled._compile(bundled, __filename);
-({ parseBackgroundList, stringifyBackgroundList, CSSBackground, RandomBackground, MaskedBackground } = compiled.exports);
+({ parseBackgroundList, stringifyBackgroundList, CSSBackground, BackgroundTypes } = compiled.exports);
 });
 
 test("parses legacy class-name records and emits stable type identifiers", () => {
@@ -62,41 +62,61 @@ test("ignores invalid records and fields and regenerates duplicate ids", () => {
 });
 
 test("config restores only correctly typed fields and preserves background methods", () => {
-  const records = parseBackgroundList(JSON.stringify([
-    { type: "masked", target: 12, maskColor: {}, maskBlur: "bad", backgroundElement: "overwritten" },
-    { type: "random", excludeList: ["valid", 12] }
+  const [background] = parseBackgroundList(JSON.stringify([
+    { type: "css", css: 12, backgroundElement: "overwritten" }
   ]));
-  assert.equal(records[0].target, "");
-  assert.equal(records[0].maskColor, "#ffffff22");
-  assert.equal(records[0].maskBlur, 0);
-  assert.equal(typeof records[0].backgroundElement, "function");
-  assert.deepEqual(records[1].excludeList, []);
+  assert.equal(background.css, "gray");
+  assert.equal(typeof background.backgroundElement, "function");
+});
+
+test("only the five retained background types are registered", () => {
+  assert.deepEqual(BackgroundTypes.map(type => type.backgroundTypeName), [
+    "视频", "CSS", "图片", "当前封面", "在线图片"
+  ]);
+});
+
+test("removed background records are skipped without affecting retained backgrounds", () => {
+  const removed = ["anime", "bing", "masked", "random",
+    "RemoteRandImageBackgroundLoli", "RemoteRandImageBackgroundScenery",
+    "MaskedBackground", "RandomBackground"];
+  const records = [...removed.map(type => ({ type })), { type: "css", css: "blue", id: "keep" }];
+  for (const stored of [records, { version: 1, backgrounds: records }]) {
+    const backgrounds = parseBackgroundList(JSON.stringify(stored));
+    assert.equal(backgrounds.length, 1);
+    assert.equal(backgrounds[0].id, "keep");
+    assert.equal(backgrounds[0].css, "blue");
+  }
+});
+
+test("cancelled image and video dialogs never inspect the filesystem or show errors", async () => {
+  for (const name of ["图片", "视频"]) {
+    const type = BackgroundTypes.find(type => type.backgroundTypeName === name);
+    for (const cancelled of ["", null, undefined]) {
+      global.betterncm = { app: { openFileDialog: async () => cancelled } };
+      global.betterncm_native = { fs: { exists: () => { assert.fail("cancel must not check a path"); } } };
+      global.__bgeTestFire = () => { assert.fail("cancel must not show an error"); };
+      assert.equal(await type.askAndCreate(), null);
+    }
+  }
+});
+
+test("missing or inaccessible image and video paths report failure instead of rejecting", async () => {
+  for (const name of ["图片", "视频"]) {
+    const type = BackgroundTypes.find(type => type.backgroundTypeName === name);
+    for (const throws of [false, true]) {
+      let errors = 0;
+      global.betterncm = { app: { openFileDialog: async () => "C:/missing-file" } };
+      global.betterncm_native = { fs: { exists: () => {
+        if (throws) throw new Error("access denied");
+        return false;
+      } } };
+      global.__bgeTestFire = () => { errors++; return Promise.resolve({}); };
+      assert.equal(await type.askAndCreate(), null);
+      assert.equal(errors, 1);
+    }
+  }
 });
 
 test("versioned config rejects unknown schema versions", () => {
   assert.throws(() => parseBackgroundList('{"version":2,"backgrounds":[]}'), /版本/);
-});
-
-test("random background invalidates its cached pick when excluded", async () => {
-  const first = new CSSBackground("first");
-  const second = new CSSBackground("second");
-  const random = new RandomBackground();
-  global.__bgeTestPlugin.backgroundList = [first, second, random];
-  random.excludeList = [second.id];
-  const firstElement = await random.backgroundElement();
-  assert.equal(firstElement.props.style.background, "first");
-  random.excludeList = [first.id];
-  const secondElement = await random.backgroundElement();
-  assert.equal(secondElement.props.style.background, "second");
-});
-
-test("masked background reports missing targets and real indirect cycles", async () => {
-  const a = new MaskedBackground();
-  const b = new MaskedBackground();
-  a.id = "a"; b.id = "b";
-  a.target = b.id; b.target = a.id;
-  global.__bgeTestPlugin.backgroundList = [a, b];
-  await assert.rejects(a.backgroundElement(), /背景循环引用：a → b → a/);
-  a.target = "missing";
-  await assert.rejects(a.backgroundElement(), /遮罩对象不存在/);
 });

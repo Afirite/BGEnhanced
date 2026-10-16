@@ -15,12 +15,12 @@ const root = path.resolve(__dirname, "..");
 const pkg = require(path.join(root, "package.json"));
 const version = pkg.version;
 const name = "BGEnhanced";
-const stageDir = path.join(root, "release", `${name}-${version}`);
-const zipPath = path.join(root, "release", `${name}-${version}.zip`);
+const pluginPath = path.join(root, "release", `${name}-${version}.plugin`);
 
-/** Everything the host loads at runtime; nothing else ships. */
-const files = ["manifest.json", "index.js", "index.css", "preview.png"];
+/** Runtime files. The preview is resolved separately because its name varies. */
+const files = ["manifest.json", "index.js", "index.css"];
 const required = ["manifest.json", "index.js", "index.css"];
+const PREVIEW_EXTENSIONS = ["png", "jpg", "jpeg", "webp", "gif"];
 
 function readManifest() {
     const manifest = JSON.parse(fs.readFileSync(path.join(root, "manifest.json"), "utf8"));
@@ -33,6 +33,36 @@ function readManifest() {
         throw new Error("This package is frontend-only; manifest.json must not declare native_plugin");
     }
     return manifest;
+}
+
+/**
+ * Finds the preview image in dist/. The declared name is tried first, then the
+ * same stem with any supported extension, so replacing preview.png with
+ * preview.jpg keeps working instead of silently shipping a package whose
+ * manifest points at a missing file.
+ */
+function findPreview(manifest) {
+    const declared = typeof manifest.preview === "string" && manifest.preview.trim()
+        ? manifest.preview.trim()
+        : "preview.png";
+    const stem = declared.replace(/\.[^.]+$/, "");
+    for (const candidate of [declared, ...PREVIEW_EXTENSIONS.map(extension => `${stem}.${extension}`)]) {
+        const source = path.join(root, "dist", candidate);
+        if (fs.existsSync(source)) return { name: candidate, source };
+    }
+    return null;
+}
+
+/** Keeps the manifest's `preview` field pointing at a file that exists. */
+function syncManifestPreview(manifestBuffer, previewName) {
+    if (!previewName) return manifestBuffer;
+    const manifest = JSON.parse(manifestBuffer.toString("utf8"));
+    if (manifest.preview === previewName) return manifestBuffer;
+    console.log(`  (manifest preview "${manifest.preview ?? ""}" -> "${previewName}")`);
+    manifest.preview = previewName;
+    const text = JSON.stringify(manifest, null, 4) + "\n";
+    fs.writeFileSync(path.join(root, "manifest.json"), text);
+    return Buffer.from(text, "utf8");
 }
 
 function sourceOf(file) {
@@ -129,31 +159,34 @@ function main() {
         }
     }
 
+    const preview = findPreview(manifest);
+    if (preview === null) {
+        console.warn(
+            "warning: no preview image in dist/ - the host will list the plugin without a thumbnail. "
+            + `Add dist/${manifest.preview || "preview.png"} to fix this.`,
+        );
+    }
+
     // Keep the in-tree dist manifest aligned with the root manifest so the two
     // never drift (the root manifest is the source of truth for the package).
-    const manifestBuffer = Buffer.from(JSON.stringify(manifest, null, 4) + "\n", "utf8");
+    let manifestBuffer = Buffer.from(JSON.stringify(manifest, null, 4) + "\n", "utf8");
+    manifestBuffer = syncManifestPreview(manifestBuffer, preview && preview.name);
     fs.writeFileSync(path.join(root, "dist", "manifest.json"), manifestBuffer);
 
-    fs.rmSync(stageDir, { recursive: true, force: true });
-    fs.mkdirSync(stageDir, { recursive: true });
+    fs.mkdirSync(path.dirname(pluginPath), { recursive: true });
 
     const entries = [];
-    for (const file of files) {
-        const source = sourceOf(file);
-        if (file !== "manifest.json" && !fs.existsSync(source)) {
-            console.warn(`skipping optional ${file}`);
-            continue;
-        }
+    const staged = preview ? [...files, preview.name] : files;
+    for (const file of staged) {
+        const source = file === "manifest.json" ? null : (file === (preview && preview.name) ? preview.source : sourceOf(file));
         const data = file === "manifest.json" ? manifestBuffer : fs.readFileSync(source);
-        fs.writeFileSync(path.join(stageDir, file), data);
         entries.push({ name: file, data });
         console.log(`  ${file} (${data.length} bytes)`);
     }
 
-    writeZip(zipPath, entries);
+    writeZip(pluginPath, entries);
     console.log(`\n${manifest.name} ${manifest.version} (frontend only)`);
-    console.log(`  folder: ${path.relative(root, stageDir)}`);
-    console.log(`  zip:    ${path.relative(root, zipPath)} (${fs.statSync(zipPath).size} bytes)`);
+    console.log(`  plugin: ${path.relative(root, pluginPath)} (${fs.statSync(pluginPath).size} bytes)`);
 }
 
 main();
